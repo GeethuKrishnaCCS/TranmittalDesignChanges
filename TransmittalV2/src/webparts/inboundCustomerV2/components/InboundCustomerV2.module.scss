@@ -1,0 +1,51 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.inboundCustomerV2 {
+  overflow: hidden;
+  padding: 1em;
+  color: "[theme:bodyText, default: #323130]";
+  color: var(--bodyText);
+  &.teams {
+    font-family: $ms-font-family-fallbacks;
+  }
+}
+.row {
+  @include ms-Grid-row;
+  @include ms-fontColor-black;
+  //background-color: $ms-color-themeDark;
+  padding: 20px;
+}
+.divMetadataCol1 {
+  width: 100%;
+  display: flex;
+}
+.header {
+  border-bottom: 1px solid rgb(161, 159, 157);
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+
+.welcome {
+  text-align: center;
+}
+
+.welcomeImage {
+  width: 100%;
+  max-width: 420px;
+}
+
+.links {
+  a {
+    text-decoration: none;
+    color: "[theme:link, default:#03787c]";
+    color: var(--link); // note: CSS Custom Properties support is limited to modern browsers only
+
+    &:hover {
+      text-decoration: underline;
+      color: "[theme:linkHovered, default: #014446]";
+      color: var(--linkHovered); // note: CSS Custom Properties support is limited to modern browsers only
+    }
+  }
+}

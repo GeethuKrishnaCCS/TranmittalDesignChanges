@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "transmittal-v-2-client-side-solution",
+    "id": "27b8d337-fbf4-44e9-b207-a3d685546c4a",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.17.3"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "TransmittalV2 description"
+      },
+      "longDescription": {
+        "default": "TransmittalV2 description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "transmittal-v-2 Feature",
+        "description": "The feature that activates elements of the transmittal-v-2 solution.",
+        "id": "271cb3a9-8bcd-4a13-8fd8-10611289b397",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/transmittal-v-2.sppkg"
+  }
+}

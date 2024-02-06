@@ -1,0 +1,29 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "outbound-transmittal-v-2-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/outboundTransmittalV2/OutboundTransmittalV2WebPart.js",
+          "manifest": "./src/webparts/outboundTransmittalV2/OutboundTransmittalV2WebPart.manifest.json"
+        }
+      ]
+    },
+    "inbound-customer-v-2-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/inboundCustomerV2/InboundCustomerV2WebPart.js",
+          "manifest": "./src/webparts/inboundCustomerV2/InboundCustomerV2WebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "OutboundTransmittalV2WebPartStrings": "lib/webparts/outboundTransmittalV2/loc/{locale}.js",
+    "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js",
+    "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js",
+    "InboundCustomerV2WebPartStrings": "lib/webparts/inboundCustomerV2/loc/{locale}.js"
+  }
+}
