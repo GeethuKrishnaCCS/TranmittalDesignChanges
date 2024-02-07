@@ -5,15 +5,49 @@
   padding: 1em;
   color: "[theme:bodyText, default: #323130]";
   color: var(--bodyText);
+
   &.teams {
     font-family: $ms-font-family-fallbacks;
   }
 }
-.subContractorDropDwn{
-  margin-left: "10px";
-   width: "248px";
-    margin-top:  "22px",
+
+.custom-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
 }
+
+.custom-table th,
+.custom-table td {
+  border: 1px solid #000;
+  /* Border style for cells */
+  padding: 8px;
+  /* Padding for content */
+  position: relative;
+}
+
+.custom-table th {
+  background-color: #f6dfd2;
+  /* Background color for table header */
+  padding: 8px;
+  /* Padding for content */
+  white-space: normal;
+  position: sticky;
+  /* Enable text wrapping */
+}
+
+.custom-table tr {
+  border-bottom: 1px solid #ccc;
+  /* Border style for rows */
+  background-color: #f2f2f2;
+}
+
+.subContractorDropDwn {
+  margin-left: "10px";
+  width: "248px";
+  margin-top: "22px",
+}
+
 .container {
   max-width: 700px;
   margin: 0px auto;
@@ -143,147 +177,147 @@ hr.new4 {
 
 //for preview
 .wrap {
-width: 90%;
-margin-left: 77px;
+  width: 90%;
+  margin-left: 77px;
 }
 
 .w100 {
-width: 100%
+  width: 100%
 }
 
 .w50 {
-width: 50%
+  width: 50%
 }
 
 .mt1 {
-margin-top: 5px
+  margin-top: 5px
 }
 
 .mt2 {
-margin-top: 10px
+  margin-top: 10px
 }
 
 .mt3 {
-margin-top: 15px
+  margin-top: 15px
 }
 
 .pr {
-padding-right: 15px;
+  padding-right: 15px;
 }
 
 .title {
-font-size: 18px;
-font-weight: 600;
-text-align: center;
-padding: 15px 0;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  padding: 15px 0;
 }
 
 .subtitle {
-font-size: 17px;
-font-weight: 600;
-text-align: left;
-padding: 15px 0;
+  font-size: 17px;
+  font-weight: 600;
+  text-align: left;
+  padding: 15px 0;
 }
 
 .wrapIitem {
-float: left;
-margin-bottom: 15px;
+  float: left;
+  margin-bottom: 15px;
 }
 
 span {
-font-weight: bold;
+  font-weight: bold;
 }
 
 .wrapSection {
-margin: 10px 0 0;
-display: inline-block;
-width: calc(100% - 30px);
-padding: 15px 15px 0;
+  margin: 10px 0 0;
+  display: inline-block;
+  width: calc(100% - 30px);
+  padding: 15px 15px 0;
 }
 
 .wrapTable {
-margin: 10px 0 0;
-display: inline-block;
-width: 100%;
+  margin: 10px 0 0;
+  display: inline-block;
+  width: 100%;
 }
 
 .borderStyle {
-border: 1px solid rgb(0, 45, 114);
+  border: 1px solid rgb(0, 45, 114);
 }
 
 .borderStyleForCheckBoxDiv {
-border: 1mm solid rgb(173, 186, 247);
-margin-top: 8px;
-margin-left: 98px;
-display: inline-flex;
+  border: 1mm solid rgb(173, 186, 247);
+  margin-top: 8px;
+  margin-left: 98px;
+  display: inline-flex;
 }
 
 .textleft {
-text-align: left;
+  text-align: left;
 }
 
 .textcenter {
-text-align: center;
+  text-align: center;
 }
 
 .textright {
-text-align: right;
+  text-align: right;
 }
 
 .divTable {
-display: table;
-width: 100%;
+  display: table;
+  width: 100%;
 }
 
 .divTableRow {
-display: table-row;
+  display: table-row;
 }
 
 .divTableHeading {
-background-color: #EEE;
-display: table-header-group;
+  background-color: #EEE;
+  display: table-header-group;
 }
 
 .divTableCell,
 .divTableHead {
-border: 1px solid #333;
-display: table-cell;
-padding: 3px 10px;
-font-weight: bold;
+  border: 1px solid #333;
+  display: table-cell;
+  padding: 3px 10px;
+  font-weight: bold;
 }
 
 .divTableHeading {
-background-color: #EEE;
-display: table-header-group;
-font-weight: bold;
+  background-color: #EEE;
+  display: table-header-group;
+  font-weight: bold;
 }
 
 .divTableFoot {
-background-color: #EEE;
-display: table-footer-group;
-font-weight: bold;
+  background-color: #EEE;
+  display: table-footer-group;
+  font-weight: bold;
 }
 
 .divTableBody {
-display: table-row-group;
+  display: table-row-group;
 }
 
 .overflow {
-overflow: auto;
-width: 100%;
+  overflow: auto;
+  width: 100%;
 }
 
 * {
-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .borderForToCC {
-border: 1px solid #000;
-width: 60%;
-border-radius: 23px;
-padding: 0px 2px 15px 10px;
+  border: 1px solid #000;
+  width: 60%;
+  border-radius: 23px;
+  padding: 0px 2px 15px 10px;
 }

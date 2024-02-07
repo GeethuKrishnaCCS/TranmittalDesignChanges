@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styles from './OutboundTransmittalV2.module.scss';
 import { IOutboundTransmittalV2Props, IOutboundTransmittalV2State } from '../Interfaces/IOutboundTransmittalV2Props';
-import { Checkbox, ChoiceGroup, DatePicker, DefaultButton, Dialog, DialogFooter, DialogType, Dropdown, FontWeights, IChoiceGroupOption, IDropdownOption, IDropdownStyles, IIconProps,  IconButton, Label, MessageBar, Modal, PrimaryButton, Spinner, SpinnerSize, TextField, getTheme, mergeStyleSets } from '@fluentui/react';
+import { Checkbox, ChoiceGroup, DatePicker, DefaultButton, Dialog, DialogFooter, DialogType, Dropdown, FontWeights, IChoiceGroupOption, IDropdownOption, IDropdownStyles, IIconProps, IconButton, Label, MessageBar, Modal, PrimaryButton, Spinner, SpinnerSize, TextField, getTheme, mergeStyleSets } from '@fluentui/react';
 import { PeoplePicker, PrincipalType } from '@pnp/spfx-controls-react/lib/PeoplePicker';
 import { MultiSelect } from 'react-multi-select-component';
 import SimpleReactValidator from 'simple-react-validator';
@@ -9,12 +9,12 @@ import { OBService } from '../Services/OBService';
 import * as moment from 'moment';
 import replaceString from 'replace-string';
 import * as _ from 'lodash';
-import { add} from 'lodash';
+import { add } from 'lodash';
 import Select from 'react-select';
 
-export default class OutboundTransmittalV2 extends React.Component<IOutboundTransmittalV2Props,IOutboundTransmittalV2State, {}> {
-  private validator: SimpleReactValidator;  
-  private _Service: OBService;    
+export default class OutboundTransmittalV2 extends React.Component<IOutboundTransmittalV2Props, IOutboundTransmittalV2State, {}> {
+  private validator: SimpleReactValidator;
+  private _Service: OBService;
   //private reqWeb = Web(window.location.protocol + "//" + window.location.hostname + "/sites/" + this.props.hubSiteUrl);
   private emailsSelectedTo: any[] = [];
   private emailsSelectedCC: any[] = [];
@@ -64,7 +64,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       selectedContactsTo: "",
       selectedContactsCC: "",
       CC: "No",
-      TypeOFDelete:"",
+      TypeOFDelete: "",
       transmitForItems: [],
       approvalLifeCycle: "",
       projectNumber: "",
@@ -157,11 +157,11 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       selectedContactsCCName: [],
       divForToAndCC: "none",
       divForToAndCCSearch: "",
+      selectedDocuments: [],
     };
-    this._Service = new OBService(this.props.context,window.location.protocol + "//" + window.location.hostname +this.props.hubSiteUrl);
+    this._Service = new OBService(this.props.context, window.location.protocol + "//" + window.location.hostname + this.props.hubSiteUrl);
     this._drpdwnTransmitTo = this._drpdwnTransmitTo.bind(this);
     this._drpdwnSubContractor = this._drpdwnSubContractor.bind(this);
-    this._drpdwnTransmitFor = this._drpdwnTransmitFor.bind(this);
     this._currentUser = this._currentUser.bind(this);
     this._showProjectDocumentGrid = this._showProjectDocumentGrid.bind(this);
     this._showExternalGrid = this._showExternalGrid.bind(this);
@@ -172,369 +172,353 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     this._transmitForBind = this._transmitForBind.bind(this);
     this._loadPublishDocuments = this._loadPublishDocuments.bind(this);
     this._onDocumentClick = this._onDocumentClick.bind(this);
-  //  this._onPreviewBtnClick = this._onPreviewBtnClick.bind(this);
+    //  this._onPreviewBtnClick = this._onPreviewBtnClick.bind(this);
     this._loadSourceDocuments = this._loadSourceDocuments.bind(this);
     this.itemDeleteFromGrid = this.itemDeleteFromGrid.bind(this);
     this.itemDeleteFromExternalGrid = this.itemDeleteFromExternalGrid.bind(this);
-   // this._onSaveAsDraftBtnClick = this._onSaveAsDraftBtnClick.bind(this);
-  //  this._trannsmittalIDGeneration = this._trannsmittalIDGeneration.bind(this);
+    // this._onSaveAsDraftBtnClick = this._onSaveAsDraftBtnClick.bind(this);
+    //  this._trannsmittalIDGeneration = this._trannsmittalIDGeneration.bind(this);
     this._onTransmitType = this._onTransmitType.bind(this);
     this._transmittalSequenceNumber = this._transmittalSequenceNumber.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.getCheckboxesValue = this.getCheckboxesValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this._confirmNoCancel = this._confirmNoCancel.bind(this);
-   // this.bindOutboundTransmittalSavedData = this.bindOutboundTransmittalSavedData.bind(this);
+    // this.bindOutboundTransmittalSavedData = this.bindOutboundTransmittalSavedData.bind(this);
     this._openDeleteConfirmation = this._openDeleteConfirmation.bind(this);
-   // this.triggerOutboundTransmittal = this.triggerOutboundTransmittal.bind(this);
+    // this.triggerOutboundTransmittal = this.triggerOutboundTransmittal.bind(this);
     this._recallTransmittalConfirmation = this._recallTransmittalConfirmation.bind(this);
     this._userMessageSettings = this._userMessageSettings.bind(this);
-   // this._recallSubmit = this._recallSubmit.bind(this);
+    // this._recallSubmit = this._recallSubmit.bind(this);
     this._confirmDeleteItem = this._confirmDeleteItem.bind(this);
     this._forCalculatingSize = this._forCalculatingSize.bind(this);
-   // this._LAUrlGetting = this._LAUrlGetting.bind(this);
+    // this._LAUrlGetting = this._LAUrlGetting.bind(this);
     this._loadSourceDocumentsForLetter = this._loadSourceDocumentsForLetter.bind(this);
-  //  this._LAUrlGettingForPermission = this._LAUrlGettingForPermission.bind(this);
+    //  this._LAUrlGettingForPermission = this._LAUrlGettingForPermission.bind(this);
     //this.triggerProjectPermissionFlow = this.triggerProjectPermissionFlow.bind(this);
-//this._LAUrlGettingForRecall = this._LAUrlGettingForRecall.bind(this);
-   // this.triggerProjectRecall = this.triggerProjectRecall.bind(this);
+    //this._LAUrlGettingForRecall = this._LAUrlGettingForRecall.bind(this);
+    // this.triggerProjectRecall = this.triggerProjectRecall.bind(this);
     this._coverLetterNeeded = this._coverLetterNeeded.bind(this);
     this.setSelectedContactsTo = this.setSelectedContactsTo.bind(this);
     this.setSelectedContactsCC = this.setSelectedContactsCC.bind(this);
+    this.setSelectedDocuments = this.setSelectedDocuments.bind(this);
   }
   public render(): React.ReactElement<IOutboundTransmittalV2Props> {
-    const { 
+    const {
       hasTeamsContext,
     } = this.props;
     const TransmitTo: IDropdownOption[] = [
       { key: '1', text: 'Customer' },
       { key: '2', text: 'Sub-Contractor' },
-    ];   
+    ];
     const options: IChoiceGroupOption[] = [
       { key: 'Document', text: 'Document' },
       { key: 'Letter', text: 'Letter' },
     ];
     const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: "50%" } };
-const AddIcon: IIconProps = { iconName: 'CircleAdditionSolid' };
-const DeleteIcon: IIconProps = { iconName: 'Delete' };
-const CancelIcon: IIconProps = { iconName: 'Cancel' };
-const theme = getTheme();
-const contentStyles = mergeStyleSets({
-  container: {
-    display: 'flex',
-    flexFlow: 'column nowrap',
-    alignItems: 'stretch',
+    // const AddIcon: IIconProps = { iconName: 'CircleAdditionSolid' };
+    const DeleteIcon: IIconProps = { iconName: 'Delete' };
+    const CancelIcon: IIconProps = { iconName: 'Cancel' };
+    const theme = getTheme();
+    const contentStyles = mergeStyleSets({
+      container: {
+        display: 'flex',
+        flexFlow: 'column nowrap',
+        alignItems: 'stretch',
 
 
-  },
-  header: [
-    theme.fonts.xLargePlus,
-    {
-      flex: '1 1 auto',
-      //borderTop: `4px solid ${theme.palette.themePrimary}`,
-      color: theme.palette.neutralPrimary,
-      display: 'flex',
-      alignItems: 'center',
-      fontWeight: FontWeights.semibold,
-      padding: '12px 12px 14px 284px',
-    },
-  ],
-  header1: [
- 
-    theme.fonts.xLargePlus,
-    {
-      flex: '1 1 auto',
-      // borderTop: `4px solid ${theme.palette.themePrimary}`,
-      color: theme.palette.neutralPrimary,
-      display: 'flex',
-      alignItems: 'center',
-      fontWeight: FontWeights.semibold,
-      padding: '10px 20px',
-    },
-  ],
-  body: {
-    flex: '4 4 auto',
-    padding: '0 20px 20px ',
-    overflowY: 'hidden',
+      },
+      header: [
+        theme.fonts.xLargePlus,
+        {
+          flex: '1 1 auto',
+          //borderTop: `4px solid ${theme.palette.themePrimary}`,
+          color: theme.palette.neutralPrimary,
+          display: 'flex',
+          alignItems: 'center',
+          fontWeight: FontWeights.semibold,
+          padding: '12px 12px 14px 284px',
+        },
+      ],
+      header1: [
 
-    selectors: {
-      p: { margin: '14px 0' },
-      'p:first-child': { marginTop: 0 },
-      'p:last-child': { marginBottom: 0 },
-    },
-  },
-});
-const iconButtonStyles = {
-  root: {
-    color: theme.palette.neutralPrimary,
-    marginLeft: 'auto',
-    marginTop: '4px',
-    marginRight: '2px',
-  },
-  rootHovered: {
-    color: theme.palette.neutralDark,
-  },
-};
+        theme.fonts.xLargePlus,
+        {
+          flex: '1 1 auto',
+          // borderTop: `4px solid ${theme.palette.themePrimary}`,
+          color: theme.palette.neutralPrimary,
+          display: 'flex',
+          alignItems: 'center',
+          fontWeight: FontWeights.semibold,
+          padding: '10px 20px',
+        },
+      ],
+      body: {
+        flex: '4 4 auto',
+        padding: '0 20px 20px ',
+        overflowY: 'hidden',
+
+        selectors: {
+          p: { margin: '14px 0' },
+          'p:first-child': { marginTop: 0 },
+          'p:last-child': { marginBottom: 0 },
+        },
+      },
+    });
+    const iconButtonStyles = {
+      root: {
+        color: theme.palette.neutralPrimary,
+        marginLeft: 'auto',
+        marginTop: '4px',
+        marginRight: '2px',
+      },
+      rootHovered: {
+        color: theme.palette.neutralDark,
+      },
+    };
     return (
-      <section className={`${styles.outboundTransmittalV2} ${hasTeamsContext ? styles.teams : ''}`}>     
-      <div>
+      <section className={`${styles.outboundTransmittalV2} ${hasTeamsContext ? styles.teams : ''}`}>
         <div>
-         
-          <div className={styles.outboundTransmittalV2} >
-            <Label className={styles.align}>{this.props.description}</Label>
-            <div style={{ marginLeft: "522px" }}/>
-         
-            <div className={styles.outSideBorder}>
-              <div className={styles.transmittalNo}>
-                <Label style={{ display: this.state.transmittalNo }}>Transmittal No :  {this.state.transmittalNo}	</Label></div>
-              <div style={{ width: "50%", marginLeft: "450px" }}>
-                <Label>Project :   {this.state.projectName}</Label></div>
-            </div>
-            <div className={styles.border}>
-              <div className={styles.row}>
-                <div style={{ display: "flex", marginBottom: "10px" }}>
-                  <div style={{ marginLeft: "10px", display: "flex", width: "100%" }}>
-                    <Dropdown id="t3"
-                      required={true}
-                      selectedKey={this.state.transmitToKey}
-                      placeholder="Select an option"
-                      options={TransmitTo}
-                      onChange={this._drpdwnTransmitTo}
-                      style={{ width: "100%" }}
-                      label="Transmit To"
-                      disabled={this.state.dropDownReadonly} />
-                  </div>
-                  <div style={{ display: this.state.hideCustomer, width: "50%" }}>
-                    <div style={{ display: "flex", marginTop: "22px" }}>
-                      <Label>Customer : </Label>
-                      <Label style={{ fontWeight: "bold", paddingLeft: "5px" }}>  {this.state.customerName}</Label>
-                    </div>
-                  </div>
-                  {this.state.hideSubContractor === "" && 
-                    <div style={{ width: "100%" }}>
-                    <div style={{ display: "flex", marginLeft: "123px", marginTop: "3px" }}>
-                    <Label required>Sub-Contractor : </Label>
-                      <Select
-                        placeholder="Select Sub-Contractor"
-                        isMulti={false}
-                        options={this.state.subContractorItems}
-                        onChange={this._drpdwnSubContractor.bind(this)}
-                        isSearchable={true}
-                        value={this.state.subContractorKey}
-                        maxMenuHeight={150}
-                        className={styles.subContractorDropDwn}                      
-                        />
-                     
-                      <Label style={{ marginLeft: "10px", display: this.state.subContractorLabel }}>{this.state.subContractor} </Label>
-                    </div>
-                    <div style={{ color: "#dc3545", marginLeft: "123px" }}>
-                      {this.validator.message("subContractor", this.state.subContractorKey, "required")}{" "}</div>
-                  </div>}
-                
-                </div>
-                <div style={{ color: "#dc3545" }}>{this.validator.message("transmitTo", this.state.transmitToKey, "required")}{" "}</div>
-                <hr />
-                <div >
-                  <div style={{ marginBottom: "10px" }} className={styles.borderForToCC}>
-                    <span className={styles.span}/>
-                    <div style={{ width: "97%", display: this.state.divForToAndCCSearch }}>
-                      <label style={{ fontWeight: "bold", }}>To</label>
-                      <MultiSelect options={this.state.contactsForSearch} value={this.state.selectedContactsToName} 
-                     onChange={this.setSelectedContactsTo}
-                       labelledBy="To" hasSelectAll={true} />
-                      <div style={{ color: "#dc3545" }}>{this.validator.message("selectedContactsTo", this.state.selectedContactsTo, "required")}{" "}</div>
-                    </div>
-                    <div style={{ width: "195%", display: this.state.divForToAndCC }}>
-                      <Dropdown
-                        placeholder="Select To contacts"
-                        label="To"
-                        defaultSelectedKeys={this.state.selectedContactsTo1}
-                        multiSelect
-                        multiSelectDelimiter={","}
-                        options={this.state.contacts}
-                        styles={dropdownStyles}
-                      //onChange={this._onDrpdwnCntact}
-                        title="To"
-                      />
-                      <div style={{ color: "#dc3545" }}>{this.validator.message("selectedContactsTo", this.state.selectedContactsTo, "required")}{" "}</div>
-                    </div>
-                    <span className={styles.span}/>
-                    <div style={{ width: "97%", display: this.state.divForToAndCCSearch }}>
-                      <label style={{ fontWeight: "bold", }}>CC</label>
-                      <MultiSelect options={this.state.contactsForSearch}  value={this.state.selectedContactsCCName} 
-                    onChange={this.setSelectedContactsCC} 
-                      labelledBy="CC" hasSelectAll={true} />
-                    </div>
-                    <div style={{ width: "195%", display: this.state.divForToAndCC }}>
-                      <Dropdown
-                        placeholder="Select CC contacts"
-                        label="CC "
-                        defaultSelectedKeys={this.state.selectedContactsToCCRebind}
-                        multiSelect
-                        multiSelectDelimiter={","}
-                        options={this.state.contacts}
-                        styles={dropdownStyles}
-                      // onChange={this._onDrpdwnCCContact}
-                      />
-                    </div>
-                    <div style={{ width: "98%", fontWeight: "bold" }}>
-                      <PeoplePicker
-                        context={this.props.context}
-                        titleText="Internal CC"
-                        personSelectionLimit={20}
-                        groupName={""} // Leave this blank in case you want to filter from all users
-                        showtooltip={true}
+          <div>
+
+            <div className={styles.outboundTransmittalV2} >
+              <Label className={styles.align}>{this.props.description}</Label>
+              <div style={{ marginLeft: "522px" }} />
+
+              <div className={styles.outSideBorder}>
+                <div className={styles.transmittalNo}>
+                  <Label style={{ display: this.state.transmittalNo }}>Transmittal No :  {this.state.transmittalNo}	</Label></div>
+                <div style={{ width: "50%", marginLeft: "450px" }}>
+                  <Label>Project :   {this.state.projectName}</Label></div>
+              </div>
+              <div className={styles.border}>
+                <div className={styles.row}>
+                  <div style={{ display: "flex", marginBottom: "10px" }}>
+                    <div style={{ marginLeft: "10px", display: "flex", width: "100%" }}>
+                      <Dropdown id="t3"
                         required={true}
-                        disabled={false}
-                        ensureUser={true}
-                        onChange={(items) => this._selectedInternalCCContacts(items)}
-                        principalTypes={[PrincipalType.User]}
-                        resolveDelay={1000}
-                        defaultSelectedUsers={this.state.internalCCContactsDisplayName} />
+                        selectedKey={this.state.transmitToKey}
+                        placeholder="Select an option"
+                        options={TransmitTo}
+                        onChange={this._drpdwnTransmitTo}
+                        style={{ width: "100%" }}
+                        label="Transmit To"
+                        disabled={this.state.dropDownReadonly} />
                     </div>
-                  </div>
-                </div>
-                {/* choice groups */}
-                <div  >
-                  <div style={{ display: "flex" }}>
-                    <div style={{ marginLeft: "26px", marginRight: "15px", display: this.state.transmitTypeForDocument }}>
-                      <ChoiceGroup options={options} 
-                      onChange={this._onTransmitType} 
-                      label="Select any" required={true} defaultSelectedKey={'Document'} disabled={true} />
+                    <div style={{ display: this.state.hideCustomer, width: "50%" }}>
+                      <div style={{ display: "flex", marginTop: "22px" }}>
+                        <Label>Customer : </Label>
+                        <Label style={{ fontWeight: "bold", paddingLeft: "5px" }}>  {this.state.customerName}</Label>
+                      </div>
                     </div>
-                    <div style={{ marginLeft: "26px", marginRight: "15px", display: this.state.transmitTypeForLetter }}>
-                      <ChoiceGroup options={options}
-                  onChange={this._onTransmitType} 
-                       label="Select any" required={true} defaultSelectedKey={'Letter'} disabled={true} />
-                    </div>
-                    <div style={{ marginLeft: "26px", marginRight: "15px", display: this.state.transmitTypeForDefault }}>
-                      <ChoiceGroup options={options}
-                    onChange={this._onTransmitType} 
-                       label="Select any" required={true} />
-                    </div>
-                    <div style={{ marginLeft: "150px", marginTop: "9px" }}>
-                      <Label>Check if cover letter needed</Label>
-                      <div className={styles.mt1}><Checkbox label="Cover Letter" title="Check if cover letter needed or not." 
-                       onChange={this._coverLetterNeeded}
-                        checked={this.state.coverLetterNeeded} /></div>
-                    </div>
-                    <div style={{ marginLeft: "90px", marginTop: "9px" }}>
-                      <Label>Select email type</Label>
-                      <div className={styles.mt1}><Checkbox label="Send and Receive as shared folder"
-                        onChange={this._onSendAsSharedFolder}
-                        checked={this.state.sendAsSharedFolder} /></div>
-                      <div className={styles.mt1} style={{ display: this.state.sendAsMultipleEmailCheckBoxDiv }}><Checkbox label="Send as multiple emails"
-                     onChange={this._onSendAsMultipleFolder}
-                        checked={this.state.sendAsMultipleFolder} /></div>
-                    </div>
+                    {this.state.hideSubContractor === "" &&
+                      <div style={{ width: "100%" }}>
+                        <div style={{ display: "flex", marginLeft: "123px", marginTop: "3px" }}>
+                          <Label required>Sub-Contractor : </Label>
+                          <Select
+                            placeholder="Select Sub-Contractor"
+                            isMulti={false}
+                            options={this.state.subContractorItems}
+                            onChange={this._drpdwnSubContractor.bind(this)}
+                            isSearchable={true}
+                            value={this.state.subContractorKey}
+                            maxMenuHeight={150}
+                            className={styles.subContractorDropDwn}
+                          />
+
+                          <Label style={{ marginLeft: "10px", display: this.state.subContractorLabel }}>{this.state.subContractor} </Label>
+                        </div>
+                        <div style={{ color: "#dc3545", marginLeft: "123px" }}>
+                          {this.validator.message("subContractor", this.state.subContractorKey, "required")}{" "}</div>
+                      </div>}
 
                   </div>
-                  {/* transmittal type validationdiv */}
-                  <div style={{ color: "#dc3545", marginLeft: "26px" }}>{this.validator.message("transmittalType", this.state.transmittalType, "required")}{" "}</div>
-                </div>
-                <hr />
-                {/* Notes */}
-                <div style={{ marginLeft: "9px" }}>
-                  <TextField label="Notes" multiline placeholder="" value={this.state.notes}
-                // onChange={this.notes} 
-                   style={{ marginLeft: "20px", width: "290px" }} 
-                   />
-                </div>
-                <hr />
-                {/* filesizeDiv */}
-                {this.state.itemsForGrid.length > 0 &&
-                  <div hidden={this.state.fileSizeDiv} style={{ float: "right", color: (Number(this.state.fileSize) >= 25) ? "Red" : "Green" }}>Size : [{(this.state.fileSize < 1) ? this.state.fileSize + " MB" : this.state.fileSize + " MB"}]</div>
-                }
-                {/* project documents */}
-                <div style={{ padding: "12px 0 12px 12px" }}>
-                  <div style={{ display: "block" }}>
-                    <div hidden={this.state.documentSelectedDiv} style={{ fontWeight: "bold", color: "Red" }}> {this.state.documentSelect}</div>
-                    <Label>Project Documents</Label> 
-                    <Select
-                      placeholder="Select Project Documents"
-                      isMulti={false}
-                      options={this.state.searchDocuments}
-                       onChange={this._onDocumentClick.bind(this)}
-                      isSearchable={true}
-                      value={this.state.projectDocumentSelectKey}
-                      maxMenuHeight={150}
+                  <div style={{ color: "#dc3545" }}>{this.validator.message("transmitTo", this.state.transmitToKey, "required")}{" "}</div>
+                  <hr />
+                  <div >
+                    <div style={{ marginBottom: "10px" }} className={styles.borderForToCC}>
+                      <span className={styles.span} />
+                      <div style={{ width: "97%", display: this.state.divForToAndCCSearch }}>
+                        <label style={{ fontWeight: "bold", }}>To</label>
+                        <MultiSelect options={this.state.contactsForSearch} value={this.state.selectedContactsToName}
+                          onChange={this.setSelectedContactsTo}
+                          labelledBy="To" hasSelectAll={true} />
+                        <div style={{ color: "#dc3545" }}>{this.validator.message("selectedContactsTo", this.state.selectedContactsTo, "required")}{" "}</div>
+                      </div>
+                      <div style={{ width: "195%", display: this.state.divForToAndCC }}>
+                        <Dropdown
+                          placeholder="Select To contacts"
+                          label="To"
+                          defaultSelectedKeys={this.state.selectedContactsTo1}
+                          multiSelect
+                          multiSelectDelimiter={","}
+                          options={this.state.contacts}
+                          styles={dropdownStyles}
+                          //onChange={this._onDrpdwnCntact}
+                          title="To"
+                        />
+                        <div style={{ color: "#dc3545" }}>{this.validator.message("selectedContactsTo", this.state.selectedContactsTo, "required")}{" "}</div>
+                      </div>
+                      <span className={styles.span} />
+                      <div style={{ width: "97%", display: this.state.divForToAndCCSearch }}>
+                        <label style={{ fontWeight: "bold", }}>CC</label>
+                        <MultiSelect options={this.state.contactsForSearch} value={this.state.selectedContactsCCName}
+                          onChange={this.setSelectedContactsCC}
+                          labelledBy="CC" hasSelectAll={true} />
+                      </div>
+                      <div style={{ width: "195%", display: this.state.divForToAndCC }}>
+                        <Dropdown
+                          placeholder="Select CC contacts"
+                          label="CC "
+                          defaultSelectedKeys={this.state.selectedContactsToCCRebind}
+                          multiSelect
+                          multiSelectDelimiter={","}
+                          options={this.state.contacts}
+                          styles={dropdownStyles}
+                        // onChange={this._onDrpdwnCCContact}
+                        />
+                      </div>
+                      <div style={{ width: "98%", fontWeight: "bold" }}>
+                        <PeoplePicker
+                          context={this.props.context}
+                          titleText="Internal CC"
+                          personSelectionLimit={20}
+                          groupName={""} // Leave this blank in case you want to filter from all users
+                          showtooltip={true}
+                          required={true}
+                          disabled={false}
+                          ensureUser={true}
+                          onChange={(items) => this._selectedInternalCCContacts(items)}
+                          principalTypes={[PrincipalType.User]}
+                          resolveDelay={1000}
+                          defaultSelectedUsers={this.state.internalCCContactsDisplayName} />
+                      </div>
+                    </div>
+                  </div>
+                  {/* choice groups */}
+                  <div  >
+                    <div style={{ display: "flex" }}>
+                      <div style={{ marginLeft: "26px", marginRight: "15px", display: this.state.transmitTypeForDocument }}>
+                        <ChoiceGroup options={options}
+                          onChange={this._onTransmitType}
+                          label="Select any" required={true} defaultSelectedKey={'Document'} disabled={true} />
+                      </div>
+                      <div style={{ marginLeft: "26px", marginRight: "15px", display: this.state.transmitTypeForLetter }}>
+                        <ChoiceGroup options={options}
+                          onChange={this._onTransmitType}
+                          label="Select any" required={true} defaultSelectedKey={'Letter'} disabled={true} />
+                      </div>
+                      <div style={{ marginLeft: "26px", marginRight: "15px", display: this.state.transmitTypeForDefault }}>
+                        <ChoiceGroup options={options}
+                          onChange={this._onTransmitType}
+                          label="Select any" required={true} />
+                      </div>
+                      <div style={{ marginLeft: "150px", marginTop: "9px" }}>
+                        <Label>Check if cover letter needed</Label>
+                        <div className={styles.mt1}><Checkbox label="Cover Letter" title="Check if cover letter needed or not."
+                          onChange={this._coverLetterNeeded}
+                          checked={this.state.coverLetterNeeded} /></div>
+                      </div>
+                      <div style={{ marginLeft: "90px", marginTop: "9px" }}>
+                        <Label>Select email type</Label>
+                        <div className={styles.mt1}><Checkbox label="Send and Receive as shared folder"
+                          onChange={this._onSendAsSharedFolder}
+                          checked={this.state.sendAsSharedFolder} /></div>
+                        <div className={styles.mt1} style={{ display: this.state.sendAsMultipleEmailCheckBoxDiv }}><Checkbox label="Send as multiple emails"
+                          onChange={this._onSendAsMultipleFolder}
+                          checked={this.state.sendAsMultipleFolder} /></div>
+                      </div>
+
+                    </div>
+                    {/* transmittal type validationdiv */}
+                    <div style={{ color: "#dc3545", marginLeft: "26px" }}>{this.validator.message("transmittalType", this.state.transmittalType, "required")}{" "}</div>
+                  </div>
+                  <hr />
+                  {/* Notes */}
+                  <div style={{ marginLeft: "9px" }}>
+                    <TextField label="Notes" multiline placeholder="" value={this.state.notes}
+                      // onChange={this.notes} 
+                      style={{ marginLeft: "20px", width: "290px" }}
                     />
-                    <div style={{ color: "#dc3545", marginLeft: "123px" }}>
-                      {this.validator.message("projectDocuments", this.state.projectDocumentSelectKey, "required")}{" "}
-                    </div>
                   </div>
-                </div>
-                <div style={{ display: "flex" }}>
-                  <div style={{ padding: "8px 0px 0 11px" }}>
-                    <div style={{ width: "100%" }}>
-                      <Dropdown id="t3"
-                        selectedKey={this.state.transmitForKey}
-                        placeholder="Select an option"
-                        options={this.state.transmitForItems}
-                         onChanged={this._drpdwnTransmitFor} 
-                        style={{ width: "350px", marginRight: "8px" }} label="Transmit For" />
-                      <div style={{ color: "#dc3545", marginLeft: "0px" }}>{this.validator.message("transmitForKey", this.state.transmitForKey, "required")}{" "}</div>
-                    </div>
-                    <div style={{ width: "100%" }}>
-                      <DatePicker label="Due Date"
-                        style={{ width: '350px', marginRight: "8px" }}
-                        value={this.state.dueDate}
-                        hidden={this.state.hideDueDate}
-                        onSelectDate={this._dueDatePickerChange}
-                        minDate={this.state.dueDateForBindingApprovalLifeCycle}
-                        placeholder="Select a date..."
-                        ariaLabel="Select a date"
-                        formatDate={this._onFormatDate}
+                  <hr />
+                  {/* filesizeDiv */}
+                  {this.state.itemsForGrid.length > 0 &&
+                    <div hidden={this.state.fileSizeDiv} style={{ float: "right", color: (Number(this.state.fileSize) >= 25) ? "Red" : "Green" }}>Size : [{(this.state.fileSize < 1) ? this.state.fileSize + " MB" : this.state.fileSize + " MB"}]</div>
+                  }
+                  {/* project documents */}
+                  <div style={{ padding: "12px 0 12px 12px" }}>
+                    <div style={{ display: "block" }}>
+                      <div hidden={this.state.documentSelectedDiv} style={{ fontWeight: "bold", color: "Red" }}> {this.state.documentSelect}</div>
+                      <Label>Project Documents</Label>
+                      <MultiSelect
+                        options={this.state.searchDocuments}
+                        value={this.state.selectedDocuments}
+                        onChange={this.setSelectedDocuments}
+                        labelledBy="Select"
+                        hasSelectAll={true}
                       />
+                      <div style={{ color: "#dc3545", marginLeft: "123px" }}>
+                        {this.validator.message("projectDocuments", this.state.projectDocumentSelectKey, "required")}{" "}
+                      </div>
                     </div>
                   </div>
-                  <div style={{ padding: "8px 0px 0px 11px", width: "80%" }}>
-                    <TextField autoComplete="off" label="Comments" multiline placeholder="" value={this.state.comments} 
-                   // onChange={this.onCommentChange} 
-                    style={{ height: "92px", }} />
-                  </div>
-                  <div hidden={this.state.hideGridAddButton}>
-                    <i className={styles['icon-145']} aria-hidden="true"> <IconButton iconProps={AddIcon} title="Add" ariaLabel="Delete" onClick={this._showProjectDocumentGrid} style={{ padding: "43px 0px 0px 10px", display: this.state.hideButtonAfterSubmit }} /></i>
-                  </div>
-                </div>
-                {/* projectDocumentGrid */}
-                {this.state.itemsForGrid.length > 0 &&
-                  <table className={styles.tableModal} hidden={this.state.showGrid} style={{ width: "100%" }}>
-                    <tr style={{ background: "#f4f4f4" }}>
-                      <th style={{ padding: "5px 10px" }} >Slno</th>
-                      {/* <th style={{ padding: "5px 10px" }}>Doc Id</th> */}
-                      <th style={{ padding: "5px 10px" }}>Document Name</th>
-                      <th style={{ padding: "5px 10px" }}>Revision No</th>
-                      <th style={{ padding: "5px 10px", display: (this.state.transmitTo === "Customer") ? "" : "none" }}>Customer Document No</th>
-                      <th style={{ padding: "5px 10px", display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>SubContractor Document No</th>
-                      <th style={{ padding: "5px 10px", display: (this.state.transmitTo === "Sub-Contractor") ? "none" : "none" }}>Acceptance Code</th>
-                      <th style={{ padding: "5px 10px" }}>Size (in MB)</th>
-                      <th style={{ padding: "5px 10px" }}>Transmit For</th>
-                      <th style={{ padding: "5px 10px" }}>Due Date</th>
-                      <th style={{ padding: "5px 10px" }}>Comments</th>
-                      <th style={{ padding: "5px 10px", display: this.state.hideButtonAfterSubmit }}>Delete</th>
-                    </tr>
-                    {this.state.itemsForGrid.map((items, key) => {
-                      return (
-                        <tr style={{ borderBottom: "1px solid #f4f4f4" }}>
-                          <td style={{ padding: "5px 10px" }}>{key + 1}</td>
-                          <td style={{ padding: "5px 10px" }}>{items.documentName} </td>
-                          <td style={{ padding: "5px 10px" }}>{items.revision} </td>
-                          <td style={{ padding: "5px 10px", display: (this.state.transmitTo === "Customer") ? "" : "none" }}>{items.customerDocumentNo} </td>
-                          <td style={{ padding: "5px 10px", display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>{items.subcontractorDocumentNo} </td>
-                          <td style={{ padding: "5px 10px", display: (this.state.transmitTo === "Sub-Contractor") ? "none" : "none" }}>{items.acceptanceCodeTitle}</td>
-                          <td style={{ padding: "5px 10px" }}>{items.fileSizeInMB}</td>
-                          <td style={{ padding: "5px 10px" }}>{items.transmitFor} </td>
-                          <td style={{ padding: "5px 10px" }}>{items.DueDate}</td>
-                          <td style={{ padding: "5px 10px" }}>{items.comments}</td>
-                          <td style={{ padding: "5px 10px", display: this.state.hideButtonAfterSubmit }}><IconButton iconProps={DeleteIcon} title="Delete" ariaLabel="Delete" onClick={() => this._openDeleteConfirmation(items, key, "ProjectDocuments")} /></td>
+                  {/* projectDocumentGrid */}
+                  {this.state.itemsForGrid.length > 0 &&
+                    <div style={{ width: '100%', }}>
+                      <table className={styles['custom-table']} hidden={this.state.showGrid}>
+                        <tr style={{ textAlign: "left" }}>
+                          <th >Slno</th>
+                          <th >Document Name</th>
+                          <th >Revision No</th>
+                          <th style={{ display: (this.state.transmitTo === "Customer") ? "" : "none" }}>Customer Document No</th>
+                          <th style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>SubContractor Document No</th>
+                          <th style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "none" : "none" }}>Acceptance Code</th>
+                          <th >Size (in MB)</th>
+                          <th >Transmit For</th>
+                          <th >Due Date</th>
+                          <th >Comments</th>
+                          <th style={{ display: this.state.hideButtonAfterSubmit }}>Delete</th>
                         </tr>
-                      );
-                    })}
-                  </table>
-                }
-                <hr style={{ marginTop: "20px" }} />
-                {/* <Accordion atomic={true}  a>
+                        {this.state.itemsForGrid.map((items, key) => {
+                          return (
+                            <tr key={key} style={{ textAlign: "left" }}>
+                              <td >{key + 1}</td>
+                              <td >{items.documentName} </td>
+                              <td >{items.revision} </td>
+                              <td style={{ display: (this.state.transmitTo === "Customer") ? "" : "none" }}>{items.customerDocumentNo} </td>
+                              <td style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>{items.subcontractorDocumentNo} </td>
+                              <td style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "none" : "none" }}>{items.acceptanceCodeTitle}</td>
+                              <td >{items.fileSizeInMB}</td>
+                              <td >
+                                <Dropdown id={key + "TransmittedFor"}
+                                  selectedKey={items.TransmittedFor}
+                                  placeholder="Select an option"
+                                  options={this.state.transmitForItems}
+                                  onChange={(_, e) => this._drpdwnTransmitFor(key, e, items)}
+                                /> </td>
+                              <td >
+                                <DatePicker
+                                  value={this.state.dueDate}
+                                  hidden={this.state.hideDueDate}
+                                  onSelectDate={this._dueDatePickerChange}
+                                  minDate={this.state.dueDateForBindingApprovalLifeCycle}
+                                  placeholder="Select a date..."
+                                  ariaLabel="Select a date"
+                                  formatDate={this._onFormatDate} /></td>
+                              <td >  <TextField autoComplete="off" label="Comments" multiline
+                                borderless placeholder="" value={this.state.comments}
+                                // onChange={this.onCommentChange} 
+                                style={{ height: "92px", }} /></td>
+                              <td style={{ padding: "5px 10px", display: this.state.hideButtonAfterSubmit }}><IconButton iconProps={DeleteIcon} title="Delete" ariaLabel="Delete" onClick={() => this._openDeleteConfirmation(items, key, "ProjectDocuments")} /></td>
+                            </tr>
+                          );
+                        })}
+                      </table>
+                    </div>
+                  }
+                  <hr style={{ marginTop: "20px" }} />
+                  {/* <Accordion atomic={true}  a>
                   <Accordion title="External Documents" >
                     <div style={{ width: "100%" }}>
                       <div style={{ width: "50%" }}>
@@ -560,225 +544,225 @@ const iconButtonStyles = {
                     </div>
                   </AccordionItem>
                 </Accordion> */}
-                <div hidden={this.state.showExternalGrid} >
-                  <table className={styles.tableModal}  >
-                    <tr style={{ background: "#f4f4f4" }}>
-                      <th style={{ padding: "5px 10px" }}>Slno</th>
-                      <th style={{ padding: "5px 10px" }}>Document Name</th>
-                      <th style={{ padding: "5px 10px" }}>Size (in MB)</th>
-                      <th style={{ padding: "5px 10px" }}>Comments</th>
-                      <th style={{ padding: "5px 10px", display: this.state.hideButtonAfterSubmit }}>Delete</th>
-                    </tr>
-                    {this.state.itemsForExternalGrid.map((items, key) => {
-                      return (
-                        <tr style={{ borderBottom: "1px solid #f4f4f4" }}>
-                          <td style={{ padding: "5px 10px" }}>{key + 1}</td>
-                          <td style={{ padding: "5px 10px" }}>{items.documentName}</td>
-                          <td style={{ padding: "5px 10px" }}>{items.fileSizeInMB}</td>
-                          <td style={{ padding: "5px 10px" }}>{items.externalComments}</td>
-                          <td style={{ padding: "5px 10px", display: this.state.hideButtonAfterSubmit }}><IconButton iconProps={DeleteIcon} title="Delete" ariaLabel="Delete" onClick={() => this._openDeleteConfirmation(items, key, "AdditionalDocuments")} /></td>
-                        </tr>
-                      );
-                    })}
-                  </table>
+                  <div hidden={this.state.showExternalGrid} >
+                    <table className={styles.tableModal}  >
+                      <tr style={{ background: "#f4f4f4" }}>
+                        <th style={{ padding: "5px 10px" }}>Slno</th>
+                        <th style={{ padding: "5px 10px" }}>Document Name</th>
+                        <th style={{ padding: "5px 10px" }}>Size (in MB)</th>
+                        <th style={{ padding: "5px 10px" }}>Comments</th>
+                        <th style={{ padding: "5px 10px", display: this.state.hideButtonAfterSubmit }}>Delete</th>
+                      </tr>
+                      {this.state.itemsForExternalGrid.map((items, key) => {
+                        return (
+                          <tr style={{ borderBottom: "1px solid #f4f4f4" }}>
+                            <td style={{ padding: "5px 10px" }}>{key + 1}</td>
+                            <td style={{ padding: "5px 10px" }}>{items.documentName}</td>
+                            <td style={{ padding: "5px 10px" }}>{items.fileSizeInMB}</td>
+                            <td style={{ padding: "5px 10px" }}>{items.externalComments}</td>
+                            <td style={{ padding: "5px 10px", display: this.state.hideButtonAfterSubmit }}><IconButton iconProps={DeleteIcon} title="Delete" ariaLabel="Delete" onClick={() => this._openDeleteConfirmation(items, key, "AdditionalDocuments")} /></td>
+                          </tr>
+                        );
+                      })}
+                    </table>
+                  </div>
                 </div>
-              </div>
-              <div style={{ display: this.state.normalMsgBar }}>
-                {/* Show Message bar for Notification*/}
-                {this.state.statusMessage.isShowMessage ?
-                  <MessageBar
-                    messageBarType={this.state.statusMessage.messageType}
-                    isMultiline={false}
-                    dismissButtonAriaLabel="Close"
-                  >{this.state.statusMessage.message}</MessageBar>
-                  : ''}
-              </div>
-              <Spinner color="Blue" size={SpinnerSize.large} style={{ display: this.state.spinnerDiv, marginBottom: "10px" }} label={'Transmittal Sending.Please Wait...'} />
-              <div style={{ display: "flex", padding: "10px 0px 12px 2px", float: "right", }}>
-                <PrimaryButton text="Save as draft" style={{ marginLeft: "auto", marginRight: "11px", display: this.state.hideButtonAfterSubmit }}
-                 //onClick={() => this._onSaveAsDraftBtnClick()} 
-                 />
-                <PrimaryButton text="Preview" style={{ marginRight: "11px", marginLeft: "auto" }} 
-               // onClick={this._onPreviewBtnClick} 
-                />
-                <PrimaryButton text="Confirm & Send" style={{ marginRight: "11px", marginLeft: "auto", display: this.state.hideButtonAfterSubmit }} 
-                //onClick={this._confirmAndSendBtnClick}
-                 />
-                <PrimaryButton text="Recall" style={{ marginRight: "11px", marginLeft: "auto", display: this.state.hideUnlockButton }} onClick={this._recallTransmittalConfirmation} />
-                <PrimaryButton text="Cancel" style={{ marginLeft: "auto" }} onClick={this._hideGrid} />
-              </div>
-            </div>
-            <div/>
-            {/* div for preview  */}
-            <div hidden={this.state.previewDiv}>
-              <Modal
-                isOpen={this.state.showReviewModal}
-                onDismiss={this._closeModal}
-                containerClassName={contentStyles.container}>
-                <div style={{ marginLeft: "96%" }}>
-                  <IconButton
-                    iconProps={CancelIcon}
-                    ariaLabel="Close popup modal"
-                    onClick={this._closeModal}
-                    styles={iconButtonStyles}
+                <div style={{ display: this.state.normalMsgBar }}>
+                  {/* Show Message bar for Notification*/}
+                  {this.state.statusMessage.isShowMessage ?
+                    <MessageBar
+                      messageBarType={this.state.statusMessage.messageType}
+                      isMultiline={false}
+                      dismissButtonAriaLabel="Close"
+                    >{this.state.statusMessage.message}</MessageBar>
+                    : ''}
+                </div>
+                <Spinner color="Blue" size={SpinnerSize.large} style={{ display: this.state.spinnerDiv, marginBottom: "10px" }} label={'Transmittal Sending.Please Wait...'} />
+                <div style={{ display: "flex", padding: "10px 0px 12px 2px", float: "right", }}>
+                  <PrimaryButton text="Save as draft" style={{ marginLeft: "auto", marginRight: "11px", display: this.state.hideButtonAfterSubmit }}
+                  //onClick={() => this._onSaveAsDraftBtnClick()} 
                   />
+                  <PrimaryButton text="Preview" style={{ marginRight: "11px", marginLeft: "auto" }}
+                  // onClick={this._onPreviewBtnClick} 
+                  />
+                  <PrimaryButton text="Confirm & Send" style={{ marginRight: "11px", marginLeft: "auto", display: this.state.hideButtonAfterSubmit }}
+                  //onClick={this._confirmAndSendBtnClick}
+                  />
+                  <PrimaryButton text="Recall" style={{ marginRight: "11px", marginLeft: "auto", display: this.state.hideUnlockButton }} onClick={this._recallTransmittalConfirmation} />
+                  <PrimaryButton text="Cancel" style={{ marginLeft: "auto" }} onClick={this._hideGrid} />
                 </div>
-
-                <div className={styles.wrap} style={{ backgroundColor: this.props.modalBGColor }}>
-                  <div className={styles.borderStyle}><div className={styles.title}>{this.state.projectName}</div></div>
-
-                  <div className={styles.wrapSection}>
-                    <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Transmittal No:&nbsp; </span>{this.state.transmittalNo}</div>
-                    <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Customer Contract No:&nbsp; </span>{this.state.contractNumber}</div>
-                    <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Date: &nbsp;</span>{moment.utc(new Date()).format("DD/MM/YYYY")}</div>
-                    <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Transmit to: &nbsp;</span>{this.state.transmitTo}</div>
-                    <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Transmitted by: &nbsp; </span>{this.props.context.pageContext.user.displayName}</div>
-                    <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Send to:&nbsp; </span>{this.state.selectedContactsToDisplayName}</div>
-                    <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Send CC: &nbsp;</span>{this.state.selectedContactsCCDisplayName}</div>
-                    <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Internal CC: &nbsp;</span>{this.state.internalCCContactsDisplayNameForPreview}</div>
-                    <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Total no of files:&nbsp; </span>{this.state.totalNoOfFiles}</div>
-                    <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Total Size:&nbsp; </span>{this.state.fileSize}MB</div>
-                    <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Cover Letter Attached:&nbsp; </span>{this.state.coverLetterNeeded === true ? "Yes" : "No"}</div>
-                    <div className={styles.wrapIitem} style={{ width: "100%", marginTop: "15px" }}><span>Note:&nbsp; </span>{this.state.notes}</div>
+              </div>
+              <div />
+              {/* div for preview  */}
+              <div hidden={this.state.previewDiv}>
+                <Modal
+                  isOpen={this.state.showReviewModal}
+                  onDismiss={this._closeModal}
+                  containerClassName={contentStyles.container}>
+                  <div style={{ marginLeft: "96%" }}>
+                    <IconButton
+                      iconProps={CancelIcon}
+                      ariaLabel="Close popup modal"
+                      onClick={this._closeModal}
+                      styles={iconButtonStyles}
+                    />
                   </div>
 
-                  <div className={styles.wrapTable}>
-                    <div className={styles.w100}><div className={styles.subtitle}>Project Documents</div></div>
-                    <div className={styles.overflow}>
-                      <div className={styles.divTable}>
-                        <div className={styles.divTableBody}>
-                          <div className={styles.divTableRow}>
-                            <div className={styles.divTableCell}>Slno</div>
-                            <div className={styles.divTableCell}>Document Name</div>
-                            <div className={styles.divTableCell}>Revision</div>
-                            <th className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Customer") ? "" : "none" }}>Customer Document No</th>
-                            <th className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>SubContractor Document No</th>
-                            <div className={styles.divTableCell} style={{ display: this.state.transmitTo === "Sub-Contractor" ? "none" : "none" }}>AcceptanceCode</div>
-                            <div className={styles.divTableCell}>Size(in MB)</div>
-                            <div className={styles.divTableCell}>Transmit for</div>
-                            <div className={styles.divTableCell}>Due date</div>
-                            <div className={styles.divTableCell}>Comments</div>
+                  <div className={styles.wrap} style={{ backgroundColor: this.props.modalBGColor }}>
+                    <div className={styles.borderStyle}><div className={styles.title}>{this.state.projectName}</div></div>
+
+                    <div className={styles.wrapSection}>
+                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Transmittal No:&nbsp; </span>{this.state.transmittalNo}</div>
+                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Customer Contract No:&nbsp; </span>{this.state.contractNumber}</div>
+                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Date: &nbsp;</span>{moment.utc(new Date()).format("DD/MM/YYYY")}</div>
+                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Transmit to: &nbsp;</span>{this.state.transmitTo}</div>
+                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Transmitted by: &nbsp; </span>{this.props.context.pageContext.user.displayName}</div>
+                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Send to:&nbsp; </span>{this.state.selectedContactsToDisplayName}</div>
+                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Send CC: &nbsp;</span>{this.state.selectedContactsCCDisplayName}</div>
+                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Internal CC: &nbsp;</span>{this.state.internalCCContactsDisplayNameForPreview}</div>
+                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Total no of files:&nbsp; </span>{this.state.totalNoOfFiles}</div>
+                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Total Size:&nbsp; </span>{this.state.fileSize}MB</div>
+                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Cover Letter Attached:&nbsp; </span>{this.state.coverLetterNeeded === true ? "Yes" : "No"}</div>
+                      <div className={styles.wrapIitem} style={{ width: "100%", marginTop: "15px" }}><span>Note:&nbsp; </span>{this.state.notes}</div>
+                    </div>
+
+                    <div className={styles.wrapTable}>
+                      <div className={styles.w100}><div className={styles.subtitle}>Project Documents</div></div>
+                      <div className={styles.overflow}>
+                        <div className={styles.divTable}>
+                          <div className={styles.divTableBody}>
+                            <div className={styles.divTableRow}>
+                              <div className={styles.divTableCell}>Slno</div>
+                              <div className={styles.divTableCell}>Document Name</div>
+                              <div className={styles.divTableCell}>Revision</div>
+                              <th className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Customer") ? "" : "none" }}>Customer Document No</th>
+                              <th className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>SubContractor Document No</th>
+                              <div className={styles.divTableCell} style={{ display: this.state.transmitTo === "Sub-Contractor" ? "none" : "none" }}>AcceptanceCode</div>
+                              <div className={styles.divTableCell}>Size(in MB)</div>
+                              <div className={styles.divTableCell}>Transmit for</div>
+                              <div className={styles.divTableCell}>Due date</div>
+                              <div className={styles.divTableCell}>Comments</div>
+                            </div>
+                            {this.state.itemsForGrid.map((items, key) => {
+                              return (
+                                <div className={styles.divTableRow}>
+                                  <div className={styles.divTableCell}>&nbsp;{key + 1}</div>
+                                  <div className={styles.divTableCell}>&nbsp;{items.documentName}</div>
+                                  <div className={styles.divTableCell}>&nbsp;{items.revision}</div>
+                                  <td className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Customer") ? "" : "none" }}>{items.customerDocumentNo} </td>
+                                  <td className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>{items.subcontractorDocumentNo} </td>
+                                  <div className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "none" : "none" }}>&nbsp;{items.acceptanceCodeTitle}</div>
+                                  <div className={styles.divTableCell}>&nbsp;{items.fileSizeInMB}</div>
+                                  <div className={styles.divTableCell}>&nbsp;{items.transmitFor}</div>
+                                  <div className={styles.divTableCell}>&nbsp;{items.DueDate}</div>
+                                  <div className={styles.divTableCell}>&nbsp;{items.comments}</div>
+                                </div>
+                              );
+                            })}
                           </div>
-                          {this.state.itemsForGrid.map((items, key) => {
-                            return (
-                              <div className={styles.divTableRow}>
-                                <div className={styles.divTableCell}>&nbsp;{key + 1}</div>
-                                <div className={styles.divTableCell}>&nbsp;{items.documentName}</div>
-                                <div className={styles.divTableCell}>&nbsp;{items.revision}</div>
-                                <td className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Customer") ? "" : "none" }}>{items.customerDocumentNo} </td>
-                                <td className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>{items.subcontractorDocumentNo} </td>
-                                <div className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Sub-Contractor" )? "none" : "none" }}>&nbsp;{items.acceptanceCodeTitle}</div>
-                                <div className={styles.divTableCell}>&nbsp;{items.fileSizeInMB}</div>
-                                <div className={styles.divTableCell}>&nbsp;{items.transmitFor}</div>
-                                <div className={styles.divTableCell}>&nbsp;{items.DueDate}</div>
-                                <div className={styles.divTableCell}>&nbsp;{items.comments}</div>
-                              </div>
-                            );
-                          })}
                         </div>
                       </div>
+                      {/* <div className={styles.textright} style={{width: "100%",marginTop:"0px"}}>Total Size: <span>[Size]</span></div> */}
                     </div>
-                    {/* <div className={styles.textright} style={{width: "100%",marginTop:"0px"}}>Total Size: <span>[Size]</span></div> */}
-                  </div>
-                  <div className={styles.wrapTable}>
-                    <div className={styles.w100}><div className={styles.subtitle}>Additional Documents</div></div>
-                    <div className={styles.overflow}>
-                      <div className={styles.divTable}>
-                        <div className={styles.divTableBody}>
-                          <div className={styles.divTableRow}>
-                            <div className={styles.divTableCell}>Slno</div>
-                            <div className={styles.divTableCell}>Document Name</div>
-                            <div className={styles.divTableCell}>Size(in MB)</div>
-                            <div className={styles.divTableCell}>Comments</div>
+                    <div className={styles.wrapTable}>
+                      <div className={styles.w100}><div className={styles.subtitle}>Additional Documents</div></div>
+                      <div className={styles.overflow}>
+                        <div className={styles.divTable}>
+                          <div className={styles.divTableBody}>
+                            <div className={styles.divTableRow}>
+                              <div className={styles.divTableCell}>Slno</div>
+                              <div className={styles.divTableCell}>Document Name</div>
+                              <div className={styles.divTableCell}>Size(in MB)</div>
+                              <div className={styles.divTableCell}>Comments</div>
+                            </div>
+                            {this.state.itemsForExternalGrid.map((items, key) => {
+                              return (
+                                <div className={styles.divTableRow}>
+                                  <div className={styles.divTableCell}>&nbsp;{key + 1}</div>
+                                  <div className={styles.divTableCell}>&nbsp;{items.documentName}</div>
+                                  <div className={styles.divTableCell}>&nbsp;{items.fileSizeInMB}</div>
+                                  <div className={styles.divTableCell}>&nbsp;{items.externalComments}</div>
+                                </div>
+                              );
+                            })}
                           </div>
-                          {this.state.itemsForExternalGrid.map((items, key) => {
-                            return (
-                              <div className={styles.divTableRow}>
-                                <div className={styles.divTableCell}>&nbsp;{key + 1}</div>
-                                <div className={styles.divTableCell}>&nbsp;{items.documentName}</div>
-                                <div className={styles.divTableCell}>&nbsp;{items.fileSizeInMB}</div>
-                                <div className={styles.divTableCell}>&nbsp;{items.externalComments}</div>
-                              </div>
-                            );
-                          })}
                         </div>
                       </div>
+                      <div className={styles.textright} style={{ width: "100%", marginTop: "0px" }}><span>Total Size: &nbsp;</span>{this.state.fileSize}MB</div>
                     </div>
-                    <div className={styles.textright} style={{ width: "100%", marginTop: "0px" }}><span>Total Size: &nbsp;</span>{this.state.fileSize}MB</div>
-                  </div>
 
+                  </div>
+                </Modal>
+              </div>
+              {/* Delete Dialog Box */}
+              <div style={{ display: this.state.deleteConfirmation }}>
+                <div>
+                  <Dialog
+                    hidden={this.state.confirmDeleteDialog}
+                    dialogContentProps={this.dialogContentProps}
+                    onDismiss={this._dialogCloseButton}
+                    styles={this.dialogStyles}
+                    modalProps={this.modalProps}>
+                    <DialogFooter>
+                      <PrimaryButton onClick={() => this._confirmDeleteItem(this.state.tempDocIndexIDForDelete, "item", this.keyForDelete)} text="Yes" />
+                      <DefaultButton onClick={this._confirmNoCancel} text="No" />
+                    </DialogFooter>
+                  </Dialog>
                 </div>
-              </Modal>
-            </div>
-            {/* Delete Dialog Box */}
-            <div style={{ display: this.state.deleteConfirmation }}>
-              <div>
-                <Dialog
-                  hidden={this.state.confirmDeleteDialog}
-                  dialogContentProps={this.dialogContentProps}
-                  onDismiss={this._dialogCloseButton}
-                  styles={this.dialogStyles}
-                  modalProps={this.modalProps}>
-                  <DialogFooter>
-                    <PrimaryButton onClick={() => this._confirmDeleteItem(this.state.tempDocIndexIDForDelete, "item", this.keyForDelete)} text="Yes" />
-                    <DefaultButton onClick={this._confirmNoCancel} text="No" />
-                  </DialogFooter>
-                </Dialog>
+              </div>
+              {/* Recall Dialog Box */}
+              <div style={{ display: this.state.recallConfirmMsgDiv }}>
+                <div>
+                  <Dialog
+                    hidden={this.state.recallConfirmMsg}
+                    dialogContentProps={this.dialogContentRecallProps}
+                    onDismiss={this._dialogCloseButton}
+                    styles={this.dialogStyles}
+                    modalProps={this.modalProps}>
+                    <DialogFooter>
+                      <PrimaryButton
+                        //onClick={this._recallSubmit}
+                        text="Yes" />
+                      <DefaultButton onClick={this._confirmNoCancel} text="No" />
+                    </DialogFooter>
+                  </Dialog>
+                </div>
+              </div>
+              {/* Cancel Dialog Box */}
+              <div style={{ display: this.state.cancelConfirmMsg }}>
+                <div>
+                  <Dialog
+                    hidden={this.state.confirmCancelDialog}
+                    dialogContentProps={this.dialogCancelContentProps}
+                    onDismiss={this._dialogCloseButton}
+                    styles={this.dialogStyles}
+                    modalProps={this.modalProps}>
+                    <DialogFooter>
+                      <PrimaryButton onClick={() => this._cancelConfirmYes()} text="Yes" />
+                      <DefaultButton onClick={this._confirmNoCancel} text="No" />
+                    </DialogFooter>
+                  </Dialog>
+                </div>
               </div>
             </div>
-            {/* Recall Dialog Box */}
-            <div style={{ display: this.state.recallConfirmMsgDiv }}>
-              <div>
-                <Dialog
-                  hidden={this.state.recallConfirmMsg}
-                  dialogContentProps={this.dialogContentRecallProps}
-                  onDismiss={this._dialogCloseButton}
-                  styles={this.dialogStyles}
-                  modalProps={this.modalProps}>
-                  <DialogFooter>
-                    <PrimaryButton 
-                    //onClick={this._recallSubmit}
-                     text="Yes" />
-                    <DefaultButton onClick={this._confirmNoCancel} text="No" />
-                  </DialogFooter>
-                </Dialog>
-              </div>
+            <div style={{ display: this.state.accessDeniedMsgBar }}>
+              {/* Show Message bar for Notification*/}
+              {this.state.statusMessage.isShowMessage ?
+                <MessageBar
+                  messageBarType={this.state.statusMessage.messageType}
+                  isMultiline={false}
+                  dismissButtonAriaLabel="Close"
+                >{this.state.statusMessage.message}</MessageBar>
+                : ''}
             </div>
-            {/* Cancel Dialog Box */}
-            <div style={{ display: this.state.cancelConfirmMsg }}>
-              <div>
-                <Dialog
-                  hidden={this.state.confirmCancelDialog}
-                  dialogContentProps={this.dialogCancelContentProps}
-                  onDismiss={this._dialogCloseButton}
-                  styles={this.dialogStyles}
-                  modalProps={this.modalProps}>
-                  <DialogFooter>
-                    <PrimaryButton onClick={() => this._cancelConfirmYes()} text="Yes" />
-                    <DefaultButton onClick={this._confirmNoCancel} text="No" />
-                  </DialogFooter>
-                </Dialog>
-              </div>
-            </div>
-          </div>
-          <div style={{ display: this.state.accessDeniedMsgBar }}>
-            {/* Show Message bar for Notification*/}
-            {this.state.statusMessage.isShowMessage ?
-              <MessageBar
-                messageBarType={this.state.statusMessage.messageType}
-                isMultiline={false}
-                dismissButtonAriaLabel="Close"
-              >{this.state.statusMessage.message}</MessageBar>
-              : ''}
-          </div>
+          </div >
         </div >
-      </div >
-    
-      
+
+
       </section>
     );
   }
-  public componentWillMount = () => {
+  public UNSAFE_componentWillMount = () => {
     this.validator = new SimpleReactValidator({
       messages: {
         required: "Please enter mandatory fields"
@@ -786,13 +770,97 @@ const iconButtonStyles = {
     });
   }
   public async componentDidMount() {
+    await this.projectInformation();
     this._userMessageSettings();
     this._currentUser();
-    await this.projectInformation();
     this._transmitForBind();
     this._queryParamGetting();
-    //this._LAUrlGetting();
+    // //this._LAUrlGetting();    
+    this._loadPublishDocuments();
   }
+  // document selection
+  private setSelectedDocuments = async (option) => {
+
+    await this.setState({
+      projectDocumentSelectKey: option.value,
+      documentSelectedDiv: true,
+      hideGridAddButton: false,
+      selectedDocuments: option,
+    });
+    console.log("Selected Documents ID", this.state.selectedDocuments)
+
+    if (this.state.itemsForGrid.length <= 0) {
+      this.state.selectedDocuments.forEach(selectedDocuments => {
+        this.state.tempArrayForPublishedDocumentGrid.push({
+          publishDoumentlibraryID: selectedDocuments.value,
+          documentIndexId: selectedDocuments.DocumentIndexId,
+          DueDate: moment(this.state.dueDate).format("DD/MM/YYYY"),
+          dueDate: this.state.dueDate,
+          comments: this.state.comments,
+          revision: selectedDocuments.Revision,
+          documentID: selectedDocuments.DocumentID,
+          documentName: selectedDocuments.DocumentName,
+          fileSize: (((selectedDocuments.FileSizeDisplay / 1024)).toFixed(2)),
+          fileSizeInMB: (Number((selectedDocuments.FileSizeDisplay / 1024) * 0.0009765625).toFixed(2)),
+          transmitFor: this.state.transmitFor,
+          approvalRequired: this.state.approvalRequired,
+          transmitForKey: this.state.transmitForKey,
+          temporary: "",
+          customerDocumentNo: selectedDocuments.CustomerDocumentNo,
+        });
+      });
+      console.log("temporaryGrid", this.state.tempArrayForPublishedDocumentGrid);
+      this.setState(prevState => ({
+        itemsForGrid: [...this.state.tempArrayForPublishedDocumentGrid],
+      }));
+      this.setState({
+        showGrid: false,
+        projectDocumentSelectKey: "",
+        fileSizeDiv: false,
+        searchText: "",
+      });
+    }
+    else {
+      let Noduplicates = [];
+      this.state.itemsForGrid.forEach(gridDocs => {
+        Noduplicates = this.state.selectedDocuments.filter(SD => SD.value !== gridDocs.publishDoumentlibraryID);
+      });
+      Noduplicates.forEach(array => {
+        this.state.tempArrayForPublishedDocumentGrid.push({
+          publishDoumentlibraryID: array.value,
+          documentIndexId: array.DocumentIndexId,
+          DueDate: moment(this.state.dueDate).format("DD/MM/YYYY"),
+          dueDate: this.state.dueDate,
+          comments: this.state.comments,
+          revision: array.Revision,
+          documentID: array.DocumentID,
+          documentName: array.DocumentName,
+          fileSize: (((array.FileSizeDisplay / 1024)).toFixed(2)),
+          fileSizeInMB: (Number((array.FileSizeDisplay / 1024) * 0.0009765625).toFixed(2)),
+          transmitFor: this.state.transmitFor,
+          approvalRequired: this.state.approvalRequired,
+          transmitForKey: this.state.transmitForKey,
+          temporary: "",
+          customerDocumentNo: array.CustomerDocumentNo,
+        });
+      })
+      console.log("temporaryGrid", this.state.tempArrayForPublishedDocumentGrid);
+      this.setState(prevState => ({
+        itemsForGrid: [...this.state.tempArrayForPublishedDocumentGrid],
+      }));
+      this.setState({
+        showGrid: false,
+        projectDocumentSelectKey: "",
+        fileSizeDiv: false,
+        searchText: "",
+      });
+
+
+    }
+    //}
+  }
+
+
 
   private async _userMessageSettings() {
     // const userMessageSettings: any[] = await this.reqWeb.getList("/sites/" + this.props.hubSite + "/Lists/" + this.props.userMessageSettings)
@@ -802,7 +870,7 @@ const iconButtonStyles = {
     //     this.setState({ outboundRecallConfirmation: userMessageSettings[i].Message });
     //   }
     // }
-  }  
+  }
   //for query param gettings
   private _queryParamGetting() {
     let params = new URLSearchParams(window.location.search);
@@ -815,7 +883,7 @@ const iconButtonStyles = {
               hideButtonAfterSubmit: "none",
               hideUnlockButton: "none",
             });
-           // this._LAUrlGettingForPermission();
+            // this._LAUrlGettingForPermission();
           }
           else if (transmittalHeaderItems.TransmittalStatus == "Completed") {
             this.setState({
@@ -828,7 +896,7 @@ const iconButtonStyles = {
             divForToAndCC: "",
           });
         });
-    //  this.bindOutboundTransmittalSavedData(this.transmittalID);
+      //  this.bindOutboundTransmittalSavedData(this.transmittalID);
       this.setState({
         transmittalNo: "",
         webpartView: "",
@@ -1264,9 +1332,9 @@ const iconButtonStyles = {
       coverLetterNeeded: false
     });
     if (option.text === "Customer") {
-      this._Service.getHubItemsWithFilter( this.props.contactListName,"CustomerOrVendorID eq '" + this.state.customerId + "'  and  LegalEntityId eq '" + this.state.legalId + "'",this.props.hubSiteUrl)
+      this._Service.getHubItemsWithFilter(this.props.contactListName, "CustomerOrVendorID eq '" + this.state.customerId + "'  and  LegalEntityId eq '" + this.state.legalId + "'", this.props.hubSiteUrl)
         .then(contacts => {
-          for (var k in contacts) {
+          for (let k in contacts) {
             if (contacts[k].Active === true) {
               const transmitForItemdata = {
                 key: contacts[k].Email,
@@ -1279,17 +1347,16 @@ const iconButtonStyles = {
               customerArray.push(transmitForItemdata);
               customerArraySearch.push(transmitForItemdataSearch);
             }
-          }         
+          }
         });
-            this._loadPublishDocuments();
-            return this.setState({
-              hideCustomer: "",
-              subContractorItems: [],
-              subContractorKey: "",
-              hideSubContractor: "none",
-              contacts: customerArray,
-              contactsForSearch: customerArraySearch
-            });
+      return this.setState({
+        hideCustomer: "",
+        subContractorItems: [],
+        subContractorKey: "",
+        hideSubContractor: "none",
+        contacts: customerArray,
+        contactsForSearch: customerArraySearch
+      });
     }
     else if (option.text === "Sub-Contractor") {
       this.setState({
@@ -1297,7 +1364,7 @@ const iconButtonStyles = {
         documentSelectedDiv: true,
       });
       const subcontractorArray: { value: any; label: any; }[] = [];
-      this._Service.getHubItemsWithFilter( "SubContractorMaster","ProjectId eq '" + this.state.projectNumber + "' and  Title eq '" + this.state.legalId + "'" ,this.props.hubSiteUrl)
+      this._Service.getHubItemsWithFilter("SubContractorMaster", "ProjectId eq '" + this.state.projectNumber + "' and  Title eq '" + this.state.legalId + "'", this.props.hubSiteUrl)
         .then(subcontractor => {
           for (let i = 0; i < subcontractor.length; i++) {
             let subcontractorItemdata = {
@@ -1308,7 +1375,7 @@ const iconButtonStyles = {
             this.setState({
               contacts: subcontractorArray,
             });
-          } this._loadSourceDocuments();
+          }
           return this.setState({
             contacts: [],
             hideSubContractor: "",
@@ -1340,9 +1407,9 @@ const iconButtonStyles = {
       transmittalTypekey: "",
       coverLetterNeeded: false
     });
-    this._Service.getHubItemsWithFilter(this.props.contactListName,"CustomerOrVendorID eq '" + option.value + "' and  LegalEntityId eq '" + this.state.legalId + "' ",this.props.hubSiteUrl)
-        .then(contacts => {
-        for (var k in contacts) {
+    this._Service.getHubItemsWithFilter(this.props.contactListName, "CustomerOrVendorID eq '" + option.value + "' and  LegalEntityId eq '" + this.state.legalId + "' ", this.props.hubSiteUrl)
+      .then(contacts => {
+        for (let k in contacts) {
           if (contacts[k].Active === true) {
             let transmitForItemdata = {
               key: contacts[k].Email,
@@ -1366,16 +1433,21 @@ const iconButtonStyles = {
       });
 
   }
-  public _drpdwnTransmitFor(option: { key: any; text: any }) {
-    this.setState({ transmitForKey: option.key, transmitFor: option.text });
-    const select = "ApprovalRequired,AcceptanceCode";
-    const filter = "Title eq '" + option.text + "'";
-    this._Service.getItemForSelectInLists(this.props.siteUrl, this.props.transmittalCodeSettingsListName, select, filter)
-      .then((transmitfor: { ApprovalRequired: any; }[]) => {
-        this.setState({
-          approvalRequired: transmitfor[0].ApprovalRequired,
-        });
-      });
+  public _drpdwnTransmitFor = async (index, event, item) => {
+    //this.setState({ transmitForKey: (option.key).toString(), transmitFor: option.text });
+    const { itemsForGrid } = this.state;
+    const updatedItems = [...itemsForGrid];
+    updatedItems[index].TransmittedFor = event.text;
+    this.setState({ itemsForGrid: updatedItems });
+
+    // const select = "ApprovalRequired,AcceptanceCode";
+    // const filter = "Title eq '" + option.text + "'";
+    // this._Service.getItemForSelectInLists(this.props.siteUrl, this.props.transmittalCodeSettingsListName, select, filter)
+    //   .then((transmitfor: { ApprovalRequired: any; }[]) => {
+    //     this.setState({
+    //       approvalRequired: transmitfor[0].ApprovalRequired,
+    //     });
+    //   });
   }
   private _hideGrid() {
     this.setState({
@@ -1413,7 +1485,7 @@ const iconButtonStyles = {
   //   }
   //   this.setState({ externalComments: newText || '' });
   // }
-  
+
   private _closeModal = (): void => {
     this.setState({ showReviewModal: false });
   }
@@ -1494,6 +1566,7 @@ const iconButtonStyles = {
       documentSelectedDiv: true,
       fileSizeDivForRebind: "none",
     });
+
     if (this.state.itemsForGrid.length > 0) {
       let duplicate = this.state.itemsForGrid.filter(a => a.publishDoumentlibraryID === this.state.projectDocumentSelectKey);
       if (duplicate.length !== 0) {
@@ -1506,9 +1579,9 @@ const iconButtonStyles = {
       else {
         if (this.validator.fieldValid("transmitTo") && this.validator.fieldValid("projectDocuments") && this.validator.fieldValid("transmitForKey")) {
           this.validator.hideMessages();
-         // let sizeOfDocument;
+          // let sizeOfDocument;
           if (this.state.transmitTo === "Customer") {
-         // let  sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
+            // let  sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
             // alert((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay/1024).toFixed(3))
             this.state.tempArrayForPublishedDocumentGrid.push({
               publishDoumentlibraryID: this.state.publishDocumentsItemsForGrid[0].ID,
@@ -1568,7 +1641,7 @@ const iconButtonStyles = {
 
           }
           else if (this.state.transmitTo === "Sub-Contractor") {
-           // sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
+            // sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
             // alert((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay/1024).toFixed(3))
             this.state.tempArrayForPublishedDocumentGrid.push({
               publishDoumentlibraryID: this.state.publishDocumentsItemsForGrid[0].ID,
@@ -1638,7 +1711,7 @@ const iconButtonStyles = {
         this.validator.hideMessages();
         //let  sizeOfDocument;
         if (this.state.transmitTo === "Customer") {
-         // sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
+          // sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
           this.state.tempArrayForPublishedDocumentGrid.push({
             publishDoumentlibraryID: this.state.publishDocumentsItemsForGrid[0].ID,
             documentIndexId: this.state.publishDocumentsItemsForGrid[0].DocumentIndex.ID,
@@ -1684,7 +1757,7 @@ const iconButtonStyles = {
           }
         }
         else if (this.state.transmitTo === "Sub-Contractor") {
-         // sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
+          // sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
           // alert((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay/1024).toFixed(3))
           this.state.tempArrayForPublishedDocumentGrid.push({
             publishDoumentlibraryID: this.state.publishDocumentsItemsForGrid[0].ID,
@@ -1781,7 +1854,7 @@ const iconButtonStyles = {
       });
     }
   }
- 
+
   //transmittal id generation
   // public async _trannsmittalIDGeneration() {
   //   let prefix;
@@ -1937,7 +2010,7 @@ const iconButtonStyles = {
     event.preventDefault();
   }
   private handleChange(event: { target: { checked: any; value: any; }; }) {
-    var isChecked = event.target.checked;
+    let isChecked = event.target.checked;
     let item = event.target.value;
 
     this.setState(prevState => ({ checkedItems: prevState.checkedItems.set(item, isChecked) }));
@@ -1953,10 +2026,10 @@ const iconButtonStyles = {
       this.validator.hideMessages();
       console.log(items[key]);
       if (type === "ProjectDocuments") {
-        this.setState({TypeOFDelete : "ProjectDocuments"});
+        this.setState({ TypeOFDelete: "ProjectDocuments" });
         this.keyForDelete = key;
       } else if (type === "AdditionalDocuments") {
-        this.setState({TypeOFDelete : "AdditionalDocuments"});
+        this.setState({ TypeOFDelete: "AdditionalDocuments" });
         this.keyForDelete = key;
       }
     }
@@ -1970,14 +2043,14 @@ const iconButtonStyles = {
       console.log(items[key]);
       if (type === "ProjectDocuments") {
         // alert(items.outboundDetailsID);
-        this.setState({TypeOFDelete : "ProjectDocuments"});
+        this.setState({ TypeOFDelete: "ProjectDocuments" });
         this.keyForDelete = key;
         this.setState({
           tempDocIndexIDForDelete: items.outboundDetailsID,
         });
       } else if (type === "AdditionalDocuments") {
         // alert("additionalid" + items.additionalDocumentID);
-        this.setState({TypeOFDelete : "AdditionalDocuments"});
+        this.setState({ TypeOFDelete: "AdditionalDocuments" });
         this.keyForDelete = key;
         this.setState({
           tempDocIndexIDForDelete: items.additionalDocumentID,
@@ -1987,6 +2060,7 @@ const iconButtonStyles = {
 
   }
   private _confirmDeleteItem = async (docID: string | number, items: string, key: string | number) => {
+    console.log(key)
   }
   //deleting
   public itemDeleteFromGrid(items: { fileSize: any; }, key: number) {
@@ -2230,13 +2304,14 @@ const iconButtonStyles = {
     let getSelectedInternalID = [];
     let getSelectedInternalDisplayName = [];
     let getSelectedInternalEmailID = [];
-    for (let item in items) {
+    items.forEach(item => {
       getSelectedInternalID.push(items[item].id);
       getSelectedInternalDisplayName.push(items[item].text);
       getSelectedInternalEmailID.push(items[item].secondaryText);
-    }
-    var displayInternalName = getSelectedInternalDisplayName.toString();
-    var InternalEmailID = getSelectedInternalEmailID.toString();
+    })
+
+    let displayInternalName = getSelectedInternalDisplayName.toString();
+    let InternalEmailID = getSelectedInternalEmailID.toString();
     let InternalEmailIDSemicolonAttached = replaceString(InternalEmailID, ',', ';');
     this.setState({ internalCCContacts: getSelectedInternalID, internalCCContactsDisplayNameForPreview: displayInternalName, internalContactsEmail: InternalEmailIDSemicolonAttached });
   }
@@ -2272,7 +2347,7 @@ const iconButtonStyles = {
   //   let replaceRequester = replaceString(Body, '[Sir/Madam],', name);
   //   let replaceBody = replaceString(replaceRequester, '[DocumentName]', documentName);
   //   let replacelink = replaceString(replaceBody, '[TransmittalNo]', this.state.transmittalNo);
-   
+
   //   let FinalBody = replacelink;
   //   if (email) {
   //     //Create Body for Email  
@@ -2310,7 +2385,7 @@ const iconButtonStyles = {
     console.log(e.target.value);
     console.log(e.currentTarget.value);
     let myfile = (document.querySelector("#newfile") as HTMLInputElement).files[0];
-    var splitted = myfile.name.split(".");
+    let splitted = myfile.name.split(".");
     console.log(splitted);
     console.log(splitted.length);
     console.log(splitted[splitted.length - 1]);
@@ -2396,28 +2471,28 @@ const iconButtonStyles = {
     await this._Service.getListItems(this.props.siteUrl, this.props.projectInformationListName)
       .then((projectInformation: any[]) => {
         if (projectInformation.length > 0) {
-          for (let k in projectInformation) {
-            if (projectInformation[k].Key === "ProjectName") {
+          projectInformation.forEach(PI => {
+            if (PI.Key === "ProjectName") {
               this.setState({
-                projectName: projectInformation[k].Title,
+                projectName: PI.Title,
               });
             }
-            if (projectInformation[k].Key === "Customer") {
+            if (PI.Key === "Customer") {
               this.setState({
-                customerName: projectInformation[k].Title,
+                customerName: PI.Title,
               });
             }
-            if (projectInformation[k].Key === "ContractNumber") {
+            if (PI.Key === "ContractNumber") {
               this.setState({
-                contractNumber: projectInformation[k].Title,
+                contractNumber: PI.Title,
               });
             }
-            if (projectInformation[k].Key === "ApprovalCycle") {
+            if (PI.Key === "ApprovalCycle") {
               this.setState({
-                approvalLifeCycle: projectInformation[k].Title,
+                approvalLifeCycle: PI.Title,
               });
               const dueDate = new Date();
-              const days = projectInformation[k].Title;
+              const days = PI.Title;
               console.log(Number(days));
               dueDate.setDate(dueDate.getDate() + Number(days));
               this.setState({
@@ -2426,22 +2501,23 @@ const iconButtonStyles = {
                 dueDateForBindingApprovalLifeCycle: dueDate,
               });
             }
-            if (projectInformation[k].Key === "ProjectNumber") {
+            if (PI.Key === "ProjectNumber") {
               this.setState({
-                projectNumber: projectInformation[k].Title,
+                projectNumber: PI.Title,
               });
             }
-            if (projectInformation[k].Key === "CustomerID") {
+            if (PI.Key === "CustomerID") {
               this.setState({
-                customerId: projectInformation[k].Title,
+                customerId: PI.Title,
               });
             }
-            if (projectInformation[k].Key === "LegalEntityId") {
+            if (PI.Key === "LegalEntityId") {
               this.setState({
-                legalId: projectInformation[k].Title,
+                legalId: PI.Title,
               });
             }
-          }
+
+          })
         }
       });
   }
@@ -2460,7 +2536,7 @@ const iconButtonStyles = {
       .then((transmitFor: string | any[]) => {
         for (let i = 0; i < transmitFor.length; i++) {
           const transmitForItemdata = {
-            key: transmitFor[i].ID,
+            key: transmitFor[i].Title,
             text: transmitFor[i].Title
           };
           transmitForArray.push(transmitForItemdata);
@@ -2490,7 +2566,16 @@ const iconButtonStyles = {
                 filteredIndexItems.forEach((filteredItems: any) => {
                   transmitForItemdata = {
                     value: filteredItems.ID,
-                    label: filteredItems.DocumentName
+                    label: filteredItems.DocumentName,
+                    FileLeafRef: filteredItems.FileLeafRef,
+                    DocumentID: filteredItems.DocumentID,
+                    Revision: filteredItems.Revision,
+                    FileSizeDisplay: filteredItems.FileSizeDisplay,
+                    DocumentName: filteredItems.DocumentName,
+                    DocumentIndexId: filteredItems.DocumentIndexId,
+                    WorkflowStatus: filteredItems.WorkflowStatus,
+                    CustomerDocumentNo: filteredItems.CustomerDocumentNo,
+                    SubcontractorDocumentNo: filteredItems.SubcontractorDocumentNo,
                   };
                   publishedDocumentArray.push(transmitForItemdata);
                 });
@@ -2499,7 +2584,6 @@ const iconButtonStyles = {
                 });
               }
               else {
-
                 this.setState({
                   searchDocuments: publishedDocumentArray
                 });
@@ -2513,7 +2597,6 @@ const iconButtonStyles = {
             });
         }
         else {
-          //alert("No documents all transmittal status is ONGOING");
           console.log("No documents for transmittal");
           this.setState({
             documentSelectedDiv: false,
@@ -2559,8 +2642,8 @@ const iconButtonStyles = {
   }
   //for subcontractors letters documents from published docs
   public async _loadSourceDocumentsForLetter() {
-   // let temDoc: [];
-   const publishedDocumentArray: { value: any; label: any; }[] = [];
+    // let temDoc: [];
+    const publishedDocumentArray: { value: any; label: any; }[] = [];
     let transmitForItemdata;
     const publishedDocumentsDl: string = this.props.context.pageContext.web.serverRelativeUrl + "/" + this.props.publishDocumentLibraryName;
     this._Service.getLibraryItems(publishedDocumentsDl)
@@ -2594,7 +2677,8 @@ const iconButtonStyles = {
                   });
                 }
               }
-              else {  this.setState({  searchDocuments: publishedDocumentArray    });
+              else {
+                this.setState({ searchDocuments: publishedDocumentArray });
                 if (publishedDocumentArray.length === 0) {
                   this.setState({
                     documentSelectedDiv: false,
@@ -2619,8 +2703,11 @@ const iconButtonStyles = {
 
   }
   //project documents grid binding
-  private async _onDocumentClick(ID: { value: string; }) {
-    this.setState({ projectDocumentSelectKey: ID.value, documentSelectedDiv: true, hideGridAddButton: false, });
+  private async _onDocumentClick(ID) {
+    let selectedDocuments = [];
+    selectedDocuments.push(...ID);
+    console.log(selectedDocuments);
+    // this.setState({ projectDocumentSelectKey: ID.value, documentSelectedDiv: true, hideGridAddButton: false, });
     this.setState({
       searchDiv: "none",
     });
@@ -2672,5 +2759,5 @@ const iconButtonStyles = {
       }
     }
   }
- 
+
 }

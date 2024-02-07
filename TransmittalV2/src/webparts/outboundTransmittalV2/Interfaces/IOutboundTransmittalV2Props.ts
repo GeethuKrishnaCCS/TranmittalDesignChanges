@@ -159,7 +159,8 @@ export interface IOutboundTransmittalV2State {
   //displaying to and cc
   divForToAndCC: string;
   divForToAndCCSearch: string;
-  TypeOFDelete:string;
+  TypeOFDelete: string;
+  selectedDocuments: any[],
 }
 //for msg bar
 export interface IMessage {

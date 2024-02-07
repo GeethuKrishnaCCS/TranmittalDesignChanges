@@ -1,21 +1,21 @@
 import { BaseService } from "./BaseService";
 import { WebPartContext } from '@microsoft/sp-webpart-base';
-import { SPFI, SPFx  } from "@pnp/sp";
+import { SPFI, SPFx } from "@pnp/sp";
 import { PagedItemCollection } from '@pnp/sp/items';
 import { getSP } from "../shared/Pnp/pnpjsConfig";
 
 export class OBService extends BaseService {
-    private _spfi: SPFI;    
+    private _spfi: SPFI;
     private ctx: WebPartContext;
     private _hublSP: SPFI;
 
-    constructor(context: WebPartContext,hubUrl:string) {
-        super(context,hubUrl);
+    constructor(context: WebPartContext, hubUrl: string) {
+        super(context, hubUrl);
         this.ctx = context;
-        this._spfi =  getSP(this.ctx);
+        this._spfi = getSP(this.ctx);
         this._hublSP = new SPFI(hubUrl).using(SPFx(context));
     }
-    public async getHubItemsWithFilter(listname: string,filter:string,hubUrl:string): Promise<any> {
+    public async getHubItemsWithFilter(listname: string, filter: string, hubUrl: string): Promise<any> {
         let finalItems: any[] = [];
         let items: PagedItemCollection<any[]> = undefined;
         do {
@@ -88,7 +88,7 @@ export class OBService extends BaseService {
             if (!items) {
                 items = await this._spfi.web.getList(url)
                     .items
-                    .select("FileLeafRef,ID,FileSizeDisplay,TransmittalDocument,TransmittalStatus,DocumentName,DocumentIndexId,WorkflowStatus,DocumentStatus,Category")
+                    .select("FileLeafRef,DocumentID,Revision,ID,FileSizeDisplay,TransmittalDocument,TransmittalStatus,DocumentName,DocumentIndexId,WorkflowStatus,DocumentStatus,Category,CustomerDocumentNo,SubcontractorDocumentNo")
                     .filter("TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published')")
                     .top(250)
                     .getPaged();
