@@ -11,6 +11,32 @@
   }
 }
 
+.divrow {
+  width: 100%;
+  display: flex;
+}
+
+.wdthfrst {
+  margin-top: 10px;
+  width: 33%
+}
+
+.wdthThirdColm {
+  width: 33%;
+  margin-top: 10px;
+  padding-right: 10px;
+}
+
+.dragDropContainer {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+  background-size: cover;
+  background-position: center;
+  color: #333;
+  /* Other styles */
+}
+
 .custom-table {
   border-collapse: collapse;
   width: 100%;
@@ -129,6 +155,9 @@
     vertical-align: top;
     display: inline-block;
   }
+
+
+
 }
 
 .border {

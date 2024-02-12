@@ -11,7 +11,10 @@ import replaceString from 'replace-string';
 import * as _ from 'lodash';
 import { add } from 'lodash';
 import Select from 'react-select';
-
+import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel } from 'react-accessible-accordion';
+import CustomFileInput from './CustomFileInput';
+import { DragDropFiles } from '@pnp/spfx-controls-react/lib/DragDropFiles';
+import { IHttpClientOptions, HttpClient } from '@microsoft/sp-http';
 export default class OutboundTransmittalV2 extends React.Component<IOutboundTransmittalV2Props, IOutboundTransmittalV2State, {}> {
   private validator: SimpleReactValidator;
   private _Service: OBService;
@@ -23,6 +26,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   private sortedArray: any[] = [];
   private transmittalID: string;
   private keyForDelete: any;
+  private typeForDelete;
   private myfileadditional: { value: string; };
   constructor(props: IOutboundTransmittalV2Props) {
     super(props);
@@ -166,18 +170,18 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     this._showProjectDocumentGrid = this._showProjectDocumentGrid.bind(this);
     this._showExternalGrid = this._showExternalGrid.bind(this);
     this._hideGrid = this._hideGrid.bind(this);
-    //this._confirmAndSendBtnClick = this._confirmAndSendBtnClick.bind(this);
+    this._confirmAndSendBtnClick = this._confirmAndSendBtnClick.bind(this);
     this.projectInformation = this.projectInformation.bind(this);
     //this._queryParamGetting = this._queryParamGetting.bind(this);
     this._transmitForBind = this._transmitForBind.bind(this);
     this._loadPublishDocuments = this._loadPublishDocuments.bind(this);
     this._onDocumentClick = this._onDocumentClick.bind(this);
-    //  this._onPreviewBtnClick = this._onPreviewBtnClick.bind(this);
+    this._onPreviewBtnClick = this._onPreviewBtnClick.bind(this);
     this._loadSourceDocuments = this._loadSourceDocuments.bind(this);
     this.itemDeleteFromGrid = this.itemDeleteFromGrid.bind(this);
     this.itemDeleteFromExternalGrid = this.itemDeleteFromExternalGrid.bind(this);
     // this._onSaveAsDraftBtnClick = this._onSaveAsDraftBtnClick.bind(this);
-    //  this._trannsmittalIDGeneration = this._trannsmittalIDGeneration.bind(this);
+    this._trannsmittalIDGeneration = this._trannsmittalIDGeneration.bind(this);
     this._onTransmitType = this._onTransmitType.bind(this);
     this._transmittalSequenceNumber = this._transmittalSequenceNumber.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -186,13 +190,12 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     this._confirmNoCancel = this._confirmNoCancel.bind(this);
     // this.bindOutboundTransmittalSavedData = this.bindOutboundTransmittalSavedData.bind(this);
     this._openDeleteConfirmation = this._openDeleteConfirmation.bind(this);
-    // this.triggerOutboundTransmittal = this.triggerOutboundTransmittal.bind(this);
+    this.triggerOutboundTransmittal = this.triggerOutboundTransmittal.bind(this);
     this._recallTransmittalConfirmation = this._recallTransmittalConfirmation.bind(this);
     this._userMessageSettings = this._userMessageSettings.bind(this);
     // this._recallSubmit = this._recallSubmit.bind(this);
     this._confirmDeleteItem = this._confirmDeleteItem.bind(this);
     this._forCalculatingSize = this._forCalculatingSize.bind(this);
-    // this._LAUrlGetting = this._LAUrlGetting.bind(this);
     this._loadSourceDocumentsForLetter = this._loadSourceDocumentsForLetter.bind(this);
     //  this._LAUrlGettingForPermission = this._LAUrlGettingForPermission.bind(this);
     //this.triggerProjectPermissionFlow = this.triggerProjectPermissionFlow.bind(this);
@@ -276,6 +279,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         color: theme.palette.neutralDark,
       },
     };
+    const DownIcon: IIconProps = { iconName: 'ChevronDown' };
+
     return (
       <section className={`${styles.outboundTransmittalV2} ${hasTeamsContext ? styles.teams : ''}`}>
         <div>
@@ -437,7 +442,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                   {/* Notes */}
                   <div style={{ marginLeft: "9px" }}>
                     <TextField label="Notes" multiline placeholder="" value={this.state.notes}
-                      // onChange={this.notes} 
+                      onChange={this.notesOnchange}
                       style={{ marginLeft: "20px", width: "290px" }}
                     />
                   </div>
@@ -499,18 +504,18 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                                 /> </td>
                               <td >
                                 <DatePicker
-                                  value={this.state.dueDate}
+                                  value={items.dueDate}
                                   hidden={this.state.hideDueDate}
-                                  onSelectDate={this._dueDatePickerChange}
+                                  //onse={(_, e) =>this._dueDatePickerChange(key, e)}
                                   minDate={this.state.dueDateForBindingApprovalLifeCycle}
                                   placeholder="Select a date..."
                                   ariaLabel="Select a date"
                                   formatDate={this._onFormatDate} /></td>
-                              <td >  <TextField autoComplete="off" label="Comments" multiline
-                                borderless placeholder="" value={this.state.comments}
-                                // onChange={this.onCommentChange} 
-                                style={{ height: "92px", }} /></td>
-                              <td style={{ padding: "5px 10px", display: this.state.hideButtonAfterSubmit }}><IconButton iconProps={DeleteIcon} title="Delete" ariaLabel="Delete" onClick={() => this._openDeleteConfirmation(items, key, "ProjectDocuments")} /></td>
+                              <td >  <TextField autoComplete="off" multiline
+                                placeholder="" value={items.Comments}
+                                onChange={(_, e) => this.onCommentChange(key, e)}
+                              /></td>
+                              <td style={{ display: this.state.hideButtonAfterSubmit }}><IconButton iconProps={DeleteIcon} title="Delete" ariaLabel="Delete" onClick={() => this._openDeleteConfirmation(items, key, "ProjectDocuments")} /></td>
                             </tr>
                           );
                         })}
@@ -518,17 +523,31 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                     </div>
                   }
                   <hr style={{ marginTop: "20px" }} />
-                  {/* <Accordion atomic={true}  a>
-                  <Accordion title="External Documents" >
-                    <div style={{ width: "100%" }}>
-                      <div style={{ width: "50%" }}>
-                        <input type="file" name="myFile" id="newfile" style={{ marginRight: "-13px", marginLeft: "12px" }}
-                         // onChange={(e) => this._uploadadditional(e)}                          ref={ref => this.myfileadditional = ref} 
-                         >
+                  <Accordion allowZeroExpanded >
+                    <AccordionItem >
+                      <AccordionItemHeading>
+                        <AccordionItemButton >
+                          <Label ><IconButton iconProps={DownIcon} />External Documents</Label>
+                        </AccordionItemButton>
+                      </AccordionItemHeading>
+                      <AccordionItemPanel>
+                        <div className={styles.divrow} >
+                          <div className={styles.wdthfrst}>
+                            <CustomFileInput onChange={this.uploadFile} key={1} />
 
-                         </input>
-                      </div>
-                      <div style={{ color: "#dc3545", display: this.state.uploadDocumentError, marginLeft: "9px" }}>Sorry this document is unable to process due to unwanted characters.Please rename the document and try again.</div>
+                          </div>
+                          <div className={`${styles.dragDropContainer} ${styles.wdthThirdColm}`}>
+                            <DragDropFiles
+                              dropEffect="copy"
+                              enable={true}
+                              onDrop={this._getDropFiles}
+                              iconName="Upload"
+                              labelMessage="Upload Files"
+                            >
+                              Drag and drop here...
+                            </DragDropFiles></div>
+                        </div>
+                        {/* <div style={{ color: "#dc3545", display: this.state.uploadDocumentError, marginLeft: "9px" }}>Sorry this document is unable to process due to unwanted characters.Please rename the document and try again.</div>
                       <div style={{ width: "100%", display: "flex" }}>
                         <div style={{ width: "100%", padding: "10px 7px 10px 9px" }}> <TextField required={true} value={this.state.externalComments} placeholder="" 
                         // onChange={this.onCommentExternalChange} 
@@ -540,27 +559,32 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                           style={{ marginTop: "-4px", display: this.state.hideButtonAfterSubmit }} />
                         </div>
                       </div>
-                      <div style={{ color: "#dc3545", marginLeft: "123px" }}>{this.validator.message("externalcomments", this.state.externalComments, "required")}{" "}</div>
-                    </div>
-                  </AccordionItem>
-                </Accordion> */}
-                  <div hidden={this.state.showExternalGrid} >
-                    <table className={styles.tableModal}  >
-                      <tr style={{ background: "#f4f4f4" }}>
-                        <th style={{ padding: "5px 10px" }}>Slno</th>
-                        <th style={{ padding: "5px 10px" }}>Document Name</th>
-                        <th style={{ padding: "5px 10px" }}>Size (in MB)</th>
-                        <th style={{ padding: "5px 10px" }}>Comments</th>
-                        <th style={{ padding: "5px 10px", display: this.state.hideButtonAfterSubmit }}>Delete</th>
+                      <div style={{ color: "#dc3545", marginLeft: "123px" }}>{this.validator.message("externalcomments", this.state.externalComments, "required")}{" "}</div> */}
+
+                      </AccordionItemPanel>
+                    </AccordionItem>
+                  </Accordion>
+                  <div  >
+                    <table className={styles['custom-table']} hidden={this.state.showExternalGrid} >
+                      <tr style={{ textAlign: "left" }}>
+                        <th >Slno</th>
+                        <th>Document Name</th>
+                        <th>Size (in MB)</th>
+                        <th >Comments</th>
+                        <th style={{ display: this.state.hideButtonAfterSubmit }}>Delete</th>
                       </tr>
                       {this.state.itemsForExternalGrid.map((items, key) => {
                         return (
-                          <tr style={{ borderBottom: "1px solid #f4f4f4" }}>
-                            <td style={{ padding: "5px 10px" }}>{key + 1}</td>
-                            <td style={{ padding: "5px 10px" }}>{items.documentName}</td>
-                            <td style={{ padding: "5px 10px" }}>{items.fileSizeInMB}</td>
-                            <td style={{ padding: "5px 10px" }}>{items.externalComments}</td>
-                            <td style={{ padding: "5px 10px", display: this.state.hideButtonAfterSubmit }}><IconButton iconProps={DeleteIcon} title="Delete" ariaLabel="Delete" onClick={() => this._openDeleteConfirmation(items, key, "AdditionalDocuments")} /></td>
+                          <tr style={{ textAlign: "left" }}>
+                            <td>{key + 1}</td>
+                            <td >{items.documentName}</td>
+                            <td>{items.fileSizeInMB}</td>
+                            <td >
+                              <TextField autoComplete="off" multiline
+                                placeholder="" value={items.externalComments}
+                                onChange={(_, e) => this.onExternalCommentChange(key, e)} />
+                            </td>
+                            <td style={{ display: this.state.hideButtonAfterSubmit }}><IconButton iconProps={DeleteIcon} title="Delete" ariaLabel="Delete" onClick={() => this._openDeleteConfirmation(items, key, "AdditionalDocuments")} /></td>
                           </tr>
                         );
                       })}
@@ -583,10 +607,10 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                   //onClick={() => this._onSaveAsDraftBtnClick()} 
                   />
                   <PrimaryButton text="Preview" style={{ marginRight: "11px", marginLeft: "auto" }}
-                  // onClick={this._onPreviewBtnClick} 
+                    onClick={this._onPreviewBtnClick}
                   />
                   <PrimaryButton text="Confirm & Send" style={{ marginRight: "11px", marginLeft: "auto", display: this.state.hideButtonAfterSubmit }}
-                  //onClick={this._confirmAndSendBtnClick}
+                    onClick={this._confirmAndSendBtnClick}
                   />
                   <PrimaryButton text="Recall" style={{ marginRight: "11px", marginLeft: "auto", display: this.state.hideUnlockButton }} onClick={this._recallTransmittalConfirmation} />
                   <PrimaryButton text="Cancel" style={{ marginLeft: "auto" }} onClick={this._hideGrid} />
@@ -653,7 +677,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                                   <td className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>{items.subcontractorDocumentNo} </td>
                                   <div className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "none" : "none" }}>&nbsp;{items.acceptanceCodeTitle}</div>
                                   <div className={styles.divTableCell}>&nbsp;{items.fileSizeInMB}</div>
-                                  <div className={styles.divTableCell}>&nbsp;{items.transmitFor}</div>
+                                  <div className={styles.divTableCell}>&nbsp;{items.TransmittedFor}</div>
                                   <div className={styles.divTableCell}>&nbsp;{items.DueDate}</div>
                                   <div className={styles.divTableCell}>&nbsp;{items.comments}</div>
                                 </div>
@@ -759,9 +783,314 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         </div >
 
 
-      </section>
+      </section >
     );
   }
+  //transmittal id generation
+  public async _trannsmittalIDGeneration() {
+    let prefix;
+    let separator;
+    let sequenceNumber;
+    let title;
+    let counter;
+    let transmittalID;
+    let transmitTo;
+    { this.state.transmitTo === "Customer" ? transmitTo = "Outbound Customer" : transmitTo = "Outbound Sub-contractor"; }
+    await this._Service.getItemForSelectInLists(this.props.siteUrl, this.props.transmittalIdSettingsListName, "*", "TransmittalCategory eq '" + transmitTo + "' and(TransmittalType eq '" + this.state.transmittalType + "')")
+      .then(transmittalIdSettingsItems => {
+        prefix = transmittalIdSettingsItems[0].Prefix;
+        separator = transmittalIdSettingsItems[0].Separator;
+        sequenceNumber = transmittalIdSettingsItems[0].SequenceNumber;
+        title = transmittalIdSettingsItems[0].Title;
+        counter = transmittalIdSettingsItems[0].Counter;
+        let increment = counter + 1;
+        let incrementValue = increment.toString();
+        this._transmittalSequenceNumber(incrementValue, sequenceNumber);
+        transmittalID = prefix + separator + title + separator + this.state.projectNumber + separator + this.state.incrementSequenceNumber;
+        console.log("transmittalID", transmittalID);
+        this.setState({
+          transmittalNo: transmittalID,
+        });
+        //counter updation
+        let counterData = {
+          Counter: increment,
+        }
+        this._Service.updateSiteItem(this.props.siteUrl, this.props.transmittalIdSettingsListName, transmittalIdSettingsItems[0].ID, counterData);
+      });
+  }
+  //for preview section
+  public _onPreviewBtnClick() {
+    let totalFiles;
+    totalFiles = add(this.state.itemsForGrid.length, this.state.itemsForExternalGrid.length);
+    // alert(totalFiles);
+    this.setState({
+      totalNoOfFiles: totalFiles,
+      previewDiv: false,
+      showReviewModal: true,
+    });
+
+
+  }
+  private async _confirmAndSendBtnClick() {
+    // let sourceDocumentId;
+    // let hidden = 1;
+    //let statusCount = 0;
+    let forTransmittalStatus;
+    //total files
+    let totalFiles;
+    let convertKBtoMB;
+    totalFiles = add(this.state.itemsForGrid.length, this.state.itemsForExternalGrid.length);
+    //sizecalculating
+    let totalsizeProjects = 0;
+    let totalAdditional = 0;
+    //size recalcalculating
+    if (this.state.itemsForGrid.length > 0 || this.state.itemsForExternalGrid.length > 0) {
+      for (let i = 0; i < this.state.itemsForGrid.length; i++) {
+        totalsizeProjects = Number(totalsizeProjects) + Number(this.state.itemsForGrid[i].fileSizeInMB);
+      }
+      for (let k = 0; k < this.state.itemsForExternalGrid.length; k++) {
+        totalAdditional = Number(totalAdditional) + Number(this.state.itemsForExternalGrid[k].fileSizeInMB);
+      }
+      let totalSize = add(totalAdditional, totalsizeProjects);
+      convertKBtoMB = Number(totalSize).toFixed(2);
+      this.setState({
+        fileSize: Number(convertKBtoMB)
+      });
+      console.log(this.state.fileSize);
+    }
+    //if size greater than 10 mb 
+    if (Number(convertKBtoMB) > 10 && (this.state.sendAsSharedFolder == false)) {
+      this.setState({ normalMsgBar: "", statusMessage: { isShowMessage: true, message: "File size is greater than 10 MB.Please select the checkbox Send and Receive as shared folder", messageType: 1 }, });
+    }
+    else {
+      if (this.transmittalID == null || this.transmittalID == "") {
+        let selectedContactsTo = this.state.selectedContactsTo.toString();
+        let selectedContactsCC = this.state.selectedContactsCC.toString();
+        console.log(selectedContactsTo);
+        if (this.state.transmitTo != "" && this.state.itemsForGrid.length != 0 && this.state.transmittalTypekey != "" && this.state.selectedContactsTo != null && this.validator.fieldValid("selectedContactsTo")) {
+          this.setState({
+            spinnerDiv: "",
+            hideButtonAfterSubmit: "none",
+            hideUnlockButton: "none",
+          });
+          await this._trannsmittalIDGeneration();
+          //header list
+          try {
+            let headetData = {
+              Title: this.state.transmittalNo,
+              TransmittalCategory: this.state.transmitTo,
+              Customer: this.state.customerName,
+              CustomerID: (this.state.transmitTo == "Customer") ? this.state.customerId : "",
+              SubContractor: this.state.subContractor,
+              SubContractorID: (this.state.subContractorKey).toString(),
+              ToEmails: selectedContactsTo,
+              CCEmails: selectedContactsCC,
+              Notes: this.state.notes,
+              TransmittalStatus: (this.state.transmitTo != "Customer") ? "Completed" : "Ongoing",
+              TransmittalType: this.state.transmittalType,
+              TransmittedById: this.state.currentUser,
+              SendAsSharedFolder: this.state.sendAsSharedFolder,
+              ReceiveInSharedFolder: this.state.recieveInSharedFolder,
+              SendAsMultipleEmails: this.state.sendAsMultipleFolder,
+              TransmittalSize: (convertKBtoMB).toString(),
+              TransmittalDate: new Date(),
+              TotalFiles: (totalFiles).toString(),
+              ToName: this.state.selectedContactsToDisplayName,
+              CCName: this.state.selectedContactsCCDisplayName,
+              CoverLetter: this.state.coverLetterNeeded,
+              InternalCCId: this.state.internalCCContacts,
+            }
+            this._Service.createNewSiteProcess(this.props.siteUrl, this.props.outboundTransmittalHeaderListName, headetData)
+              .then(async outboundTransmittalHeader => {
+                this.setState({ outboundTransmittalHeaderId: outboundTransmittalHeader.data.ID });
+                for (let i = 0; i < this.state.itemsForGrid.length; i++) {
+                  if (this.state.itemsForGrid[i].approvalRequired == true) {
+                    forTransmittalStatus = "true";
+                  }
+                }
+                let linkUpdationInheader = {
+                  TransmittalLink: {
+                    Description: "Project workspace",
+                    Url: this.props.siteUrl + "/SitePages/" + this.props.outBoundTransmittalSitePage + ".aspx?trid=" + outboundTransmittalHeader.data.ID + ""
+                  },
+                  TransmittalDetails: {
+                    Description: "Transmittal Details",
+                    Url: this.props.siteUrl + "/Lists/" + this.props.outboundTransmittalDetailsListName + "/AllItems.aspx?FilterField1=TransmittalHeader&FilterValue1=" + outboundTransmittalHeader.data.ID + "&FilterType1=Lookup&viewid=6da3a1b3%2D0155%2D48d9%2Da7c7%2Dd2e862c07db5"
+                  },
+                  OutboundAdditionalDetails: {
+                    Description: "Outbound Additional Details",
+                    Url: this.props.siteUrl + "/" + this.props.outboundAdditionalDocumentsListName + "/Forms/AllItems.aspx?FilterField1=TransmittalID&FilterValue1=" + outboundTransmittalHeader.data.ID + "&FilterType1=Lookup&viewid=bcc64a99-0907-4416-b9f6-8001acf1e000"
+                  },
+                  TransmittalStatus: (this.state.transmitTo === "Customer") ? forTransmittalStatus != "true" ? "Completed" : "Ongoing" : "Completed",
+                }
+                this._Service.updateSiteItem(this.props.siteUrl, this.props.outboundTransmittalHeaderListName, outboundTransmittalHeader.data.ID, linkUpdationInheader);
+                //outbound Details
+                if (this.state.itemsForGrid.length > 0) {
+                  this.state.itemsForGrid.forEach((i, index) => {
+                    let obDetailData = {
+                      Title: i.documentName,
+                      TransmittalHeaderId: outboundTransmittalHeader.data.ID,
+                      DocumentIndexId: i.documentIndexId,
+                      Revision: i.revision,
+                      TransmittalRevision: i.revision,
+                      DueDate: i.dueDate,
+                      Size: i.fileSizeInMB,
+                      SentComments: i.comments,
+                      CustomerAcceptanceCodeId: i.acceptanceCode,
+                      TransmitFor: i.TransmitFor,
+                      ApprovalRequired: i.approvalRequired,
+                      TransmittalStatus: (i.approvalRequired == true && this.state.transmitTo == "Customer") ? "Ongoing" : "Completed",
+                      DocumentLibraryID: i.publishDoumentlibraryID,
+                      Slno: (Number(index) + Number(1)).toString(),
+                      CustomerDocumentNo: i.customerDocumentNo,
+                      SubcontractorDocumentNo: i.subcontractorDocumentNo,
+                    }
+                    this._Service.createNewSiteProcess(this.props.siteUrl, this.props.outboundTransmittalDetailsListName, obDetailData);
+
+                  })
+                }
+                //outbound additional
+                if (this.state.itemsForExternalGrid.length > 0) {
+                  this.state.itemsForExternalGrid.forEach(async (file, key) => {
+                    const splitted = file.documentName.split(".");
+                    const documentNameExtension = splitted.slice(0, -1).join('.') + "_" + this.state.transmittalNo + '.' + splitted[splitted.length - 1];
+                    console.log(documentNameExtension);
+                    let sourceDocumentMetadata = {
+                      Title: file.documentName,
+                      TransmittalIDId: this.state.outboundTransmittalHeaderId,
+                      Size: file.fileSizeInMB,
+                      Comments: file.externalComments,
+                      SentDate: new Date(),
+                      TransmittalStatus: "Ongoing",
+                      Slno: (Number(key) + Number(1)).toString(),
+                    }
+                    await this._Service.uploadDocument(documentNameExtension, file.content, this.props.outboundAdditionalDocumentsListName, sourceDocumentMetadata)
+                  });
+                }
+                //need to add additional documents code 
+                //add document index updations
+                this.triggerOutboundTransmittal(Number(this.state.outboundTransmittalHeaderId));
+                this.setState({
+                  hideButtonAfterSubmit: "none",
+                  hideUnlockButton: "none",
+                  spinnerDiv: "",
+                });
+              });
+          }
+          catch (error) {
+            console.error("Error creating outbound transmittal:", error);
+          }
+          this.validator.hideMessages();
+        }
+        else {
+          this.validator.showMessages();
+          this.forceUpdate();
+        }
+      }
+
+
+    }
+  }
+  public uploadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const duplicate = this.state.itemsForExternalGrid.some(tempItem => tempItem.documentName === file.name);
+        const filename = file.name; // Replace this with your filename
+        const fileExtension = filename.split('.').pop();
+        const isZipFile = fileExtension === 'zip';
+        const isAudioFile = ['mp3', 'wav', 'ogg', 'aac'].includes(fileExtension);
+        const isVideoFile = ['mp4', 'avi', 'mkv', 'mov'].includes(fileExtension);
+        if (isZipFile || isAudioFile || isVideoFile) {
+          // Ignore ZIP, audio, and video files and image files
+          // Optionally, you can display an error message or handle these files differently           
+        } else {
+          if (!duplicate) {
+            let tempExternalFile = {
+              documentName: file.name,
+              fileSize: (((file.size / 1024)).toFixed(2)),
+              fileSizeInMB: (((file.size / 1024) * 0.0009765625).toFixed(2)),
+              externalComments: this.state.externalComments,
+              content: file,
+            }
+            this.setState(prevState => ({
+              itemsForExternalGrid: [...prevState.itemsForExternalGrid, tempExternalFile],
+              showExternalGrid: false,
+              fileSizeDiv: false,
+            }));
+          }
+        }
+
+      }
+
+    }
+  }
+  private _getDropFiles = async (files: any) => {
+    if (files.length > 0) {
+      if (files !== "") {
+        files.forEach((item, key) => {
+          const duplicate = this.state.itemsForExternalGrid.some(tempItem => tempItem.documentName === item.name);
+          const filename = item.name;
+          const fileExtension = filename.split('.').pop();
+          const isZipFile = fileExtension === 'zip';
+          const isAudioFile = ['mp3', 'wav', 'ogg', 'aac'].includes(fileExtension);
+          const isVideoFile = ['mp4', 'avi', 'mkv', 'mov'].includes(fileExtension);
+          // const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension);
+          if (isZipFile || isAudioFile || isVideoFile) {
+            // Ignore ZIP, audio, and video files and image files
+            // Optionally, you can display an error message or handle these files differently           
+          } else {
+            if (!duplicate) {
+              let tempExternalFile = {
+                documentName: item.name,
+                fileSize: (((item.size / 1024)).toFixed(2)),
+                fileSizeInMB: (((item.size / 1024) * 0.0009765625).toFixed(2)),
+                externalComments: this.state.externalComments,
+                content: item,
+              }
+
+              this.setState(prevState => ({
+                itemsForExternalGrid: [...prevState.itemsForExternalGrid, tempExternalFile],
+                showExternalGrid: false,
+                fileSizeDiv: false,
+              }));
+            }
+          }
+        });
+      }
+    }
+  }
+  private onCommentChange = (index, event) => {
+    const newMultiline = this.stripHtmlTags(event).length > 50;
+    if (newMultiline !== this.state.toggleMultiline) {
+      this.setState({
+        toggleMultiline: true,
+      });
+    }
+    const { itemsForGrid } = this.state;
+    const updatedItems = [...itemsForGrid];
+    updatedItems[index].comments = this.stripHtmlTags(event);
+    this.setState({ itemsForGrid: updatedItems });
+  }
+  private onExternalCommentChange = (index, event) => {
+    const newMultiline = this.stripHtmlTags(event).length > 50;
+    if (newMultiline !== this.state.toggleMultiline) {
+      this.setState({
+        toggleMultiline: true,
+      });
+    }
+    const { itemsForExternalGrid } = this.state;
+    const updatedItems = [...itemsForExternalGrid];
+    updatedItems[index].externalComments = this.stripHtmlTags(event);
+    this.setState({ itemsForExternalGrid: updatedItems });
+  }
+  //stripHtmlTags
+  public stripHtmlTags = (html) => {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || '';
+  };
+
   public UNSAFE_componentWillMount = () => {
     this.validator = new SimpleReactValidator({
       messages: {
@@ -780,7 +1109,6 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   }
   // document selection
   private setSelectedDocuments = async (option) => {
-
     await this.setState({
       projectDocumentSelectKey: option.value,
       documentSelectedDiv: true,
@@ -788,31 +1116,34 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       selectedDocuments: option,
     });
     console.log("Selected Documents ID", this.state.selectedDocuments)
-
-    if (this.state.itemsForGrid.length <= 0) {
-      this.state.selectedDocuments.forEach(selectedDocuments => {
-        this.state.tempArrayForPublishedDocumentGrid.push({
-          publishDoumentlibraryID: selectedDocuments.value,
-          documentIndexId: selectedDocuments.DocumentIndexId,
-          DueDate: moment(this.state.dueDate).format("DD/MM/YYYY"),
-          dueDate: this.state.dueDate,
-          comments: this.state.comments,
-          revision: selectedDocuments.Revision,
-          documentID: selectedDocuments.DocumentID,
-          documentName: selectedDocuments.DocumentName,
-          fileSize: (((selectedDocuments.FileSizeDisplay / 1024)).toFixed(2)),
-          fileSizeInMB: (Number((selectedDocuments.FileSizeDisplay / 1024) * 0.0009765625).toFixed(2)),
-          transmitFor: this.state.transmitFor,
-          approvalRequired: this.state.approvalRequired,
-          transmitForKey: this.state.transmitForKey,
-          temporary: "",
-          customerDocumentNo: selectedDocuments.CustomerDocumentNo,
-        });
+    const tempFile = [];
+    if (option.length !== 0) {
+      option.forEach(selectedDocuments => {
+        const duplicate = this.state.itemsForGrid.some(tempItem => tempItem.documentIndexId === selectedDocuments.DocumentIndexId);
+        if (!duplicate) {
+          let temp = {
+            publishDoumentlibraryID: selectedDocuments.value,
+            documentIndexId: selectedDocuments.DocumentIndexId,
+            DueDate: moment(this.state.dueDate).format("DD/MM/YYYY"),
+            dueDate: this.state.dueDate,
+            comments: this.state.comments,
+            revision: selectedDocuments.Revision,
+            documentID: selectedDocuments.DocumentID,
+            documentName: selectedDocuments.DocumentName,
+            fileSize: (((selectedDocuments.FileSizeDisplay / 1024)).toFixed(2)),
+            fileSizeInMB: (Number((selectedDocuments.FileSizeDisplay / 1024) * 0.0009765625).toFixed(2)),
+            transmitFor: this.state.transmitFor,
+            approvalRequired: this.state.approvalRequired,
+            transmitForKey: this.state.transmitForKey,
+            temporary: "",
+            customerDocumentNo: selectedDocuments.CustomerDocumentNo,
+          };
+          tempFile.push(temp)
+          this.setState(prevState => ({
+            itemsForGrid: [...prevState.itemsForGrid, temp],
+          }));
+        }
       });
-      console.log("temporaryGrid", this.state.tempArrayForPublishedDocumentGrid);
-      this.setState(prevState => ({
-        itemsForGrid: [...this.state.tempArrayForPublishedDocumentGrid],
-      }));
       this.setState({
         showGrid: false,
         projectDocumentSelectKey: "",
@@ -820,47 +1151,56 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         searchText: "",
       });
     }
-    else {
-      let Noduplicates = [];
-      this.state.itemsForGrid.forEach(gridDocs => {
-        Noduplicates = this.state.selectedDocuments.filter(SD => SD.value !== gridDocs.publishDoumentlibraryID);
-      });
-      Noduplicates.forEach(array => {
-        this.state.tempArrayForPublishedDocumentGrid.push({
-          publishDoumentlibraryID: array.value,
-          documentIndexId: array.DocumentIndexId,
-          DueDate: moment(this.state.dueDate).format("DD/MM/YYYY"),
-          dueDate: this.state.dueDate,
-          comments: this.state.comments,
-          revision: array.Revision,
-          documentID: array.DocumentID,
-          documentName: array.DocumentName,
-          fileSize: (((array.FileSizeDisplay / 1024)).toFixed(2)),
-          fileSizeInMB: (Number((array.FileSizeDisplay / 1024) * 0.0009765625).toFixed(2)),
-          transmitFor: this.state.transmitFor,
-          approvalRequired: this.state.approvalRequired,
-          transmitForKey: this.state.transmitForKey,
-          temporary: "",
-          customerDocumentNo: array.CustomerDocumentNo,
-        });
-      })
-      console.log("temporaryGrid", this.state.tempArrayForPublishedDocumentGrid);
-      this.setState(prevState => ({
-        itemsForGrid: [...this.state.tempArrayForPublishedDocumentGrid],
-      }));
-      this.setState({
-        showGrid: false,
-        projectDocumentSelectKey: "",
-        fileSizeDiv: false,
-        searchText: "",
-      });
-
-
-    }
-    //}
   }
 
+  protected async triggerOutboundTransmittal(transmittalID) {
+    let siteUrl = window.location.protocol + "//" + window.location.hostname + this.props.siteUrl;
+    const laUrl = await this._Service.getHubItemsWithFilter(this.props.masterListName, "Title eq 'EMEC_OutboundTransmittal'", this.props.hubSiteUrl);
+    console.log("Posturl", laUrl[0].PostUrl);
+    const postURL = laUrl[0].PostUrl;
+    const requestHeaders: Headers = new Headers();
+    requestHeaders.append("Content-type", "application/json");
+    const body: string = JSON.stringify({
+      'SiteURL': siteUrl,
+      'TransmittalNo': transmittalID,
+      'ProjectName': this.state.projectName,
+      'ContractNumber': this.state.contractNumber,
+      'ProjectNumber': this.state.projectNumber,
+      'CoverLetterNeeded': (this.state.coverLetterNeeded == true ? "Yes" : "NO"),
+      'InternalContactsEmails': this.state.internalContactsEmail,
+      'InternalContactsDisplayNames': this.state.internalCCContactsDisplayNameForPreview,
+      'OutboundTransmittalDetails': this.state.itemsForGrid
+    });
+    const postOptions: IHttpClientOptions = {
+      headers: requestHeaders,
+      body: body
+    };
+    // let responseText: string = "";
+    let response = await this.props.context.httpClient.post(postURL, HttpClient.configurations.v1, postOptions);
+    let responseJSON = await response.json();
+    //responseText = JSON.stringify(responseJSON);
+    console.log(responseJSON);
+    if (response.ok) {
+      // alert(response.text);
+      if (responseJSON['Status'] == "MailSend") {
+        this.setState({
+          hideButtonAfterSubmit: "none",
+          hideUnlockButton: "none",
+          normalMsgBar: "",
+          spinnerDiv: "none",
+          statusMessage: { isShowMessage: true, message: "Transmittal Send Successfully", messageType: 4 },
+        });
+        setTimeout(() => {
+          window.location.replace(window.location.protocol + "//" + window.location.hostname + this.props.siteUrl);
+        }, 10000);
+      }
+      else {
 
+      }
+    }
+    else { }
+
+  }
 
   private async _userMessageSettings() {
     // const userMessageSettings: any[] = await this.reqWeb.getList("/sites/" + this.props.hubSite + "/Lists/" + this.props.userMessageSettings)
@@ -1437,7 +1777,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     //this.setState({ transmitForKey: (option.key).toString(), transmitFor: option.text });
     const { itemsForGrid } = this.state;
     const updatedItems = [...itemsForGrid];
-    updatedItems[index].TransmittedFor = event.text;
+    updatedItems[index].TransmittedFor = event.key;
+    updatedItems[index].TransmitFor = event.text;
     this.setState({ itemsForGrid: updatedItems });
 
     // const select = "ApprovalRequired,AcceptanceCode";
@@ -1455,27 +1796,16 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       cancelConfirmMsg: "",
     });
   }
-  private _dueDatePickerChange = (date?: Date): void => {
-    this.setState({ dueDate: date, });
+  // private _dueDatePickerChange = (index: number,event: any)=>{
+  //   const { itemsForGrid } = this.state;
+  //   const updatedItems = [...itemsForGrid];
+  //   updatedItems[index].dueDate = this.stripHtmlTags(event);
+  //   this.setState({ itemsForGrid: updatedItems });
+  // }
+
+  private notesOnchange = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newText: string): void => {
+    this.setState({ notes: newText || '' });
   }
-  // private onCommentChange = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newText: string): void => {
-  //   const newMultiline = newText.length > 50;
-  //   if (newMultiline !=== this.state.toggleMultiline) {
-  //     this.setState({
-  //       toggleMultiline: true,
-  //     });
-  //   }
-  //   this.setState({ comments: newText || '' });
-  // }
-  // private notesOnchange = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newText: string): void => {
-  //   const newMultiline = newText.length > 50;
-  //   if (newMultiline !=== this.state.toggleMultiline) {
-  //     this.setState({
-  //       toggleMultiline: true,
-  //     });
-  //   }
-  //   this.setState({ notes: newText || '' });
-  // }
   // private onCommentExternalChange = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newText: string): void => {
   //   const newMultiline = newText.length > 50;
   //   if (newMultiline !=== this.state.toggleMultiline) {
@@ -1484,7 +1814,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   //     });
   //   }
   //   this.setState({ externalComments: newText || '' });
-  // }
+  //}
 
   private _closeModal = (): void => {
     this.setState({ showReviewModal: false });
@@ -1502,18 +1832,21 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       if ((document.querySelector("#newfile") as HTMLInputElement).files[0] !== null) {
         let myfile = (document.querySelector("#newfile") as HTMLInputElement).files[0];
         if (myfile.size) {
-          this.state.tempArrayForExternalDocumentGrid.push({
-            documentName: myfile.name,
-            fileSize: (((myfile.size / 1024)).toFixed(2)),
-            fileSizeInMB: (((myfile.size / 1024) * 0.0009765625).toFixed(2)),
-            externalComments: this.state.externalComments,
-            content: myfile,
-          });
-          this.setState({
-            showExternalGrid: false,
-            fileSizeDiv: false,
-            itemsForExternalGrid: this.state.tempArrayForExternalDocumentGrid,
-          });
+          const duplicate = this.state.itemsForExternalGrid.filter(extItem => extItem.documentName === myfile.name)
+          if (!duplicate) {
+            let tempExternalFile = {
+              documentName: myfile.name,
+              fileSize: (((myfile.size / 1024)).toFixed(2)),
+              fileSizeInMB: (((myfile.size / 1024) * 0.0009765625).toFixed(2)),
+              externalComments: this.state.externalComments,
+              content: myfile,
+            }
+            this.setState(prevState => ({
+              itemsForExternalGrid: [...prevState.itemsForExternalGrid, tempExternalFile],
+              showExternalGrid: false,
+              fileSizeDiv: false,
+            }));
+          }
         }
       }
       //for calculating document size
@@ -2059,21 +2392,76 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     }
 
   }
-  private _confirmDeleteItem = async (docID: string | number, items: string, key: string | number) => {
-    console.log(key)
+  private _confirmDeleteItem = async (docID: any, items: string, key: string) => {
+    if (this.transmittalID == "" || this.transmittalID == null) {
+      this.setState({
+        confirmDeleteDialog: true,
+        deleteConfirmation: "none"
+      });
+      this.validator.hideMessages();
+      if (this.state.TypeOFDelete == "ProjectDocuments") {
+        this.itemDeleteFromGrid(items, key);
+      }
+      else if (this.state.TypeOFDelete == "AdditionalDocuments") {
+        this.itemDeleteFromExternalGrid(items, key);
+      }
+
+    }
+    else {
+      this.setState({
+        confirmDeleteDialog: true,
+        deleteConfirmation: "none"
+      });
+      this.validator.hideMessages();
+      console.log(items[key]);
+
+      if (this.typeForDelete == "ProjectDocuments") {
+        // alert(docID);
+
+        // if (docID) {
+        //   let list = sp.web.getList(this.props.siteUrl + "/Lists/" + this.props.outboundTransmittalDetailsListName);
+        //   await list.items.getById(parseInt(docID)).delete();
+        //   let selectHeaderItems = "Id,DocumentIndex/ID,DocumentIndex/Title,DueDate,SentComments,Revision,Title,Size,TransmittedFor/ID,TransmittedFor/Title,Temporary,TransmittalHeader/ID,DocumentLibraryID,ID,ApprovalRequired";
+        //   sp.web.getList(this.props.siteUrl + "/Lists/" + this.props.outboundTransmittalDetailsListName).items.select(selectHeaderItems).expand("DocumentIndex,TransmittedFor,TransmittalHeader").filter("TransmittalHeader/ID eq '" + Number(this.transmittalID) + "' ").get().then(outboundTransmittalDetailsListName => {
+        //     console.log("outboundTransmittalDetailsListName", outboundTransmittalDetailsListName);
+        //     this.setState({
+        //       currentOutboundDetailItem: outboundTransmittalDetailsListName,
+        //     });
+        //   });
+        //   this.setState({
+        //     itemsForGrid: this.state.itemsForGrid,
+        //   });
+        // }
+        this.itemDeleteFromGrid(items, key);
+      }
+      else if (this.typeForDelete == "AdditionalDocuments") {
+        // if (docID) {
+        //   let list = sp.web.getList(this.props.siteUrl + "/" + this.props.outboundAdditionalDocumentsListName + "/");
+        //   await list.items.getById(parseInt(docID)).delete();
+        //   sp.web.getList(this.props.siteUrl + "/" + this.props.outboundAdditionalDocumentsListName + "/").items.filter("TransmittalIDId eq '" + this.transmittalID + "' ").get().then(listItems => {
+        //     this.setState({
+        //       currentOutboundAdditionalItem: listItems,
+        //     });
+        //   });
+        //   this.setState({
+        //     itemsForExternalGrid: this.state.itemsForExternalGrid,
+        //   });
+        // }
+        this.itemDeleteFromExternalGrid(items, key);
+      }
+    }
   }
   //deleting
-  public itemDeleteFromGrid(items: { fileSize: any; }, key: number) {
+  public itemDeleteFromGrid(items: any, key: any) {
     console.log(items);
-    this.state.itemsForGrid.splice(key, 1);
-    console.log("after removal", this.state.itemsForGrid);
-    console.log(items.fileSize);
+    const updatedFiles = this.state.itemsForGrid.filter((item, index) => index !== key);
     this.setState({
-      itemsForGrid: this.state.itemsForGrid,
+      itemsForGrid: updatedFiles,
       documentSelectedDiv: true,
       projectDocumentSelectKey: "",
-
     });
+    console.log("after removal", this.state.itemsForGrid);
+    console.log(items.fileSize);
     this._forCalculatingSize();
     //for project documents
     for (let i = 0; i < this.state.itemsForGrid.length; i++) {
@@ -2101,9 +2489,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         });
       }
     }
-
   }
-  public itemDeleteFromExternalGrid(items: { fileSize: any; }, key: number) {
+  public itemDeleteFromExternalGrid(items: any, key: any) {
     this.state.itemsForExternalGrid.splice(key, 1);
     console.log("after removal", this.state.itemsForExternalGrid);
     console.log(items.fileSize);
@@ -2536,7 +2923,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       .then((transmitFor: string | any[]) => {
         for (let i = 0; i < transmitFor.length; i++) {
           const transmitForItemdata = {
-            key: transmitFor[i].Title,
+            key: transmitFor[i].ID,
             text: transmitFor[i].Title
           };
           transmitForArray.push(transmitForItemdata);

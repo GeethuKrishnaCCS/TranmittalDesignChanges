@@ -191,6 +191,41 @@ export class OBService extends BaseService {
         } while (items.hasNext);
         return finalItems;
     }
+    public updateSiteItem(siteUrl: string, listname: string, id: number, data: any): Promise<any> {
+        return this._spfi.web.getList(siteUrl + "/Lists/" + listname).items.getById(id).update(data);
+    }
+    public createNewSiteProcess(siteUrl: string, listname: string, data: any): Promise<any> {
+        return this._spfi.web.getList(siteUrl + "/Lists/" + listname)
+            .items.add(data);
+    }
+    public async uploadDocument(filename: string, filedata: any, libraryname: string, metadata: any): Promise<any> {
+        let file: any;
+        if (filedata.size <= 10485760) {
+            file = await this._spfi.web.getFolderByServerRelativePath(libraryname)
+                .files.addUsingPath(filename, filedata, { Overwrite: true });
+        }
+        else {
+            file = await this._spfi.web.getFolderByServerRelativePath(libraryname)
+                .files.addChunked(filename, filedata, data => {
+                    console.log(`progress`);
+                }, true);
+
+        }
+        const item = await file.file.getItem();
+        item.update({
+            Title: metadata.documentName,
+            TransmittalIDId: metadata.TransmittalIDId,
+            Size: metadata.Size,
+            Comments: metadata.Comments,
+            SentDate: metadata.SentDate,
+            TransmittalStatus: metadata.TransmittalStatus,
+            Slno: metadata.Slno,
+
+        });
+        const itemId = item.Id;
+
+        return { file, itemId };
+    }
 }
 
 
