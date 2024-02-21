@@ -81,7 +81,7 @@ export class OBService extends BaseService {
         } while (items.hasNext);
         return finalItems;
     }
-    public async getLibraryItems(url: string,): Promise<any> {
+    public async getLibraryItems(url: string, filter: string): Promise<any> {
         let finalItems: any[] = [];
         let items: PagedItemCollection<any[]> = undefined;
         do {
@@ -89,7 +89,7 @@ export class OBService extends BaseService {
                 items = await this._spfi.web.getList(url)
                     .items
                     .select("FileLeafRef,DocumentID,Revision,ID,FileSizeDisplay,TransmittalDocument,TransmittalStatus,DocumentName,DocumentIndexId,WorkflowStatus,DocumentStatus,Category,CustomerDocumentNo,SubcontractorDocumentNo")
-                    .filter("TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published')")
+                    .filter(filter)
                     .top(250)
                     .getPaged();
             }

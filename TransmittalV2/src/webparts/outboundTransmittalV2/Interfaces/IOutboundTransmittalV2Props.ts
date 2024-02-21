@@ -149,7 +149,7 @@ export interface IOutboundTransmittalV2State {
   internalCCContactsDisplayName: any;
   internalCCContactsDisplayNameForPreview: any;
   internalContactsEmail: any;
-  vendorarray: any;
+  settingsListArray: any[];
   selectedVendor: any;
   //searching contacts
   searchContactsTo: any[];
@@ -161,6 +161,8 @@ export interface IOutboundTransmittalV2State {
   divForToAndCCSearch: string;
   TypeOFDelete: string;
   selectedDocuments: any[],
+  settingsListsItemsArray: any[],
+  documentFilters: any[],
 }
 //for msg bar
 export interface IMessage {

@@ -15,6 +15,7 @@ import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, Ac
 import CustomFileInput from './CustomFileInput';
 import { DragDropFiles } from '@pnp/spfx-controls-react/lib/DragDropFiles';
 import { IHttpClientOptions, HttpClient } from '@microsoft/sp-http';
+
 export default class OutboundTransmittalV2 extends React.Component<IOutboundTransmittalV2Props, IOutboundTransmittalV2State, {}> {
   private validator: SimpleReactValidator;
   private _Service: OBService;
@@ -153,7 +154,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       internalCCContactsDisplayName: "",
       internalCCContactsDisplayNameForPreview: "",
       internalContactsEmail: "",
-      vendorarray: [],
+      settingsListArray: [],
       selectedVendor: [],
       searchContactsTo: [],
       selectedContactsToName: [],
@@ -162,6 +163,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       divForToAndCC: "none",
       divForToAndCCSearch: "",
       selectedDocuments: [],
+      settingsListsItemsArray: [],
+      documentFilters: []
     };
     this._Service = new OBService(this.props.context, window.location.protocol + "//" + window.location.hostname + this.props.hubSiteUrl);
     this._drpdwnTransmitTo = this._drpdwnTransmitTo.bind(this);
@@ -205,6 +208,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     this.setSelectedContactsTo = this.setSelectedContactsTo.bind(this);
     this.setSelectedContactsCC = this.setSelectedContactsCC.bind(this);
     this.setSelectedDocuments = this.setSelectedDocuments.bind(this);
+    this.loadSettingsList = this.loadSettingsList.bind(this);
   }
   public render(): React.ReactElement<IOutboundTransmittalV2Props> {
     const {
@@ -447,11 +451,29 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                     />
                   </div>
                   <hr />
+
                   {/* filesizeDiv */}
                   {this.state.itemsForGrid.length > 0 &&
                     <div hidden={this.state.fileSizeDiv} style={{ float: "right", color: (Number(this.state.fileSize) >= 25) ? "Red" : "Green" }}>Size : [{(this.state.fileSize < 1) ? this.state.fileSize + " MB" : this.state.fileSize + " MB"}]</div>
                   }
                   {/* project documents */}
+                  {this.state.settingsListArray.length > 0 &&
+                    <div style={{ display: "flex", marginRight: "10px" }}>
+                      {this.state.settingsListArray.map((item, index) => {
+                        return (
+                          <div style={{ marginRight: "10px" }}>
+                            <Dropdown id={item.Title}
+                              required={true}
+                              selectedKey={item.selectedKey}
+                              placeholder="Select an option"
+                              options={this.state.settingsListsItemsArray[item.Title] ? this.state.settingsListsItemsArray[item.Title] : []}
+                              onChange={(_, e) => this.handleSettingsListItemsChange(index, e, item.Title)}
+                              label={item.Title}
+                              disabled={this.state.dropDownReadonly} /></div>);
+                      })
+                      }
+                    </div>
+                  }
                   <div style={{ padding: "12px 0 12px 12px" }}>
                     <div style={{ display: "block" }}>
                       <div hidden={this.state.documentSelectedDiv} style={{ fontWeight: "bold", color: "Red" }}> {this.state.documentSelect}</div>
@@ -1104,9 +1126,51 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     this._currentUser();
     this._transmitForBind();
     this._queryParamGetting();
-    // //this._LAUrlGetting();    
-    this._loadPublishDocuments();
+    // //this._LAUrlGetting();  
+    await this.loadSettingsList();
+    this._loadPublishDocuments("");
   }
+  private loadSettingsList = async () => {
+    await this._Service.getListItems(this.props.context.pageContext.site.serverRelativeUrl, "SettingsList")
+      .then(settings => {
+        const tempArray = settings.filter(item => item.Active === true);
+        console.log(tempArray);
+        this.setState({ settingsListArray: tempArray })
+        const resultArrays = [];
+        // Use Promise.all to handle multiple Promises
+        Promise.all(tempArray.map(element =>
+          this._Service.getListItems(this.props.context.pageContext.site.serverRelativeUrl, element.Title)
+        ))
+          .then(results => {
+            // results is an array containing the resolved values of each Promise
+            tempArray.forEach((element, index) => {
+              console.log(results[index])
+              let listItems = results[index].map(item => ({
+                key: item.Title,
+                text: item.Title
+              }));
+              resultArrays[element.Title] = listItems;
+
+            });
+            this.setState({ settingsListsItemsArray: resultArrays })
+          })
+          .catch(error => {
+            // Handle errors here
+            console.error(error);
+          });
+      });
+  }
+  //Row Comment item changes
+  public handleSettingsListItemsChange = (index, event, item) => {
+    const { settingsListArray, documentFilters } = this.state;
+    const updatedItems = [...settingsListArray];
+    // Update the selected key for the specific item
+    updatedItems[index].selectedKey = event.key;
+    documentFilters[item] = event.key;
+    // Update the state
+    this.setState({ settingsListArray: updatedItems });
+    this._loadPublishDocuments(item);
+  };
   // document selection
   private setSelectedDocuments = async (option) => {
     await this.setState({
@@ -1115,7 +1179,6 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       hideGridAddButton: false,
       selectedDocuments: option,
     });
-    console.log("Selected Documents ID", this.state.selectedDocuments)
     const tempFile = [];
     if (option.length !== 0) {
       option.forEach(selectedDocuments => {
@@ -1151,6 +1214,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         searchText: "",
       });
     }
+
+
   }
 
   protected async triggerOutboundTransmittal(transmittalID) {
@@ -2934,12 +2999,19 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       });
   }
   //for customers documents from published docs
-  public async _loadPublishDocuments() {
+  public async _loadPublishDocuments(item) {
     const publishedDocumentArray: { value: any; label: any; }[] = [];
     let transmitForItemdata;
+    let filter;
     const publishedDocumentsDl: string = this.props.context.pageContext.web.serverRelativeUrl + "/" + this.props.publishDocumentLibraryName;
-    this._Service.getLibraryItems(publishedDocumentsDl)
-      .then(async (publishDocumentsItems: string | any[]) => {
+    if (item !== "") {
+      filter = "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') and (Category eq '" + this.state.documentFilters['Category'] + "')";
+    }
+    else {
+      filter = "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') "
+    }
+    this._Service.getLibraryItems(publishedDocumentsDl, filter)
+      .then(async (publishDocumentsItems) => {
         console.log("PublishDocumentForCustomerCount", publishDocumentsItems.length);
         this.sortedArray = _.orderBy(publishDocumentsItems, 'FileLeafRef', ['asc']);
         if (publishDocumentsItems.length > 0) {
@@ -3033,7 +3105,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     const publishedDocumentArray: { value: any; label: any; }[] = [];
     let transmitForItemdata;
     const publishedDocumentsDl: string = this.props.context.pageContext.web.serverRelativeUrl + "/" + this.props.publishDocumentLibraryName;
-    this._Service.getLibraryItems(publishedDocumentsDl)
+    this._Service.getLibraryItems(publishedDocumentsDl, "")
       .then(async (publishDocumentsItems: string | any[]) => {
         console.log("PublishDocumentForCustomerCount", publishDocumentsItems.length);
         this.sortedArray = _.orderBy(publishDocumentsItems, 'FileLeafRef', ['asc']);
@@ -3138,12 +3210,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       this._loadSourceDocumentsForLetter();
     }
     else if (option.text === 'Document') {
-      if (this.state.transmitTo === "Sub-Contractor") {
-        this._loadSourceDocuments();
-      }
-      else {
-        this._loadPublishDocuments();
-      }
+      this._loadPublishDocuments("");
     }
   }
 
