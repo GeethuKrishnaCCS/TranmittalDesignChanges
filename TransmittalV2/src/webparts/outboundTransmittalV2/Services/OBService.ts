@@ -191,6 +191,28 @@ export class OBService extends BaseService {
         } while (items.hasNext);
         return finalItems;
     }
+    public async getItemForSelectInListsWithExpand(siteUrl: string, listName: string, select: string, expand: string, filter: string,): Promise<any> {
+        let finalItems: any[] = [];
+        let items: PagedItemCollection<any[]> = undefined;
+        do {
+            if (!items) {
+                items = await this._spfi.web.getList(siteUrl + "/Lists/" + listName)
+                    .items
+                    .select(select)
+                    .expand(expand)
+                    .filter(filter)
+                    .top(250)
+                    .getPaged();
+            }
+            else {
+                items = await items.getNext();
+            }
+            if (items.results.length > 0) {
+                finalItems = finalItems.concat(items.results);
+            }
+        } while (items.hasNext);
+        return finalItems;
+    }
     public updateSiteItem(siteUrl: string, listname: string, id: number, data: any): Promise<any> {
         return this._spfi.web.getList(siteUrl + "/Lists/" + listname).items.getById(id).update(data);
     }

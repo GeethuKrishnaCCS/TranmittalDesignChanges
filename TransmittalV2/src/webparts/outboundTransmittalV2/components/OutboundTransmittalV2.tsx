@@ -1346,233 +1346,149 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   //   let tempInternalCCName: any[] = [];
   //   let tempInternalCCNameForMail: any[] = [];
 
-  //   //binding from outbound transmittal header
-  //   await sp.web.getList(this.props.siteUrl + "/Lists/" + this.props.outboundTransmittalHeaderListName).items.filter("ID eq '" + this.transmittalID + "' ").get().then(async (outboundTransmittalHeader: { InternalCCId: null; }[]) => {
-  //     console.log("outboundTransmittalHeader", outboundTransmittalHeader);
-  //     console.log(outboundTransmittalHeader[0].ToEmails);
-  //     toMails = outboundTransmittalHeader[0].ToEmails === null ? "" : outboundTransmittalHeader[0].ToEmails.split(';');
-  //     ccMails = outboundTransmittalHeader[0].CCEmails === null ? "" : outboundTransmittalHeader[0].CCEmails.split(';');
-  //     toMailsDisplay = outboundTransmittalHeader[0].ToName === null ? "" : outboundTransmittalHeader[0].ToName.split(',');
-  //     ccMailsDisplay = outboundTransmittalHeader[0].CCName === null ? "" : outboundTransmittalHeader[0].CCName.split(',');
-  //     console.log(toMails);
-  //     let toMailKey = "";
-  //     for (let k = 0; k < toMails.length; k++) {
-  //       finalTo.push(toMails[k]);
-  //     }
-  //     for (let k = 0; k < ccMails.length; k++) {
-  //       finalCC.push(ccMails[k]);
-  //     }
-  //     for (let k = 0; k < toMailsDisplay.length; k++) {
-  //       finalToDisplay.push(toMailsDisplay[k]);
-  //     }
-  //     for (let k = 0; k < ccMailsDisplay.length; k++) {
-  //       finalCCDisplay.push(ccMailsDisplay[k]);
-  //     }
-  //     // contactsToRebind = replaceString(outboundTransmittalHeader[0].ToEmails, ';', ',');
-  //     console.log(contactsToRebind);
-  //     this.emailsSelectedTo = finalTo;
-  //     this.emailsSelectedCC = finalCC;
-  //     this.contactToDisplay = finalToDisplay;
-  //     this.contactCCDisplay = finalCCDisplay;
-  //     this.setState({
-  //       transmittalNo: outboundTransmittalHeader[0].Title,
-  //       selectedContactsToDisplayName: outboundTransmittalHeader[0].ToName,
-  //       selectedContactsTo1: finalTo,
-  //       selectedContactsTo: (outboundTransmittalHeader[0].ToEmails === null) ? " " : outboundTransmittalHeader[0].ToEmails,
-  //       // selectedContactsTo: contactsToRebind,
-  //       selectedContactsToCCRebind: finalCC,
-  //       selectedContactsCC: (outboundTransmittalHeader[0].CCEmails === null) ? " " : outboundTransmittalHeader[0].CCEmails,
-  //       selectedContactsCCDisplayName: outboundTransmittalHeader[0].CCName,
-  //       notes: outboundTransmittalHeader[0].Notes,
-  //       transmittalTypekey: outboundTransmittalHeader[0].TransmittalType,
-  //       transmittalType: outboundTransmittalHeader[0].TransmittalType,
-  //       fileSize: outboundTransmittalHeader[0].TransmittalSize,
-  //     });
-  //     if (outboundTransmittalHeader[0].TransmittalType === "Document" && outboundTransmittalHeader[0].TransmittalCategory === "Customer") {
-  //       this._loadPublishDocuments();
-  //     }
-  //     else if (outboundTransmittalHeader[0].TransmittalType === "Letter" && outboundTransmittalHeader[0].TransmittalCategory === "Customer") {
-  //       this._loadSourceDocumentsForLetter();
-  //     }
-  //     else if (outboundTransmittalHeader[0].TransmittalType === "Document" && outboundTransmittalHeader[0].TransmittalCategory === "Sub-Contractor") {
-  //       this._loadSourceDocuments();
-  //     }
-  //     else if (outboundTransmittalHeader[0].TransmittalType === "Letter" && outboundTransmittalHeader[0].TransmittalCategory === "Sub-Contractor") {
-  //       this._loadSourceDocumentsForLetter();
-  //     }
-  //     if (outboundTransmittalHeader[0].TransmittalType === "Document") {
-  //       this.setState({
-  //         transmittalTypekey: "Document",
-  //         transmitTypeForDocument: "",
-  //         transmitTypeForLetter: "none",
-  //         transmitTypeForDefault: "none",
 
-  //       });
-  //     }
-  //     else if (outboundTransmittalHeader[0].TransmittalType === "Letter") {
+  //   let filter = "ID eq '" + this.transmittalID + "' ";
+  //   await this._Service.getItemForSelectInLists(this.props.siteUrl, this.props.outboundTransmittalHeaderListName, "*", filter)
+  //     .then(outboundTransmittalHeader => {
+  //       toMails = outboundTransmittalHeader[0].ToEmails === null ? "" : outboundTransmittalHeader[0].ToEmails.split(';');
+  //       ccMails = outboundTransmittalHeader[0].CCEmails === null ? "" : outboundTransmittalHeader[0].CCEmails.split(';');
+  //       toMailsDisplay = outboundTransmittalHeader[0].ToName === null ? "" : outboundTransmittalHeader[0].ToName.split(',');
+  //       ccMailsDisplay = outboundTransmittalHeader[0].CCName === null ? "" : outboundTransmittalHeader[0].CCName.split(',');
+  //       console.log(toMails);
+  //       let toMailKey = "";
+  //       for (let k = 0; k < toMails.length; k++) {
+  //         finalTo.push(toMails[k]);
+  //       }
+  //       for (let k = 0; k < ccMails.length; k++) {
+  //         finalCC.push(ccMails[k]);
+  //       }
+  //       for (let k = 0; k < toMailsDisplay.length; k++) {
+  //         finalToDisplay.push(toMailsDisplay[k]);
+  //       }
+  //       for (let k = 0; k < ccMailsDisplay.length; k++) {
+  //         finalCCDisplay.push(ccMailsDisplay[k]);
+  //       }
+  //       // contactsToRebind = replaceString(outboundTransmittalHeader[0].ToEmails, ';', ',');
+  //       console.log(contactsToRebind);
+  //       this.emailsSelectedTo = finalTo;
+  //       this.emailsSelectedCC = finalCC;
+  //       this.contactToDisplay = finalToDisplay;
+  //       this.contactCCDisplay = finalCCDisplay;
   //       this.setState({
-  //         transmittalTypekey: "Letter",
-  //         transmitTypeForDocument: "none",
-  //         transmitTypeForLetter: "",
-  //         transmitTypeForDefault: "none",
+  //         transmittalNo: outboundTransmittalHeader[0].Title,
+  //         selectedContactsToDisplayName: outboundTransmittalHeader[0].ToName,
+  //         selectedContactsTo1: finalTo,
+  //         selectedContactsTo: (outboundTransmittalHeader[0].ToEmails === null) ? " " : outboundTransmittalHeader[0].ToEmails,
+  //         // selectedContactsTo: contactsToRebind,
+  //         selectedContactsToCCRebind: finalCC,
+  //         selectedContactsCC: (outboundTransmittalHeader[0].CCEmails === null) ? " " : outboundTransmittalHeader[0].CCEmails,
+  //         selectedContactsCCDisplayName: outboundTransmittalHeader[0].CCName,
+  //         notes: outboundTransmittalHeader[0].Notes,
+  //         transmittalTypekey: outboundTransmittalHeader[0].TransmittalType,
+  //         transmittalType: outboundTransmittalHeader[0].TransmittalType,
+  //         fileSize: outboundTransmittalHeader[0].TransmittalSize,
   //       });
-  //     }
-  //     if (outboundTransmittalHeader[0].TransmittalSize === null) {
-  //       this.setState({
-  //         fileSizeDiv: true,
-  //       });
-  //     }
-  //     else {
-  //       this.setState({
-  //         fileSizeDiv: true,
-  //       });
-  //     }
-  //     //Transmit To CUSTOMER
-  //     if (outboundTransmittalHeader[0].TransmittalCategory === "Customer") {
-  //       // this._loadPublishDocuments();
-  //       this.setState({
-  //         transmitToKey: "1",
-  //         transmitTo: "Customer",
-  //         hideCustomer: "",
-  //         customerName: outboundTransmittalHeader[0].Customer,
-  //         dropDownReadonly: true,
-
-  //       });
-  //       this.reqWeb.getList("/sites/" + this.props.hubSite + "/Lists/" + this.props.contactListName).items
-  //         // .filter("CompanyId eq '" + this.state.customerId + "' ").get()
-  //         .filter("CustomerOrVendorID eq '" + this.state.customerId + "'  and  LegalEntityId eq '" + this.state.legalId + "'").get()
-  //         .then((contacts: { [x: string]: { Email: string; }; }) => {
-  //           console.log("contacts", contacts);
-  //           for (var k in contacts) {
-  //             if (contacts[k].Active === true) {
-  //               console.log("contacts", contacts);
-  //               this.setState({
-  //                 contacts: contacts,
-  //               });
-  //               let transmitForItemdata = {
-  //                 key: contacts[k].Email,
-  //                 text: contacts[k].Title + " " + (contacts[k].LastName != null ? contacts[k].LastName : " ") + "<" + contacts[k].Email + ">",
-  //               };
-  //               customerArray.push(transmitForItemdata);
-  //             }
-  //           }
-  //           this.setState({
-  //             contacts: customerArray,
-  //           });
-  //         });
-  //       //binding from outbound tranmittal details
-  //       let selectHeaderItems = "Id,DocumentIndex/ID,DocumentIndex/Title,DueDate,SentComments,Revision,Title,Size,TransmittedFor/ID,TransmittedFor/Title,Temporary,TransmittalHeader/ID,DocumentLibraryID,ID,ApprovalRequired,CustomerDocumentNo,SubcontractorDocumentNo";
-  //       sp.web.getList(this.props.siteUrl + "/Lists/" + this.props.outboundTransmittalDetailsListName).items.select(selectHeaderItems).expand("DocumentIndex,TransmittedFor,TransmittalHeader").filter("TransmittalHeader/ID eq '" + Number(this.transmittalID) + "' ").get().then((outboundTransmittalDetailsListName: string | any[]) => {
-  //         console.log("outboundTransmittalDetailsListName", outboundTransmittalDetailsListName);
-  //         if (outboundTransmittalDetailsListName.length >= 2) {
-  //           this.setState({
-  //             sendAsMultipleEmailCheckBoxDiv: "",
-  //           });
-  //         }
-  //         if (outboundTransmittalDetailsListName.length > 0) {
-  //           for (var k = 0; k <= outboundTransmittalDetailsListName.length; k++) {
-  //             this.state.tempArrayForPublishedDocumentGrid.push({
-  //               publishDoumentlibraryID: outboundTransmittalDetailsListName[k]['DocumentLibraryID'],
-  //               //transmittalHeaderID:outboundTransmittalDetailsListName[k].TransmittalHeader.ID,
-  //               outboundDetailsID: outboundTransmittalDetailsListName[k].ID,
-  //               documentIndexId: outboundTransmittalDetailsListName[k].DocumentIndex['ID'],
-  //               DueDate: moment(outboundTransmittalDetailsListName[k].DueDate).format("DD/MM/YYYY"),
-  //               dueDate: outboundTransmittalDetailsListName[k].DueDate,
-  //               comments: outboundTransmittalDetailsListName[k].SentComments,
-  //               revision: outboundTransmittalDetailsListName[k].Revision,
-  //               // documentID: outboundTransmittalDetailsListName[k].DocumentID,
-  //               documentName: outboundTransmittalDetailsListName[k].Title,
-  //               //acceptanceCode:outboundTransmittalDetailsListName[k].CustomerAcceptanceCode.ID,
-  //               fileSize: outboundTransmittalDetailsListName[k].Size,
-  //               fileSizeInMB: outboundTransmittalDetailsListName[k].Size,
-  //               transmitFor: outboundTransmittalDetailsListName[k].TransmittedFor.Title,
-  //               transmitForKey: outboundTransmittalDetailsListName[k].TransmittedFor.ID,
-  //               temporary: outboundTransmittalDetailsListName[k].Temporary,
-  //               customerDocumentNo: outboundTransmittalDetailsListName[k].CustomerDocumentNo,
-  //             });
-  //             this.setState({
-  //               itemsForGrid: this.state.tempArrayForPublishedDocumentGrid,
-  //               showGrid: false,
-  //               currentOutboundDetailItem: outboundTransmittalDetailsListName,
-  //             });
-  //             if (outboundTransmittalDetailsListName[k].Size >= 10 && outboundTransmittalDetailsListName.length >= 2) {
-  //               this.setState({
-  //                 sendAsMultipleEmailCheckBoxDiv: "none",
-  //               });
-  //               multipledoc = "Yes";
-  //             }
-
-  //           }
-  //           for (let i = 0; i < this.state.itemsForExternalGrid.length; i++) {
-  //             if (this.state.itemsForExternalGrid[i].fileSizeInMB >= 10 && this.state.itemsForExternalGrid.length >= 2) {
-  //               this.setState({
-  //                 sendAsMultipleEmailCheckBoxDiv: "none",
-  //               });
-  //             }
-  //           }
-  //         }
-
-  //       });
-  //     }
-  //     //Transmit To SUBCONTRACTOR
-  //     else if (outboundTransmittalHeader[0].TransmittalCategory === "Sub-Contractor") {
-  //       this.setState({
-  //         transmitToKey: "2",
-  //         transmitTo: "Sub-Contractor",
-  //         hideSubContractor: "",
-  //         hideCustomer: "none",
-  //         subContractorLabel: "",
-  //         subContractorDrpDwn: "none",
-  //       });
-  //       if (outboundTransmittalHeader[0].SubContractorID != null) {
+  //       this._loadPublishDocuments("");
+  //       if (outboundTransmittalHeader[0].TransmittalType === "Document") {
   //         this.setState({
-  //           subContractorKey: outboundTransmittalHeader[0].SubContractorID,
-  //           subContractor: outboundTransmittalHeader[0].SubContractor,
-  //           dropDownReadonly: true,
+  //           transmittalTypekey: "Document",
+  //           transmitTypeForDocument: "",
+  //           transmitTypeForLetter: "none",
+  //           transmitTypeForDefault: "none",
+
   //         });
-  //         const outBoundTransmittalDetails = await sp.web.getList(this.props.siteUrl + "/Lists/" + this.props.outboundTransmittalDetailsListName).items.filter("TransmittalHeader/ID eq '" + Number(this.transmittalID) + "' ").get();
-  //         console.log(outBoundTransmittalDetails);
-  //         //binding from outbound tranmittal details
-  //         let selectHeaderItems = "Id,DocumentIndex/ID,DocumentIndex/Title,DueDate,SentComments,Revision,Title,Size,TransmittedFor/ID,TransmittedFor/Title,Temporary,TransmittalHeader/ID,DocumentLibraryID,ID,CustomerAcceptanceCode/ID,CustomerAcceptanceCode/Title,CustomerDocumentNo,SubcontractorDocumentNo";
-  //         sp.web.getList(this.props.siteUrl + "/Lists/" + this.props.outboundTransmittalDetailsListName).items.select(selectHeaderItems).expand("DocumentIndex,TransmittedFor,TransmittalHeader,CustomerAcceptanceCode").filter("TransmittalHeader/ID eq '" + Number(this.transmittalID) + "' ").get().then((outboundTransmittalDetailsListName: string | any[]) => {
-  //           console.log("outboundTransmittalDetailsListName", outboundTransmittalDetailsListName);
-  //           if (outboundTransmittalDetailsListName.length >= 2) {
-  //             this.setState({
-  //               sendAsMultipleEmailCheckBoxDiv: "",
-  //             });
-  //           }
-  //           if (outboundTransmittalDetailsListName.length > 0) {
-  //             for (var k = 0; k < outboundTransmittalDetailsListName.length; k++) {
-  //               this.state.tempArrayForPublishedDocumentGrid.push({
-  //                 outboundDetailsID: outboundTransmittalDetailsListName[k].ID,
-  //                 documentIndexId: outboundTransmittalDetailsListName[k].DocumentIndex['ID'],
-  //                 DueDate: moment(outboundTransmittalDetailsListName[k].DueDate).format("DD/MM/YYYY "),
-  //                 dueDate: outboundTransmittalDetailsListName[k].DueDate,
-  //                 comments: outboundTransmittalDetailsListName[k].SentComments,
-  //                 revision: outboundTransmittalDetailsListName[k].Revision,
-  //                 // documentID: outboundTransmittalDetailsListName[k].DocumentID,
-  //                 documentName: outboundTransmittalDetailsListName[k].Title,
-  //                 acceptanceCodeTitle: (outBoundTransmittalDetails[k].CustomerAcceptanceCodeId != null) ? outboundTransmittalDetailsListName[k].CustomerAcceptanceCode.Title : "",
-  //                 fileSize: outboundTransmittalDetailsListName[k].Size,
-  //                 fileSizeInMB: outboundTransmittalDetailsListName[k].Size,
-  //                 transmitFor: outboundTransmittalDetailsListName[k].TransmittedFor.Title,
-  //                 transmitForKey: outboundTransmittalDetailsListName[k].TransmittedFor.ID,
-  //                 temporary: outboundTransmittalDetailsListName[k].Temporary,
-  //                 subcontractorDocumentNo: outboundTransmittalDetailsListName[k].SubcontractorDocumentNo,
-  //               });
-  //               this.setState({
-  //                 itemsForGrid: this.state.tempArrayForPublishedDocumentGrid,
-  //                 showGrid: false,
-  //                 currentOutboundDetailItem: outboundTransmittalDetailsListName,
-  //               });
-  //               //multiple mail checkbox 
-  //               if (outboundTransmittalDetailsListName[k].Size >= 10 && outboundTransmittalDetailsListName.length >= 2) {
-  //                 this.setState({
-  //                   sendAsMultipleEmailCheckBoxDiv: "none",
-  //                 });
-  //                 multipledoc = "Yes";
+  //       }
+  //       else if (outboundTransmittalHeader[0].TransmittalType === "Letter") {
+  //         this.setState({
+  //           transmittalTypekey: "Letter",
+  //           transmitTypeForDocument: "none",
+  //           transmitTypeForLetter: "",
+  //           transmitTypeForDefault: "none",
+  //         });
+  //       }
+  //       if (outboundTransmittalHeader[0].TransmittalSize === null) {
+  //         this.setState({
+  //           fileSizeDiv: true,
+  //         });
+  //       }
+  //       else {
+  //         this.setState({
+  //           fileSizeDiv: true,
+  //         });
+  //       }
+  //       //Transmit To CUSTOMER
+  //       if (outboundTransmittalHeader[0].TransmittalCategory === "Customer") {
+  //         // this._loadPublishDocuments();
+  //         this.setState({
+  //           transmitToKey: "1",
+  //           transmitTo: "Customer",
+  //           hideCustomer: "",
+  //           customerName: outboundTransmittalHeader[0].Customer,
+  //           dropDownReadonly: true,
+
+  //         });
+  //         this._Service.getHubItemsWithFilter(this.props.contactListName, "CustomerOrVendorID eq '" + this.state.customerId + "'  and  LegalEntityId eq '" + this.state.legalId + "'", this.props.hubSiteUrl)
+  //           .then(contacts => {
+  //             for (let k in contacts) {
+  //               if (contacts[k].Active === true) {
+  //                 const transmitForItemdata = {
+  //                   key: contacts[k].Email,
+  //                   text: contacts[k].Title + " " + (contacts[k].LastName !== null ? contacts[k].LastName : " ") + "<" + contacts[k].Email + ">",
+  //                 };
+  //                 customerArray.push(transmitForItemdata);
   //               }
-  //               //multiple mail checkbox wrt additional
+  //             }
+  //             this.setState({
+  //               contacts: customerArray,
+  //             });
+  //           });
+
+  //         //binding from outbound tranmittal details
+  //         let selectHeaderItems = "Id,DocumentIndex/ID,DocumentIndex/Title,DueDate,SentComments,Revision,Title,Size,TransmittedFor/ID,TransmittedFor/Title,Temporary,TransmittalHeader/ID,DocumentLibraryID,ID,ApprovalRequired,CustomerDocumentNo,SubcontractorDocumentNo";
+  //         let expand = "DocumentIndex,TransmittedFor,TransmittalHeader";
+  //         let filter = "TransmittalHeader/ID eq '" + Number(this.transmittalID) + "' ";
+  //         this._Service.getItemForSelectInListsWithExpand(this.props.siteUrl, this.props.outboundTransmittalDetailsListName, selectHeaderItems, expand, filter)
+  //           .then((outboundTransmittalDetailsListName: string | any[]) => {
+  //             console.log("outboundTransmittalDetailsListName", outboundTransmittalDetailsListName);
+  //             if (outboundTransmittalDetailsListName.length >= 2) {
+  //               this.setState({
+  //                 sendAsMultipleEmailCheckBoxDiv: "",
+  //               });
+  //             }
+  //             if (outboundTransmittalDetailsListName.length > 0) {
+  //               for (var k = 0; k <= outboundTransmittalDetailsListName.length; k++) {
+  //                 this.state.tempArrayForPublishedDocumentGrid.push({
+  //                   publishDoumentlibraryID: outboundTransmittalDetailsListName[k]['DocumentLibraryID'],
+  //                   //transmittalHeaderID:outboundTransmittalDetailsListName[k].TransmittalHeader.ID,
+  //                   outboundDetailsID: outboundTransmittalDetailsListName[k].ID,
+  //                   documentIndexId: outboundTransmittalDetailsListName[k].DocumentIndex['ID'],
+  //                   DueDate: moment(outboundTransmittalDetailsListName[k].DueDate).format("DD/MM/YYYY"),
+  //                   dueDate: outboundTransmittalDetailsListName[k].DueDate,
+  //                   comments: outboundTransmittalDetailsListName[k].SentComments,
+  //                   revision: outboundTransmittalDetailsListName[k].Revision,
+  //                   // documentID: outboundTransmittalDetailsListName[k].DocumentID,
+  //                   documentName: outboundTransmittalDetailsListName[k].Title,
+  //                   //acceptanceCode:outboundTransmittalDetailsListName[k].CustomerAcceptanceCode.ID,
+  //                   fileSize: outboundTransmittalDetailsListName[k].Size,
+  //                   fileSizeInMB: outboundTransmittalDetailsListName[k].Size,
+  //                   transmitFor: outboundTransmittalDetailsListName[k].TransmittedFor.Title,
+  //                   transmitForKey: outboundTransmittalDetailsListName[k].TransmittedFor.ID,
+  //                   temporary: outboundTransmittalDetailsListName[k].Temporary,
+  //                   customerDocumentNo: outboundTransmittalDetailsListName[k].CustomerDocumentNo,
+  //                 });
+  //                 this.setState({
+  //                   itemsForGrid: this.state.tempArrayForPublishedDocumentGrid,
+  //                   showGrid: false,
+  //                   currentOutboundDetailItem: outboundTransmittalDetailsListName,
+  //                 });
+  //                 if (outboundTransmittalDetailsListName[k].Size >= 10 && outboundTransmittalDetailsListName.length >= 2) {
+  //                   this.setState({
+  //                     sendAsMultipleEmailCheckBoxDiv: "none",
+  //                   });
+  //                   multipledoc = "Yes";
+  //                 }
+
+  //               }
   //               for (let i = 0; i < this.state.itemsForExternalGrid.length; i++) {
   //                 if (this.state.itemsForExternalGrid[i].fileSizeInMB >= 10 && this.state.itemsForExternalGrid.length >= 2) {
   //                   this.setState({
@@ -1581,125 +1497,195 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   //                 }
   //               }
   //             }
-  //           }
 
-  //         });
+  //           });
   //       }
   //       //Transmit To SUBCONTRACTOR
-  //       if (this.state.transmitTo === "Sub-Contractor") {
-  //         this.reqWeb.getList("/sites/" + this.props.hubSite + "/Lists/" + this.props.contactListName).items
-  //           .filter("CustomerOrVendorID eq '" + outboundTransmittalHeader[0].SubContractorID + "' and  LegalEntityId eq '" + this.state.legalId + "' ").get()
-  //           .then((contacts: { [x: string]: { Email: string; }; }) => {
-  //             for (var k in contacts) {
-  //               if (contacts[k].Active === true) {
-  //                 let transmitForItemdata = {
-  //                   key: contacts[k].Email,
-  //                   text: contacts[k].Title + " " + (contacts[k].LastName != null ? contacts[k].LastName : " ") + "<" + contacts[k].Email + ">",
-  //                 };
-  //                 subContractor.push(transmitForItemdata);
+  //       else if (outboundTransmittalHeader[0].TransmittalCategory === "Sub-Contractor") {
+  //         this.setState({
+  //           transmitToKey: "2",
+  //           transmitTo: "Sub-Contractor",
+  //           hideSubContractor: "",
+  //           hideCustomer: "none",
+  //           subContractorLabel: "",
+  //           subContractorDrpDwn: "none",
+  //         });
+  //         if (outboundTransmittalHeader[0].SubContractorID != null) {
+  //           this.setState({
+  //             subContractorKey: outboundTransmittalHeader[0].SubContractorID,
+  //             subContractor: outboundTransmittalHeader[0].SubContractor,
+  //             dropDownReadonly: true,
+  //           });
+  //           const outBoundTransmittalDetails = await sp.web.getList(this.props.siteUrl + "/Lists/" + this.props.outboundTransmittalDetailsListName).items.filter("TransmittalHeader/ID eq '" + Number(this.transmittalID) + "' ").get();
+  //           console.log(outBoundTransmittalDetails);
+  //           //binding from outbound tranmittal details
+  //           let selectHeaderItems = "Id,DocumentIndex/ID,DocumentIndex/Title,DueDate,SentComments,Revision,Title,Size,TransmittedFor/ID,TransmittedFor/Title,Temporary,TransmittalHeader/ID,DocumentLibraryID,ID,CustomerAcceptanceCode/ID,CustomerAcceptanceCode/Title,CustomerDocumentNo,SubcontractorDocumentNo";
+  //           sp.web.getList(this.props.siteUrl + "/Lists/" + this.props.outboundTransmittalDetailsListName).items.select(selectHeaderItems).expand("DocumentIndex,TransmittedFor,TransmittalHeader,CustomerAcceptanceCode").filter("TransmittalHeader/ID eq '" + Number(this.transmittalID) + "' ").get().then((outboundTransmittalDetailsListName: string | any[]) => {
+  //             console.log("outboundTransmittalDetailsListName", outboundTransmittalDetailsListName);
+  //             if (outboundTransmittalDetailsListName.length >= 2) {
+  //               this.setState({
+  //                 sendAsMultipleEmailCheckBoxDiv: "",
+  //               });
+  //             }
+  //             if (outboundTransmittalDetailsListName.length > 0) {
+  //               for (var k = 0; k < outboundTransmittalDetailsListName.length; k++) {
+  //                 this.state.tempArrayForPublishedDocumentGrid.push({
+  //                   outboundDetailsID: outboundTransmittalDetailsListName[k].ID,
+  //                   documentIndexId: outboundTransmittalDetailsListName[k].DocumentIndex['ID'],
+  //                   DueDate: moment(outboundTransmittalDetailsListName[k].DueDate).format("DD/MM/YYYY "),
+  //                   dueDate: outboundTransmittalDetailsListName[k].DueDate,
+  //                   comments: outboundTransmittalDetailsListName[k].SentComments,
+  //                   revision: outboundTransmittalDetailsListName[k].Revision,
+  //                   // documentID: outboundTransmittalDetailsListName[k].DocumentID,
+  //                   documentName: outboundTransmittalDetailsListName[k].Title,
+  //                   acceptanceCodeTitle: (outBoundTransmittalDetails[k].CustomerAcceptanceCodeId != null) ? outboundTransmittalDetailsListName[k].CustomerAcceptanceCode.Title : "",
+  //                   fileSize: outboundTransmittalDetailsListName[k].Size,
+  //                   fileSizeInMB: outboundTransmittalDetailsListName[k].Size,
+  //                   transmitFor: outboundTransmittalDetailsListName[k].TransmittedFor.Title,
+  //                   transmitForKey: outboundTransmittalDetailsListName[k].TransmittedFor.ID,
+  //                   temporary: outboundTransmittalDetailsListName[k].Temporary,
+  //                   subcontractorDocumentNo: outboundTransmittalDetailsListName[k].SubcontractorDocumentNo,
+  //                 });
+  //                 this.setState({
+  //                   itemsForGrid: this.state.tempArrayForPublishedDocumentGrid,
+  //                   showGrid: false,
+  //                   currentOutboundDetailItem: outboundTransmittalDetailsListName,
+  //                 });
+  //                 //multiple mail checkbox 
+  //                 if (outboundTransmittalDetailsListName[k].Size >= 10 && outboundTransmittalDetailsListName.length >= 2) {
+  //                   this.setState({
+  //                     sendAsMultipleEmailCheckBoxDiv: "none",
+  //                   });
+  //                   multipledoc = "Yes";
+  //                 }
+  //                 //multiple mail checkbox wrt additional
+  //                 for (let i = 0; i < this.state.itemsForExternalGrid.length; i++) {
+  //                   if (this.state.itemsForExternalGrid[i].fileSizeInMB >= 10 && this.state.itemsForExternalGrid.length >= 2) {
+  //                     this.setState({
+  //                       sendAsMultipleEmailCheckBoxDiv: "none",
+  //                     });
+  //                   }
+  //                 }
   //               }
   //             }
-  //             this.setState({
-  //               contacts: subContractor
+
+  //           });
+  //         }
+  //         //Transmit To SUBCONTRACTOR
+  //         if (this.state.transmitTo === "Sub-Contractor") {
+  //           this.reqWeb.getList("/sites/" + this.props.hubSite + "/Lists/" + this.props.contactListName).items
+  //             .filter("CustomerOrVendorID eq '" + outboundTransmittalHeader[0].SubContractorID + "' and  LegalEntityId eq '" + this.state.legalId + "' ").get()
+  //             .then((contacts: { [x: string]: { Email: string; }; }) => {
+  //               for (var k in contacts) {
+  //                 if (contacts[k].Active === true) {
+  //                   let transmitForItemdata = {
+  //                     key: contacts[k].Email,
+  //                     text: contacts[k].Title + " " + (contacts[k].LastName != null ? contacts[k].LastName : " ") + "<" + contacts[k].Email + ">",
+  //                   };
+  //                   subContractor.push(transmitForItemdata);
+  //                 }
+  //               }
+  //               this.setState({
+  //                 contacts: subContractor
+  //               });
   //             });
-  //           });
-  //       }
-  //     }
-  //     //for size div visible
-  //     if (outboundTransmittalHeader[0].TransmittalStatus === "Draft") {
-  //       this.setState({
-  //         fileSizeDiv: false,
-  //       });
-  //     }
-  //     if (outboundTransmittalHeader[0].ReceiveInSharedFolder === true) {
-  //       this.setState({
-  //         recieveInSharedFolder: true,
-  //       });
-  //     }
-  //     if (outboundTransmittalHeader[0].SendAsMultipleEmails === true) {
-  //       this.setState({
-  //         sendAsMultipleFolder: true,
-  //       });
-  //     }
-  //     if (outboundTransmittalHeader[0].SendAsSharedFolder === true) {
-  //       this.setState({
-  //         sendAsSharedFolder: true,
-  //       });
-  //     }
-  //     if (outboundTransmittalHeader[0].CoverLetter === true) {
-  //       this.setState({
-  //         coverLetterNeeded: true,
-  //       });
-  //     }
-  //     if (outboundTransmittalHeader[0].InternalCCId != null) {
-  //       sp.web.getList(this.props.siteUrl + "/Lists/" + this.props.outboundTransmittalHeaderListName).items.getById(this.transmittalID).select("InternalCC/ID, InternalCC/Title,InternalCC/EMail").expand("InternalCC").get().then((internalContacts: { InternalCC: { [x: string]: { EMail: any; }; }; }) => {
-  //         for (var k in internalContacts.InternalCC) {
-  //           tempInternalCCID.push(internalContacts.InternalCC[k].ID);
-  //           this.setState({
-  //             internalCCContacts: tempInternalCCID,
-  //           });
-  //           tempInternalCCName.push(internalContacts.InternalCC[k].Title,);
-  //           tempInternalCCNameForMail.push(internalContacts.InternalCC[k].EMail,);
-  //         }
-
-  //         var InternalEmailID = tempInternalCCNameForMail.toString();
-  //         let InternalEmailIDSemicolonAttached = replaceString(InternalEmailID, ',', ';');
-  //         console.log("internalCCEmail", InternalEmailIDSemicolonAttached);
-  //         this.setState({
-  //           internalCCContactsDisplayName: tempInternalCCName,
-  //           internalCCContactsDisplayNameForPreview: tempInternalCCName.toString(),
-  //           internalContactsEmail: InternalEmailIDSemicolonAttached,
-  //         });
-  //         console.log("tempInternalCCName", tempInternalCCName);
-  //       });
-  //     }
-
-  //   });
-  //   //  //binding from outbound transmittal additional documents 
-  //   sp.web.getList(this.props.siteUrl + "/" + this.props.outboundAdditionalDocumentsListName).items.filter("TransmittalIDId eq '" + this.transmittalID + "' ").get().then((outboundAdditionalDocumentsListName: string | any[]) => {
-  //     console.log("outboundAdditionalDocumentsListName", outboundAdditionalDocumentsListName);
-  //     if (outboundAdditionalDocumentsListName.length > 0) {
-  //       for (var k = 0; k <= outboundAdditionalDocumentsListName.length; k++) {
-  //         this.state.tempArrayForExternalDocumentGrid.push({
-  //           additionalDocumentID: outboundAdditionalDocumentsListName[k]['ID'],
-  //           documentName: outboundAdditionalDocumentsListName[k].Title,
-  //           fileSize: outboundAdditionalDocumentsListName[k].Size,
-  //           fileSizeInMB: outboundAdditionalDocumentsListName[k].Size,
-  //           externalComments: outboundAdditionalDocumentsListName[k].Comments,
-  //           //   content:myfile,
-  //         });
-  //         this.setState({
-  //           currentOutboundAdditionalItem: outboundAdditionalDocumentsListName,
-  //           showExternalGrid: false,
-  //           //fileSizeDiv: false,
-  //           itemsForExternalGrid: this.state.tempArrayForExternalDocumentGrid,
-  //         });
-  //         if (outboundAdditionalDocumentsListName[k].Size >= 10 && this.state.itemsForGrid.length >= 2) {
-  //           this.setState({
-  //             sendAsMultipleEmailCheckBoxDiv: "none",
-  //           });
-  //           multipledoc = "Yes";
   //         }
   //       }
-  //       if (this.state.itemsForGrid.length > 0 || outboundAdditionalDocumentsListName.length > 0) {
-  //         for (let i = 0; i < this.state.itemsForGrid.length; i++) {
-  //           totalsizeProjects = Number(totalsizeProjects) + Number(this.state.itemsForGrid[i].fileSizeInMB);
-  //         }
-  //         for (let k = 0; k < outboundAdditionalDocumentsListName.length; k++) {
-  //           totalAdditional = Number(totalAdditional) + Number(outboundAdditionalDocumentsListName[k].Size);
-  //         }
-
-  //         let totalSize = add(totalAdditional, totalsizeProjects);
-  //         let convertKBtoMB = Number(totalSize).toFixed(2);
+  //       //for size div visible
+  //       if (outboundTransmittalHeader[0].TransmittalStatus === "Draft") {
   //         this.setState({
-  //           fileSize: Number(convertKBtoMB),
   //           fileSizeDiv: false,
   //         });
-  //         console.log(this.state.fileSize);
+  //       }
+  //       if (outboundTransmittalHeader[0].ReceiveInSharedFolder === true) {
+  //         this.setState({
+  //           recieveInSharedFolder: true,
+  //         });
+  //       }
+  //       if (outboundTransmittalHeader[0].SendAsMultipleEmails === true) {
+  //         this.setState({
+  //           sendAsMultipleFolder: true,
+  //         });
+  //       }
+  //       if (outboundTransmittalHeader[0].SendAsSharedFolder === true) {
+  //         this.setState({
+  //           sendAsSharedFolder: true,
+  //         });
+  //       }
+  //       if (outboundTransmittalHeader[0].CoverLetter === true) {
+  //         this.setState({
+  //           coverLetterNeeded: true,
+  //         });
+  //       }
+  //       if (outboundTransmittalHeader[0].InternalCCId != null) {
+  //        this._Service.getList(this.props.siteUrl + "/Lists/" + this.props.outboundTransmittalHeaderListName).items.getById(this.transmittalID).select("InternalCC/ID, InternalCC/Title,InternalCC/EMail").expand("InternalCC").get().then((internalContacts: { InternalCC: { [x: string]: { EMail: any; }; }; }) => {
+  //           for (var k in internalContacts.InternalCC) {
+  //             tempInternalCCID.push(internalContacts.InternalCC[k].ID);
+  //             this.setState({
+  //               internalCCContacts: tempInternalCCID,
+  //             });
+  //             tempInternalCCName.push(internalContacts.InternalCC[k].Title,);
+  //             tempInternalCCNameForMail.push(internalContacts.InternalCC[k].EMail,);
+  //           }
+
+  //           var InternalEmailID = tempInternalCCNameForMail.toString();
+  //           let InternalEmailIDSemicolonAttached = replaceString(InternalEmailID, ',', ';');
+  //           console.log("internalCCEmail", InternalEmailIDSemicolonAttached);
+  //           this.setState({
+  //             internalCCContactsDisplayName: tempInternalCCName,
+  //             internalCCContactsDisplayNameForPreview: tempInternalCCName.toString(),
+  //             internalContactsEmail: InternalEmailIDSemicolonAttached,
+  //           });
+  //           console.log("tempInternalCCName", tempInternalCCName);
+  //         });
   //       }
 
-  //     }
-  //   });
+  //     });
+  //   //  //binding from outbound transmittal additional documents 
+  //   // sp.web.getList(this.props.siteUrl + "/" + this.props.outboundAdditionalDocumentsListName).items.filter("TransmittalIDId eq '" + this.transmittalID + "' ").get().then((outboundAdditionalDocumentsListName: string | any[]) => {
+  //   //   console.log("outboundAdditionalDocumentsListName", outboundAdditionalDocumentsListName);
+  //   //   if (outboundAdditionalDocumentsListName.length > 0) {
+  //   //     for (var k = 0; k <= outboundAdditionalDocumentsListName.length; k++) {
+  //   //       this.state.tempArrayForExternalDocumentGrid.push({
+  //   //         additionalDocumentID: outboundAdditionalDocumentsListName[k]['ID'],
+  //   //         documentName: outboundAdditionalDocumentsListName[k].Title,
+  //   //         fileSize: outboundAdditionalDocumentsListName[k].Size,
+  //   //         fileSizeInMB: outboundAdditionalDocumentsListName[k].Size,
+  //   //         externalComments: outboundAdditionalDocumentsListName[k].Comments,
+  //   //         //   content:myfile,
+  //   //       });
+  //   //       this.setState({
+  //   //         currentOutboundAdditionalItem: outboundAdditionalDocumentsListName,
+  //   //         showExternalGrid: false,
+  //   //         //fileSizeDiv: false,
+  //   //         itemsForExternalGrid: this.state.tempArrayForExternalDocumentGrid,
+  //   //       });
+  //   //       if (outboundAdditionalDocumentsListName[k].Size >= 10 && this.state.itemsForGrid.length >= 2) {
+  //   //         this.setState({
+  //   //           sendAsMultipleEmailCheckBoxDiv: "none",
+  //   //         });
+  //   //         multipledoc = "Yes";
+  //   //       }
+  //   //     }
+  //   //     if (this.state.itemsForGrid.length > 0 || outboundAdditionalDocumentsListName.length > 0) {
+  //   //       for (let i = 0; i < this.state.itemsForGrid.length; i++) {
+  //   //         totalsizeProjects = Number(totalsizeProjects) + Number(this.state.itemsForGrid[i].fileSizeInMB);
+  //   //       }
+  //   //       for (let k = 0; k < outboundAdditionalDocumentsListName.length; k++) {
+  //   //         totalAdditional = Number(totalAdditional) + Number(outboundAdditionalDocumentsListName[k].Size);
+  //   //       }
+
+  //   //       let totalSize = add(totalAdditional, totalsizeProjects);
+  //   //       let convertKBtoMB = Number(totalSize).toFixed(2);
+  //   //       this.setState({
+  //   //         fileSize: Number(convertKBtoMB),
+  //   //         fileSizeDiv: false,
+  //   //       });
+  //   //       console.log(this.state.fileSize);
+  //   //     }
+
+  //   //   }
+  //   // });
   //   if (this.state.fileSize > "10") {
   //     this.setState({
   //       fileSizeDivForRebind: "",
