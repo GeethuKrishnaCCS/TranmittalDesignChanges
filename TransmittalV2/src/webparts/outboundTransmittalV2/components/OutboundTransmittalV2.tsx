@@ -284,7 +284,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       },
     };
     const DownIcon: IIconProps = { iconName: 'ChevronDown' };
-
+    const transmitForUnseleted = this.state.itemsForGrid.some(item => item.transmitFor === "");
     return (
       <section className={`${styles.outboundTransmittalV2} ${hasTeamsContext ? styles.teams : ''}`}>
         <div>
@@ -344,66 +344,66 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                   </div>
                   <div style={{ color: "#dc3545" }}>{this.validator.message("transmitTo", this.state.transmitToKey, "required")}{" "}</div>
                   <hr />
-                  <div >
-                    <div style={{ marginBottom: "10px" }} className={styles.borderForToCC}>
-                      <span className={styles.span} />
-                      <div style={{ width: "97%", display: this.state.divForToAndCCSearch }}>
-                        <label style={{ fontWeight: "bold", }}>To</label>
-                        <MultiSelect options={this.state.contactsForSearch} value={this.state.selectedContactsToName}
-                          onChange={this.setSelectedContactsTo}
-                          labelledBy="To" hasSelectAll={true} />
-                        <div style={{ color: "#dc3545" }}>{this.validator.message("selectedContactsTo", this.state.selectedContactsTo, "required")}{" "}</div>
-                      </div>
-                      <div style={{ width: "195%", display: this.state.divForToAndCC }}>
-                        <Dropdown
-                          placeholder="Select To contacts"
-                          label="To"
-                          defaultSelectedKeys={this.state.selectedContactsTo1}
-                          multiSelect
-                          multiSelectDelimiter={","}
-                          options={this.state.contacts}
-                          styles={dropdownStyles}
-                          //onChange={this._onDrpdwnCntact}
-                          title="To"
-                        />
-                        <div style={{ color: "#dc3545" }}>{this.validator.message("selectedContactsTo", this.state.selectedContactsTo, "required")}{" "}</div>
-                      </div>
-                      <span className={styles.span} />
-                      <div style={{ width: "97%", display: this.state.divForToAndCCSearch }}>
-                        <label style={{ fontWeight: "bold", }}>CC</label>
-                        <MultiSelect options={this.state.contactsForSearch} value={this.state.selectedContactsCCName}
-                          onChange={this.setSelectedContactsCC}
-                          labelledBy="CC" hasSelectAll={true} />
-                      </div>
-                      <div style={{ width: "195%", display: this.state.divForToAndCC }}>
-                        <Dropdown
-                          placeholder="Select CC contacts"
-                          label="CC "
-                          defaultSelectedKeys={this.state.selectedContactsToCCRebind}
-                          multiSelect
-                          multiSelectDelimiter={","}
-                          options={this.state.contacts}
-                          styles={dropdownStyles}
-                        // onChange={this._onDrpdwnCCContact}
-                        />
-                      </div>
-                      <div style={{ width: "98%", fontWeight: "bold" }}>
-                        <PeoplePicker
-                          context={this.props.context}
-                          titleText="Internal CC"
-                          personSelectionLimit={20}
-                          groupName={""} // Leave this blank in case you want to filter from all users
-                          showtooltip={true}
-                          required={true}
-                          disabled={false}
-                          ensureUser={true}
-                          onChange={(items) => this._selectedInternalCCContacts(items)}
-                          principalTypes={[PrincipalType.User]}
-                          resolveDelay={1000}
-                          defaultSelectedUsers={this.state.internalCCContactsDisplayName} />
-                      </div>
+
+                  <div style={{ marginBottom: "10px" }} className={styles.borderForToCC}>
+                    <span className={styles.span} />
+                    <div style={{ width: "97%", display: this.state.divForToAndCCSearch }}>
+                      <label style={{ fontWeight: "bold", }}>To</label>
+                      <MultiSelect options={this.state.contactsForSearch} value={this.state.selectedContactsToName}
+                        onChange={this.setSelectedContactsTo}
+                        labelledBy="To" hasSelectAll={true} />
+                      <div style={{ color: "#dc3545" }}>{this.validator.message("selectedContactsTo", this.state.selectedContactsTo, "required")}{" "}</div>
+                    </div>
+                    <div style={{ width: "195%", display: this.state.divForToAndCC }}>
+                      <Dropdown
+                        placeholder="Select To contacts"
+                        label="To"
+                        defaultSelectedKeys={this.state.selectedContactsTo1}
+                        multiSelect
+                        multiSelectDelimiter={","}
+                        options={this.state.contacts}
+                        styles={dropdownStyles}
+                        //onChange={this._onDrpdwnCntact}
+                        title="To"
+                      />
+                      <div style={{ color: "#dc3545" }}>{this.validator.message("selectedContactsTo", this.state.selectedContactsTo, "required")}{" "}</div>
+                    </div>
+                    <span className={styles.span} />
+                    <div style={{ width: "97%", display: this.state.divForToAndCCSearch }}>
+                      <label style={{ fontWeight: "bold", }}>CC</label>
+                      <MultiSelect options={this.state.contactsForSearch} value={this.state.selectedContactsCCName}
+                        onChange={this.setSelectedContactsCC}
+                        labelledBy="CC" hasSelectAll={true} />
+                    </div>
+                    <div style={{ width: "195%", display: this.state.divForToAndCC }}>
+                      <Dropdown
+                        placeholder="Select CC contacts"
+                        label="CC "
+                        defaultSelectedKeys={this.state.selectedContactsToCCRebind}
+                        multiSelect
+                        multiSelectDelimiter={","}
+                        options={this.state.contacts}
+                        styles={dropdownStyles}
+                      // onChange={this._onDrpdwnCCContact}
+                      />
+                    </div>
+                    <div style={{ width: "98%", fontWeight: "bold" }}>
+                      <PeoplePicker
+                        context={this.props.context}
+                        titleText="Internal CC"
+                        personSelectionLimit={20}
+                        groupName={""} // Leave this blank in case you want to filter from all users
+                        showtooltip={true}
+                        required={true}
+                        disabled={false}
+                        ensureUser={true}
+                        onChange={(items) => this._selectedInternalCCContacts(items)}
+                        principalTypes={[PrincipalType.User]}
+                        resolveDelay={1000}
+                        defaultSelectedUsers={this.state.internalCCContactsDisplayName} />
                     </div>
                   </div>
+
                   {/* choice groups */}
                   <div  >
                     <div style={{ display: "flex" }}>
@@ -437,10 +437,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                           onChange={this._onSendAsMultipleFolder}
                           checked={this.state.sendAsMultipleFolder} /></div>
                       </div>
-
                     </div>
-                    {/* transmittal type validationdiv */}
-                    <div style={{ color: "#dc3545", marginLeft: "26px" }}>{this.validator.message("transmittalType", this.state.transmittalType, "required")}{" "}</div>
                   </div>
                   <hr />
                   {/* Notes */}
@@ -463,7 +460,6 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                         return (
                           <div style={{ marginRight: "10px" }}>
                             <Dropdown id={item.Title}
-                              required={true}
                               selectedKey={item.selectedKey}
                               placeholder="Select an option"
                               options={this.state.settingsListsItemsArray[item.Title] ? this.state.settingsListsItemsArray[item.Title] : []}
@@ -485,9 +481,6 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                         labelledBy="Select"
                         hasSelectAll={true}
                       />
-                      <div style={{ color: "#dc3545", marginLeft: "123px" }}>
-                        {this.validator.message("projectDocuments", this.state.projectDocumentSelectKey, "required")}{" "}
-                      </div>
                     </div>
                   </div>
                   {/* projectDocumentGrid */}
@@ -631,7 +624,9 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                   <PrimaryButton text="Preview" style={{ marginRight: "11px", marginLeft: "auto" }}
                     onClick={this._onPreviewBtnClick}
                   />
-                  <PrimaryButton text="Confirm & Send" style={{ marginRight: "11px", marginLeft: "auto", display: this.state.hideButtonAfterSubmit }}
+                  <PrimaryButton text="Confirm & Send"
+                    style={{ marginRight: "11px", marginLeft: "auto", display: this.state.hideButtonAfterSubmit }}
+                    disabled={transmitForUnseleted === true ? true : false}
                     onClick={this._confirmAndSendBtnClick}
                   />
                   <PrimaryButton text="Recall" style={{ marginRight: "11px", marginLeft: "auto", display: this.state.hideUnlockButton }} onClick={this._recallTransmittalConfirmation} />
@@ -699,7 +694,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                                   <td className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>{items.subcontractorDocumentNo} </td>
                                   <div className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "none" : "none" }}>&nbsp;{items.acceptanceCodeTitle}</div>
                                   <div className={styles.divTableCell}>&nbsp;{items.fileSizeInMB}</div>
-                                  <div className={styles.divTableCell}>&nbsp;{items.TransmittedFor}</div>
+                                  <div className={styles.divTableCell}>&nbsp;{items.transmitFor}</div>
                                   <div className={styles.divTableCell}>&nbsp;{items.DueDate}</div>
                                   <div className={styles.divTableCell}>&nbsp;{items.comments}</div>
                                 </div>
@@ -889,7 +884,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         let selectedContactsTo = this.state.selectedContactsTo.toString();
         let selectedContactsCC = this.state.selectedContactsCC.toString();
         console.log(selectedContactsTo);
-        if (this.state.transmitTo != "" && this.state.itemsForGrid.length != 0 && this.state.transmittalTypekey != "" && this.state.selectedContactsTo != null && this.validator.fieldValid("selectedContactsTo")) {
+        if (this.state.transmitTo != "" && this.state.itemsForGrid.length != 0 && this.state.selectedContactsTo != null && this.validator.fieldValid("selectedContactsTo")) {
           this.setState({
             spinnerDiv: "",
             hideButtonAfterSubmit: "none",
@@ -1180,6 +1175,14 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       selectedDocuments: option,
     });
     const tempFile = [];
+    // Extract publishDoumentlibraryID values from the option array
+    const optionIds = option.map(item => item.value);
+    // Filter itemForGrid based on the optionIds
+    const filteredItemForGrid = this.state.itemsForGrid.filter(item => optionIds.includes(item.publishDoumentlibraryID));
+    console.log("when unselect the option", filteredItemForGrid);
+    this.setState({
+      itemsForGrid: filteredItemForGrid
+    })
     if (option.length !== 0) {
       option.forEach(selectedDocuments => {
         const duplicate = this.state.itemsForGrid.some(tempItem => tempItem.documentIndexId === selectedDocuments.DocumentIndexId);
@@ -1214,8 +1217,6 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         searchText: "",
       });
     }
-
-
   }
 
   protected async triggerOutboundTransmittal(transmittalID) {
@@ -1844,6 +1845,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     const updatedItems = [...itemsForGrid];
     updatedItems[index].TransmittedFor = event.key;
     updatedItems[index].TransmitFor = event.text;
+    updatedItems[index].transmitForKey = event.key;
+    updatedItems[index].transmitFor = event.text;
     this.setState({ itemsForGrid: updatedItems });
 
     // const select = "ApprovalRequired,AcceptanceCode";
@@ -2520,10 +2523,16 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   public itemDeleteFromGrid(items: any, key: any) {
     console.log(items);
     const updatedFiles = this.state.itemsForGrid.filter((item, index) => index !== key);
+    // Extract publishDoumentlibraryID values from the option array
+    const optionIds = updatedFiles.map(item => item.publishDoumentlibraryID);    // Filter itemForGrid based on the optionIds
+    const filteredItemForGrid = this.state.selectedDocuments.filter(item => optionIds.includes(item.value));
+    console.log("when unselect the option", filteredItemForGrid);
+
     this.setState({
       itemsForGrid: updatedFiles,
       documentSelectedDiv: true,
       projectDocumentSelectKey: "",
+      selectedDocuments: filteredItemForGrid
     });
     console.log("after removal", this.state.itemsForGrid);
     console.log(items.fileSize);
@@ -3003,9 +3012,24 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     const publishedDocumentArray: { value: any; label: any; }[] = [];
     let transmitForItemdata;
     let filter;
+    console.log(this.state.documentFilters)
     const publishedDocumentsDl: string = this.props.context.pageContext.web.serverRelativeUrl + "/" + this.props.publishDocumentLibraryName;
     if (item !== "") {
-      filter = "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') and (Category eq '" + this.state.documentFilters['Category'] + "')";
+      if (this.state.documentFilters['Category'] !== undefined) {
+        filter = "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') and (Category eq '" + this.state.documentFilters['Category'] + "')";
+
+      }
+      if (this.state.documentFilters['SubCategory'] !== undefined) {
+        filter = "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') and (SubCategory eq '" + this.state.documentFilters['SubCategory'] + "')";
+
+      }
+      if (this.state.documentFilters['Department'] !== undefined) {
+        filter = "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') and (DepartmentName eq '" + this.state.documentFilters['Department'] + "')";
+
+      }
+      if ((this.state.documentFilters['Department'] !== undefined && this.state.documentFilters['SubCategory'] !== undefined && this.state.documentFilters['Category'] !== undefined)) {
+        filter = "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') and (DepartmentName eq '" + this.state.documentFilters['Department'] + "') and (Category eq '" + this.state.documentFilters['Category'] + "') and (SubCategory eq '" + this.state.documentFilters['SubCategory'] + "')";
+      }
     }
     else {
       filter = "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') "
@@ -3039,25 +3063,23 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                   publishedDocumentArray.push(transmitForItemdata);
                 });
                 this.setState({
-                  searchDocuments: publishedDocumentArray
+                  searchDocuments: publishedDocumentArray,
+                  documentSelectedDiv: true,
                 });
               }
               else {
                 this.setState({
-                  searchDocuments: publishedDocumentArray
+                  searchDocuments: [],
+                  documentSelectedDiv: false,
+                  documentSelect: "No documents for transmittal "
                 });
-                if (publishedDocumentArray.length === 0) {
-                  this.setState({
-                    documentSelectedDiv: false,
-                    documentSelect: "No documents for transmittal "
-                  });
-                }
               }
             });
         }
         else {
-          console.log("No documents for transmittal");
           this.setState({
+            searchDocuments: [],
+            documentFilters: [],
             documentSelectedDiv: false,
             documentSelect: "No documents for transmittal "
           });
