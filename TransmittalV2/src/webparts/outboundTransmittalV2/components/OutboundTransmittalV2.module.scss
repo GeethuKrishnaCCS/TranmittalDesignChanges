@@ -11,6 +11,8 @@
   }
 }
 
+
+
 .divrow {
   width: 100%;
   display: flex;
@@ -305,6 +307,10 @@ span {
 .divTableHeading {
   background-color: #EEE;
   display: table-header-group;
+}
+
+.rounded {
+  border-radius: 8px; // Adjust the value as needed
 }
 
 .divTableCell,

@@ -17,6 +17,14 @@
           "manifest": "./src/webparts/inboundCustomerV2/InboundCustomerV2WebPart.manifest.json"
         }
       ]
+    },
+    "transmittal-create-document-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/transmittalCreateDocument/TransmittalCreateDocumentWebPart.js",
+          "manifest": "./src/webparts/transmittalCreateDocument/TransmittalCreateDocumentWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -24,6 +32,7 @@
     "OutboundTransmittalV2WebPartStrings": "lib/webparts/outboundTransmittalV2/loc/{locale}.js",
     "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js",
     "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js",
-    "InboundCustomerV2WebPartStrings": "lib/webparts/inboundCustomerV2/loc/{locale}.js"
+    "InboundCustomerV2WebPartStrings": "lib/webparts/inboundCustomerV2/loc/{locale}.js",
+    "TransmittalCreateDocumentWebPartStrings": "lib/webparts/transmittalCreateDocument/loc/{locale}.js"
   }
 }
