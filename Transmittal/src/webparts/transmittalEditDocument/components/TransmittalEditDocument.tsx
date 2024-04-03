@@ -11,6 +11,7 @@ import * as moment from 'moment';
 import * as _ from 'lodash';
 import { IHttpClientOptions, HttpClient, MSGraphClientV3 } from '@microsoft/sp-http';
 import replaceString from 'replace-string';
+import { Modal } from 'office-ui-fabric-react';
 export default class TransmittalEditDocument extends React.Component<ITransmittalEditDocumentProps, ITransmittalEditDocumentState, {}> {
   private validator: SimpleReactValidator;
   private _Service: BaseService;
@@ -333,7 +334,6 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
   public async _bindDataEditQdms(documentindexid: any) {
     this._checkRename('QDMS_RenameDocument');
     const indexItems = await this._Service.getItemById(this.props.siteUrl, this.props.documentIndexList, parseInt(documentindexid));
-
     console.log("dataForEdit", indexItems);
     let tempReviewers: any[] = [];
     let temReviewersID: any[] = [];
@@ -374,13 +374,14 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
               linkToDoc: dataForEdit.SourceDocument.Url,
             });
           }
-          for (var k in dataForEdit.Reviewers) {
-            temReviewersID.push(dataForEdit.Reviewers[k].ID);
+          dataForEdit.Reviewers.forEach(element => {
+            temReviewersID.push(element.ID);
             this.setState({
               reviewers: temReviewersID,
             });
-            tempReviewers.push(dataForEdit.Reviewers[k].Title);
-          }
+            tempReviewers.push(element.Title);
+          });
+
 
           if (indexItems.SubCategoryID != null) {
             this.setState({
@@ -448,7 +449,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
             });
         }
         if (documentindexid != "" && documentindexid != null && this.mode != "expiry") {
-          items = "Title,SubCategoryID,SubCategory,BusinessUnit,Category,DepartmentName,SourceDocument,CustomerDocumentNo,SubcontractorDocumentNo,Owner/Title,Owner/ID,Owner/EMail,Approver/Title,Approver/ID,ApprovedDate,WorkflowStatus,DocumentID,DocumentName,ExpiryDate,Reviewers/ID,Reviewers/Title,ExpiryLeadPeriod,CategoryID,CriticalDocument,CreateDocument,Template,PublishFormat,ApprovedDate,RevisionCoding/ID,RevisionCoding/Title,RevisionLevel/ID,RevisionLevel/Title,DocumentController/ID,DocumentController/Title,TransmittalDocument,ExternalDocument,DirectPublish";
+          items = "Title,SubCategoryID,SubCategory,BusinessUnit,Category,DepartmentName,SourceDocument,CustomerDocumentNo,SubcontractorDocumentNo,Owner/Title,Owner/ID,Owner/EMail,Approver/Title,Approver/ID,ApprovedDate,WorkflowStatus,DocumentID,DocumentName,ExpiryDate,Reviewers/ID,Reviewers/Title,ExpiryLeadPeriod,CategoryID,CriticalDocument,CreateDocument,Template,PublishFormat,ApprovedDate,RevisionCoding/ID,RevisionCoding/Title,RevisionLevel/ID,RevisionLevel/Title,DocumentController/ID,DocumentController/Title,DocumentController/EMail,TransmittalDocument,ExternalDocument,DirectPublish";
           expand = "Owner,Approver,Reviewers,RevisionCoding,RevisionLevel,DocumentController";
           this._Service.getIndexdatabind(this.props.siteUrl, this.props.documentIndexList, documentindexid, items, expand)
             .then(dataForEdit => {
@@ -460,7 +461,9 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
                 department: dataForEdit.DepartmentName,
                 category: dataForEdit.Category,
                 ownerName: dataForEdit.Owner.Title,
+                ownerEmail: dataForEdit.Owner.EMail,
                 approverName: dataForEdit.Approver.Title,
+                approverEmail: dataForEdit.Approver.EMail,
                 expiryLeadPeriod: dataForEdit.ExpiryLeadPeriod,
                 owner: dataForEdit.Owner.ID,
                 workflowStatus: dataForEdit.WorkflowStatus,
@@ -468,9 +471,9 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
                 documentName: dataForEdit.DocumentName,
                 subContractorNumber: dataForEdit.SubcontractorDocumentNo,
                 customerNumber: dataForEdit.CustomerDocumentNo,
-
+                dccEmail: dataForEdit.DocumentController.EMail,
               });
-              for (var k in dataForEdit.Reviewers) {
+              for (let k in dataForEdit.Reviewers) {
                 temReviewersID.push(dataForEdit.Reviewers[k].ID);
                 this.setState({
                   reviewers: temReviewersID,
@@ -578,7 +581,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
     const projectInformation = await this._Service.getListItems(this.props.siteUrl, this.props.projectInformationListName);
     console.log("projectInformation", projectInformation);
     if (projectInformation.length > 0) {
-      for (var k in projectInformation) {
+      for (let k in projectInformation) {
         if (projectInformation[k].Key == "ProjectName") {
           this.setState({
             projectName: projectInformation[k].Title,
@@ -680,25 +683,25 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
   private async _userMessageSettings() {
     const userMessageSettings: any[] = await this._Service.gethubUserMessageListItems(this.props.hubUrl, this.props.userMessageSettings);
     console.log(userMessageSettings);
-    for (var i in userMessageSettings) {
+    for (let i in userMessageSettings) {
       if (userMessageSettings[i].Title == "CreateDocumentSuccess") {
-        var successmsg = userMessageSettings[i].Message;
+        let successmsg = userMessageSettings[i].Message;
         this.createDocument = replaceString(successmsg, '[DocumentName]', this.state.documentName);
       }
       else if (userMessageSettings[i].Title == "DirectPublishSuccess") {
-        var publishmsg = userMessageSettings[i].Message;
+        let publishmsg = userMessageSettings[i].Message;
         this.directPublish = replaceString(publishmsg, '[DocumentName]', this.state.documentName);
       }
       else if (userMessageSettings[i].Title == "EditDocumentSuccess") {
-        var editmsg = userMessageSettings[i].Message;
+        let editmsg = userMessageSettings[i].Message;
         this.editDocument = replaceString(editmsg, '[DocumentName]', this.state.documentName);
       }
       else if (userMessageSettings[i].Title == "DocumentRevokeSuccess") {
-        var revokemsg = userMessageSettings[i].Message;
+        let revokemsg = userMessageSettings[i].Message;
         this.revokeExpiry = replaceString(revokemsg, '[DocumentName]', this.state.documentName);
       }
       else if (userMessageSettings[i].Title == "DocumentRevokeError") {
-        var revokeErrormsg = userMessageSettings[i].Message;
+        let revokeErrormsg = userMessageSettings[i].Message;
         this.revokeExpiryError = replaceString(revokeErrormsg, '[DocumentName]', this.state.documentName);
       }
       else if (userMessageSettings[i].Title == "NoAccess") {
@@ -889,28 +892,21 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
   // On upload document change
   public _add(e: any) {
     this.setState({ insertdocument: "none", validDocType: "none" });
-    this.myfile = e.target.value;
-    let upload;
+    this.setState({ insertdocument: "none" });
+    // this.myfile = e.target.value;
+    this.myfile = e.currentTarget.files[0];
     let type;
-    let doctype;
     this.isDocument = "Yes";
-    if (this.props.project) {
-      upload = "#editproject";
-    }
-    else {
-      upload = "#editqdms";
-    }
-    let myfile = (document.querySelector(upload) as HTMLInputElement).files[0];
-    console.log(myfile);
     this.isDocument = "Yes";
-    var splitted = myfile.name.split(".");
+    let splitted = this.myfile.name.split(".");
+    // let docsplit =splitted.slice(0, -1).join('.')+"."+splitted[splitted.length - 1];
     type = splitted[splitted.length - 1];
     if (this.state.replaceDocumentCheckbox == true) {
-      var docsplitted = this.state.documentName.split(".");
-      doctype = docsplitted[docsplitted.length - 1];
+      let docsplitted = this.state.documentName.split(".");
+      const doctype = docsplitted[docsplitted.length - 1];
       if (doctype != type) {
         this.setState({ validDocType: "" });
-        (document.querySelector(upload) as HTMLInputElement).value = null;
+        // (document.querySelector(upload) as HTMLInputElement).value = null;
       }
     }
     if (type == "docx") {
@@ -971,7 +967,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
               publishName = publishdoc[i].LinkFilename;
             }
           }
-          var split = publishName.split(".", 2);
+          let split = publishName.split(".", 2);
           type = split[1];
           if (type == "docx") {
             this.setState({ isdocx: "", nodocx: "none" });
@@ -990,7 +986,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
               publishName = publishdoc[i].LinkFilename;
             }
           }
-          var split = publishName.split(".", 2);
+          let split = publishName.split(".", 2);
           type = split[1];
           if (type == "docx") {
             this.setState({ isdocx: "", nodocx: "none" });
@@ -1058,8 +1054,8 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
       if (this.state.expiryCheck == true) {
         if (this.props.project) {
           //Validation without direct publish
-          if (this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver')
-            && this.validator.fieldValid('DocumentController') && this.state.revisionCodingId !== "") {
+          if ((this.state.directPublishCheck === false) && this.state.ownerEmail !== "" && this.state.approverName !== ""
+            && this.state.dccEmail !== "" && this.state.revisionCodingId !== "") {
             this.setState({ updateDisable: true });
             await this._updateDocument();
             this.validator.hideMessages();
@@ -1068,24 +1064,6 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
           else if ((this.state.directPublishCheck == true) && this.validator.fieldValid('publish')
             && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver')
             && this.validator.fieldValid('DocumentController') && this.validator.fieldValid('Revision')) {
-            this.setState({ updateDisable: true, hideloader: false });
-            await this._updateDocument();
-            this.validator.hideMessages();
-          }
-          else {
-            this.validator.showMessages();
-            this.forceUpdate();
-          }
-        }
-        else {
-          //Validation without direct publish
-          if (this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver') && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod')) {
-            this.setState({ updateDisable: true });
-            await this._updateDocument();
-            this.validator.hideMessages();
-          }
-          //Validation with direct publish
-          else if ((this.state.directPublishCheck == true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver') && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod')) {
             this.setState({ updateDisable: true, hideloader: false });
             await this._updateDocument();
             this.validator.hideMessages();
@@ -1105,8 +1083,12 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
             await this._updateDocument();
             this.validator.hideMessages();
           }
+          else {
+            this.validator.showMessages();
+            this.forceUpdate();
+          }
           //Validation with direct publish
-          else if ((this.state.directPublishCheck == true) && this.validator.fieldValid('publish')
+          if ((this.state.directPublishCheck == true) && this.validator.fieldValid('publish')
             && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver')
             && this.validator.fieldValid('DocumentController') && this.validator.fieldValid('Revision')) {
             this.setState({ updateDisable: true, hideloader: false });
@@ -1125,8 +1107,12 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
             await this._updateDocument();
             this.validator.hideMessages();
           }
+          else {
+            this.validator.showMessages();
+            this.forceUpdate();
+          }
           //Validation with direct publish
-          else if ((this.state.directPublishCheck == true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver')) {
+          if ((this.state.directPublishCheck === true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver')) {
             this.setState({ updateDisable: true, hideloader: false });
             await this._updateDocument();
             this.validator.hideMessages();
@@ -1163,11 +1149,11 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
     if (this.state.createDocument == true) {
       await this._updateDocumentIndex();
       // Get file from form
-      console.log((document.querySelector(upload) as HTMLInputElement).files.length)
-      if ((document.querySelector(upload) as HTMLInputElement).files.length != 0) {
-        let myfile = (document.querySelector(upload) as HTMLInputElement).files[0];
+      //console.log((document.querySelector(upload) as HTMLInputElement).files.length)
+      if (this.myfile !== undefined) {
+        let myfile = this.myfile;
         console.log(myfile);
-        var splitted = myfile.name.split(".");
+        let splitted = myfile.name.split(".");
         if (this.state.replaceDocumentCheckbox == true) {
           if (this.state.titleReadonly == true) {
             documentNameExtension = this.state.documentName;
@@ -1197,8 +1183,8 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
             sourceDocumentId = item["ID"];
             this.sourceDocumentID = sourceDocumentId;
             this.setState({ sourceDocumentId: sourceDocumentId });
-            // update metadata
             await this._updateSourceDocument();
+            // update metadata          
             if (item) {
               let revision;
               if (this.props.project) {
@@ -1207,11 +1193,10 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
               else {
                 revision = "0";
               }
-              this._updatePublishDocument();
+              //this._updatePublishDocument();
               if (this.state.replaceDocumentCheckbox == true) {
                 const indexdata1 = {
                   SourceDocument: {
-                    "__metadata": { type: "SP.FieldUrlValue" },
                     Description: this.documentNameExtension,
                     Url: this.props.siteUrl + "/" + this.props.sourceDocumentLibrary + "/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexID) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                   },
@@ -1233,19 +1218,16 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
                   DocumentIndexId: this.documentIndexID
                 }
                 await this._Service.createNewItem(this.props.siteUrl, this.props.documentRevisionLogList, logdata1)
-
                 // update document index
                 if (this.state.directPublishCheck == false) {
                   const indexdata = {
                     SourceDocumentID: parseInt(this.state.sourceDocumentId),
                     DocumentName: this.documentNameExtension,
                     SourceDocument: {
-                      "__metadata": { type: "SP.FieldUrlValue" },
                       Description: this.documentNameExtension,
                       Url: this.props.siteUrl + "/" + this.props.sourceDocumentLibrary + "/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexID) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                     },
                     RevokeExpiry: {
-                      "__metadata": { type: "SP.FieldUrlValue" },
                       Description: "Revoke",
                       Url: this.revokeUrl
                     },
@@ -1259,12 +1241,10 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
                     ApprovedDate: this.state.approvalDate,
                     DocumentName: this.documentNameExtension,
                     SourceDocument: {
-                      "__metadata": { type: "SP.FieldUrlValue" },
                       Description: this.documentNameExtension,
                       Url: this.props.siteUrl + "/" + this.props.sourceDocumentLibrary + "/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexID) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                     },
                     RevokeExpiry: {
-                      "__metadata": { type: "SP.FieldUrlValue" },
                       Description: "Revoke",
                       Url: this.revokeUrl
                     }
@@ -1301,7 +1281,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
               publishName = publishdoc[i].LinkFilename;
             }
           }
-          var split = publishName.split(".", 2);
+          let split = publishName.split(".", 2);
           extension = split[1];
           if (publishdoc) {
             // Add template document to source document
@@ -1344,12 +1324,10 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
                     SourceDocumentID: parseInt(this.state.sourceDocumentId),
                     DocumentName: this.documentNameExtension,
                     SourceDocument: {
-                      "__metadata": { type: "SP.FieldUrlValue" },
                       Description: this.documentNameExtension,
                       Url: this.props.siteUrl + "/" + this.props.sourceDocumentLibrary + "/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexID) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                     },
                     RevokeExpiry: {
-                      "__metadata": { type: "SP.FieldUrlValue" },
                       Description: "Revoke",
                       Url: this.revokeUrl
                     }
@@ -1362,12 +1340,10 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
                     ApprovedDate: this.state.approvalDate,
                     DocumentName: this.documentNameExtension,
                     SourceDocument: {
-                      "__metadata": { type: "SP.FieldUrlValue" },
                       Description: this.documentNameExtension,
                       Url: this.props.siteUrl + "/" + this.props.sourceDocumentLibrary + "/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexID) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                     },
                     RevokeExpiry: {
-                      "__metadata": { type: "SP.FieldUrlValue" },
                       Description: "Revoke",
                       Url: this.revokeUrl
                     },
@@ -1397,7 +1373,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
               publishName = publishdoc[i].LinkFilename;
             }
           }
-          var split = publishName.split(".", 2);
+          let split = publishName.split(".", 2);
           extension = split[1];
           if (publishdoc) {
             // Add template document to source document
@@ -1488,7 +1464,15 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
         }
       }
       else {
-        this._updateWithoutDocument();
+        this.setState({
+          statusMessage: { isShowMessage: true, message: this.editDocument, messageType: 4 },
+          messageBar: "",
+          hideCreateLoading: "none", norefresh: "none"
+        });
+        setTimeout(() => {
+          window.location.replace(this.props.siteUrl);
+        }, 5000);
+        //this._updateWithoutDocument();
       }
     }
     else {
@@ -1518,9 +1502,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
           PublishFormat: this.state.publishOption,
           DirectPublish: this.state.directPublishCheck,
           ApprovedDate: this.state.approvalDateEdit,
-          ReviewersId: {
-            results: this.state.reviewers
-          },
+          ReviewersId: this.state.reviewers,
           TransmittalDocument: this.state.transmittalCheck,
           ExternalDocument: this.state.externalDocument,
           RevisionCodingId: this.state.revisionCodingId,
@@ -1530,31 +1512,6 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
           CustomerDocumentNo: this.state.customerNumber
         }
         this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata8, parseInt(this.documentIndexID))
-          .then(afteradd => {
-            this.revisionHistoryUrl = this.props.siteUrl + "/SitePages/" + this.props.revisionHistoryPage + ".aspx?did=" + this.documentIndexID + "";
-            this.revokeUrl = this.props.siteUrl + "/SitePages/" + this.props.revokePage + ".aspx?did=" + this.documentIndexID + "&mode=expiry";
-          });
-      }
-      //QDMS
-      else {
-        const indexdata9 = {
-          Title: this.state.title,
-          DocumentName: this.state.documentid + " " + this.state.title,
-          SubCategoryID: this.state.subCategoryId,
-          SubCategory: this.state.subCategory,
-          OwnerId: this.state.owner,
-          ApproverId: this.state.approver,
-          CreateDocument: this.state.createDocument,
-          Template: this.state.templateDocument,
-          CriticalDocument: this.state.criticalDocument,
-          PublishFormat: this.state.publishOption,
-          DirectPublish: this.state.directPublishCheck,
-          ApprovedDate: this.state.approvalDateEdit,
-          ReviewersId: {
-            results: this.state.reviewers
-          }
-        }
-        this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata9, parseInt(this.documentIndexID))
           .then(afteradd => {
             this.revisionHistoryUrl = this.props.siteUrl + "/SitePages/" + this.props.revisionHistoryPage + ".aspx?did=" + this.documentIndexID + "";
             this.revokeUrl = this.props.siteUrl + "/SitePages/" + this.props.revokePage + ".aspx?did=" + this.documentIndexID + "&mode=expiry";
@@ -1579,9 +1536,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
           PublishFormat: this.state.publishOption,
           DirectPublish: this.state.directPublishCheck,
           ApprovedDate: this.state.approvalDateEdit,
-          ReviewersId: {
-            results: this.state.reviewers
-          },
+          ReviewersId: this.state.reviewers,
           TransmittalDocument: this.state.transmittalCheck,
           ExternalDocument: this.state.externalDocument,
           RevisionCodingId: this.state.revisionCodingId,
@@ -1595,37 +1550,10 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
           this.revokeUrl = this.props.siteUrl + "/SitePages/" + this.props.revokePage + ".aspx?did=" + this.documentIndexID + "&mode=expiry";
         });
       }
-      //QDMS
-      else {
-        const indexdata10 = {
-          Title: this.state.title,
-          DocumentName: this.state.documentid + " " + this.state.title,
-          SubCategoryID: this.state.subCategoryId,
-          SubCategory: this.state.subCategory,
-          OwnerId: this.state.owner,
-          ExpiryLeadPeriod: this.state.expiryLeadPeriod,
-          ExpiryDate: this.state.expiryDate,
-          ApproverId: this.state.approver,
-          CreateDocument: this.state.createDocument,
-          Template: this.state.templateDocument,
-          CriticalDocument: this.state.criticalDocument,
-          PublishFormat: this.state.publishOption,
-          DirectPublish: this.state.directPublishCheck,
-          ApprovedDate: this.state.approvalDateEdit,
-          ReviewersId: {
-            results: this.state.reviewers
-          },
-        }
-        this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata10, parseInt(this.documentIndexID))
-          .then(afteradd => {
-            this.revisionHistoryUrl = this.props.siteUrl + "/SitePages/" + this.props.revisionHistoryPage + ".aspx?did=" + this.documentIndexID + "";
-            this.revokeUrl = this.props.siteUrl + "/SitePages/" + this.props.revokePage + ".aspx?did=" + this.documentIndexID + "&mode=expiry";
-          });
-      }
     }
   }
   // Update Source Document
-  public _updateSourceDocument() {
+  public async _updateSourceDocument() {
     // Without Expiry date
     if (this.state.expiryCheck == false) {
       //DMS
@@ -1633,9 +1561,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
         const libdata1 = {
           Title: this.state.title,
           DocumentID: this.state.documentid,
-          ReviewersId: {
-            results: this.state.reviewers
-          },
+          ReviewersId: this.state.reviewers,
           DocumentName: this.documentNameExtension,
           BusinessUnit: this.state.businessUnit,
           Category: this.state.category,
@@ -1650,7 +1576,6 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
           OwnerId: this.state.owner,
           DepartmentName: this.state.department,
           RevisionHistory: {
-            "__metadata": { type: "SP.FieldUrlValue" },
             Description: "Revision History",
             Url: this.revisionHistoryUrl
           },
@@ -1664,38 +1589,6 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
           CustomerDocumentNo: this.state.customerNumber
         }
         this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocumentLibrary, libdata1, this.sourceDocumentID)
-
-      }
-      //QDMS
-      else {
-        const libdata2 = {
-          Title: this.state.title,
-          DocumentID: this.state.documentid,
-          ReviewersId: {
-            results: this.state.reviewers
-          },
-          DocumentName: this.documentNameExtension,
-          BusinessUnit: this.state.businessUnit,
-          Category: this.state.category,
-          SubCategory: this.state.subCategory,
-          ApproverId: this.state.approver,
-          Revision: "0",
-          WorkflowStatus: "Draft",
-          DocumentStatus: "Active",
-          DocumentIndexId: this.documentIndexID,
-          PublishFormat: this.state.publishOption,
-          Template: this.state.templateDocument,
-          OwnerId: this.state.owner,
-          DepartmentName: this.state.department,
-          CriticalDocument: this.state.criticalDocument,
-          RevisionHistory: {
-            "__metadata": { type: "SP.FieldUrlValue" },
-            Description: "Revision History",
-            Url: this.revisionHistoryUrl
-          }
-        }
-        this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocumentLibrary, libdata2, this.sourceDocumentID)
-
       }
     }
     // With Expiry Date
@@ -1705,9 +1598,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
         const libdata3 = {
           DocumentID: this.state.documentid,
           Title: this.state.title,
-          ReviewersId: {
-            results: this.state.reviewers
-          },
+          ReviewersId: this.state.reviewers,
           DocumentName: this.documentNameExtension,
           BusinessUnit: this.state.businessUnit,
           Category: this.state.category,
@@ -1722,7 +1613,6 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
           OwnerId: this.state.owner,
           DepartmentName: this.state.department,
           RevisionHistory: {
-            "__metadata": { type: "SP.FieldUrlValue" },
             Description: "Revision History",
             Url: this.revisionHistoryUrl
           },
@@ -1740,39 +1630,6 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
         this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocumentLibrary, libdata3, this.sourceDocumentID)
 
       }
-      // QDMS
-      else {
-        const libdata4 = {
-          DocumentID: this.state.documentid,
-          Title: this.state.title,
-          ReviewersId: {
-            results: this.state.reviewers
-          },
-          DocumentName: this.documentNameExtension,
-          BusinessUnit: this.state.businessUnit,
-          Category: this.state.category,
-          SubCategory: this.state.subCategory,
-          ApproverId: this.state.approver,
-          ExpiryDate: this.state.expiryDate,
-          ExpiryLeadPeriod: this.state.expiryLeadPeriod,
-          Revision: "0",
-          WorkflowStatus: "Draft",
-          DocumentStatus: "Active",
-          DocumentIndexId: this.documentIndexID,
-          PublishFormat: this.state.publishOption,
-          Template: this.state.templateDocument,
-          OwnerId: this.state.owner,
-          DepartmentName: this.state.department,
-          CriticalDocument: this.state.criticalDocument,
-          RevisionHistory: {
-            "__metadata": { type: "SP.FieldUrlValue" },
-            Description: "Revision History",
-            Url: this.revisionHistoryUrl
-          }
-        }
-        this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocumentLibrary, libdata4, this.sourceDocumentID);
-
-      }
     }
   }
   // Update Publish Document
@@ -1784,7 +1641,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
       if (this.state.expiryCheck == false) {
         //DMS
         if (this.props.project) {
-          for (var k in publishDocumentID) {
+          for (let k in publishDocumentID) {
             const publishdata1 = {
               Title: this.state.title,
               DocumentName: this.documentNameExtension,
@@ -1807,7 +1664,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
           }
         }
         else {
-          for (var s in publishDocumentID) {
+          for (let s in publishDocumentID) {
             const publishdata2 = {
               Title: this.state.title,
               DocumentName: this.documentNameExtension,
@@ -1828,7 +1685,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
       // With Expiry date
       else {
         if (this.props.project) {
-          for (var g in publishDocumentID) {
+          for (let g in publishDocumentID) {
             const publishdata3 = {
               Title: this.state.title,
               DocumentName: this.documentNameExtension,
@@ -1853,7 +1710,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
           }
         }
         else {
-          for (var j in publishDocumentID) {
+          for (let j in publishDocumentID) {
             const publishdata4 = {
               Title: this.state.title,
               DocumentName: this.documentNameExtension,
@@ -1882,7 +1739,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
     const sourceLink: any = await this._Service.getListSourceItem(this.props.siteUrl, this.props.documentIndexList, parseInt(this.documentIndexID))
     console.log(sourceLink);
     sourceUrl = sourceLink.SourceDocument.Url;
-    var split = sourceLink.SourceDocument.Description.split(".", 2);
+    let split = sourceLink.SourceDocument.Description.split(".", 2);
     extensionSplit = split[1];
     if (sourceLink) {
       if (this.props.project) {
@@ -1917,7 +1774,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
           .then(async results => {
             const publishDocumentID: any[] = await this._Service.getpublishlibrary(this.props.siteUrl, this.props.publisheddocumentLibrary, this.documentIndexID);
             console.log("publishDocumentID", publishDocumentID);
-            for (var k in publishDocumentID) {
+            for (let k in publishDocumentID) {
               const publishdata5 = {
                 Title: this.state.title,
                 DocumentName: this.state.documentid + this.state.title + "." + extensionSplit,
@@ -1945,7 +1802,6 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
         const indexdata11 = {
           DocumentName: this.state.documentid + " " + this.state.title + "." + extensionSplit,
           SourceDocument: {
-            "__metadata": { type: "SP.FieldUrlValue" },
             Description: this.state.documentid + " " + this.state.title + "." + extensionSplit,
             Url: sourceUrl
           },
@@ -1988,7 +1844,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
         if (results) {
           const publishDocumentID: any[] = await this._Service.getpublishlibrary(this.props.siteUrl, this.props.publisheddocumentLibrary, this.documentIndexID);
           console.log("publishDocumentID", publishDocumentID);
-          for (var k in publishDocumentID) {
+          for (let k in publishDocumentID) {
             const publishdata6 = {
               Title: this.state.title,
               DocumentName: this.state.documentid + this.state.title + "." + extensionSplit,
@@ -2096,7 +1952,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
   }
   // To generate new revision
   public _generateNewRevision = async () => {
-    let currentRevision = '-'; // set the current revisionsettings ID in state variable.
+    let currentRevision = '-'; // set the current revisionsettings ID in state letiable.
     this.setState({
       previousRevisionItemID: this.state.revisionCodingId // set this value with previous revision settings id from Project document index item.
     });
@@ -2382,7 +2238,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
     if (mailSend == "Yes") {
       const emailNotification: any[] = await this._Service.gethubListItems(this.props.hubUrl, this.props.emailNotification);
       console.log(emailNotification);
-      for (var k in emailNotification) {
+      for (let k in emailNotification) {
         if (emailNotification[k].Title == type) {
           Subject = emailNotification[k].Subject;
           Body = emailNotification[k].Body;
@@ -2471,6 +2327,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
     let selectd = moment(date).format("DD/MM/YYYY");
     return selectd;
   }
+
   public render(): React.ReactElement<ITransmittalEditDocumentProps> {
     const publishOptions: IDropdownOption[] = [
       { key: 'PDF', text: 'PDF' },
@@ -2480,10 +2337,9 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
       { key: 'Native', text: 'Native' },
     ];
     const Source: IDropdownOption[] = [
-      { key: 'Quality', text: 'Quality' },
+      { key: 'QDMS', text: 'QDMS' },
       { key: 'Current Site', text: 'Current Site' }
     ];
-    const back: IIconProps = { iconName: 'ChromeBack' };
     const calloutProps = { gapSpace: 0 };
     const hostStyles: Partial<ITooltipHostStyles> = { root: { display: 'inline-block' } };
     const Go: IIconProps = { iconName: "CaretRightSolid8" };
@@ -2493,553 +2349,212 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
         { key: 'Template', text: 'Template', styles: { field: { marginLeft: "155px" } } },
       ];
     const choiceGroupStyles: Partial<IChoiceGroupStyles> = { root: { display: 'flex' }, flexContainer: { display: "flex", justifyContent: 'space-between' } };
-
+    const back: IIconProps = { iconName: 'ChromeBack' };
     return (
-      <section className={`${styles.transmittalEditDocument}`}>
+      <div className={styles.transmittalEditDocument}>
         <div style={{ display: this.state.loaderDisplay }}>
           <ProgressIndicator label="Loading......" />
         </div>
-        {/* Edit Document QDMS */}
-        <div style={{ display: this.state.qdmsEditDocumentView }} >
-          <div className={styles.border}>
-            <div className={styles.alignCenter}>{this.props.webpartHeader}</div>
-            <Pivot aria-label="Links of Tab Style Pivot Example" >
-              <PivotItem headerText="Document Info" >
-                <div>
-                  <Label>Document ID: {this.state.documentid}</Label>
-                </div>
-                <div>
-                  <TextField required id="t1"
-                    label="Title"
-                    onChange={this._titleChange}
-                    value={this.state.title} readOnly={this.state.titleReadonly} ></TextField>
-                  <div style={{ color: "#dc3545", fontWeight: "bold", display: this.state.checkrename }}>Checking your permission to rename.Please wait...</div>
-                  <div style={{ color: "#dc3545" }}>
-                    {this.validator.message("Name", this.state.title, "required|alpha_num_dash_space|max:200")}{" "}</div>
-                </div>
-                <div className={styles.divrow}>
-                  <div className={styles.wdthrgt}>
-                    <TextField
-                      label="Department"
-                      value={this.state.department} readOnly></TextField>
+        <div>
+          {/* Edit Document  */}
+          <div style={{ display: this.state.projectEditDocumentView }} >
+            <div className={styles.border}>
+              <div className={styles.alignCenter}>{this.props.webpartHeader}</div>
+              <Pivot aria-label="Links of Tab Style Pivot Example" >
+                <PivotItem headerText="Document Info" >
+                  <div style={{ display: "flex" }}>
+                    <Label>Document ID : </Label> <div className={styles.divLabel}>{this.state.documentid}</div>
                   </div>
-                  <div className={styles.wdthlft}>
-                    <TextField
-                      label="Business Unit"
-                      value={this.state.businessUnit} readOnly></TextField>
-                  </div>
-                </div>
-
-                <div className={styles.divrow}>
-                  <div className={styles.wdthrgt}>
-                    <TextField
-                      label="Category"
-                      value={this.state.category} readOnly></TextField>
-                  </div>
-                  <div className={styles.wdthlft}>
-                    <TextField
-                      label="Sub Category"
-                      value={this.state.subCategory} readOnly></TextField>
-                    {/* <Dropdown id="t2" label="Sub Category"
-                    placeholder="Select an option"
-                    selectedKey={this.state.subCategoryId}
-                    options={this.state.subCategoryArray}
-                    onChanged={this._subCategoryChange} />  */}
-                  </div>
-                </div>
-                <div className={styles.divrow}>
-                  <div className={styles.wdthrgt}>
-                    <TextField
-                      label="Legal Entity"
-                      value={this.state.legalEntity} readOnly></TextField>
-                  </div>
-                  <div className={styles.wdthlft}>
-                    <PeoplePicker
-                      context={this.props.context as any}
-                      titleText="Owner"
-                      personSelectionLimit={1}
-                      groupName={""} // Leave this blank in case you want to filter from all users    
-                      showtooltip={true}
-                      required={false}
-                      disabled={false}
-                      ensureUser={true}
-                      onChange={(items) => this._selectedOwner(items)}
-                      defaultSelectedUsers={[this.state.ownerName]}
-                      showHiddenInUI={false}
-                      principalTypes={[PrincipalType.User]}
-                      resolveDelay={1000} />
+                  <div>
+                    <TextField required id="t1"
+                      label="Title"
+                      onChange={this._titleChange}
+                      value={this.state.title} readOnly={this.state.titleReadonly} />
+                    <div style={{ color: "#dc3545", fontWeight: "bold", display: this.state.checkrename }}>Checking your permission to rename.Please wait...</div>
                     <div style={{ color: "#dc3545" }}>
-                      {this.validator.message("Owner", this.state.owner, "required")}{" "}
-                    </div>
-                  </div>
-                </div>
-                <div >
-                  <PeoplePicker
-                    context={this.props.context as any}
-                    titleText="Reviewer(s)"
-                    personSelectionLimit={20}
-                    groupName={""} // Leave this blank in case you want to filter from all users
-                    showtooltip={true}
-                    required={true}
-                    disabled={false}
-                    ensureUser={true}
-                    showHiddenInUI={false}
-                    onChange={(items) => this._selectedReviewers(items)}
-                    defaultSelectedUsers={this.state.reviewersName}
-                    principalTypes={[PrincipalType.User]}
-                    resolveDelay={1000} />
-                </div>
-                <div>
-                  <PeoplePicker
-                    context={this.props.context as any}
-                    titleText="Approver"
-                    personSelectionLimit={1}
-                    groupName={""} // Leave this blank in case you want to filter from all users    
-                    showtooltip={true}
-                    required={false}
-                    disabled={false}
-                    ensureUser={true}
-                    onChange={(items) => this._selectedApprover(items)}
-                    showHiddenInUI={false}
-                    defaultSelectedUsers={[this.state.approverName]}
-                    principalTypes={[PrincipalType.User]}
-                    resolveDelay={1000} />
-                </div>
-                <div style={{ display: this.state.validApprover, color: "#dc3545" }}>Not able to change approver</div>
-                <div style={{ color: "#dc3545" }}>
-                  {this.validator.message("Approver", this.state.approver, "required")}{" "}
-                </div>
-                <div className={styles.divrow}>
-                  <div className={styles.wdthrgt} >
-                    <DatePicker label="Expiry Date"
-                      value={this.state.expiryDate}
-                      onSelectDate={this._onExpDatePickerChange}
-                      placeholder="Select a date..."
-                      ariaLabel="Select a date" minDate={new Date()}
-                      formatDate={this._onFormatDate} />
-                    <div style={{ color: "#dc3545" }}>
-                      {this.validator.message("expiryDate", this.state.expiryDate, "required")}{""}</div>
-                  </div>
-                  {/* </div> */}
-                  {/* <div style={{ display: this.state.hideExpiry }}> */}
-                  <div className={styles.wdthlft} >
-                    <TextField id="ExpiryLeadPeriod" name="ExpiryLeadPeriod"
-                      label="Expiry Lead Period(in days)" onChange={this._expLeadPeriodChange}
-                      value={this.state.expiryLeadPeriod}>
-                    </TextField>
-                    <div style={{ color: "#dc3545" }}>
-                      {this.validator.message("ExpiryLeadPeriod", this.state.expiryLeadPeriod, "required")}{""}</div>
-                    <div style={{ color: "#dc3545", display: this.state.leadmsg }}>
-                      Enter only numbers less than 101
-                    </div></div>
-                  {/* </div> */}
-                </div>
-                <div style={{ display: this.state.hideCreate }}>
-                  <div className={styles.divrow}>
-                    <div style={{ display: this.state.replaceDocument }}>
-                      <Label >Document :
-                        <a href={this.state.linkToDoc} target="_blank">
-                          {this.state.documentName}</a>
-                      </Label>
-                    </div>
+                      {this.validator.message("Name", this.state.title, "required|alpha_num_dash_space|max:200")}{" "}</div>
                   </div>
                   <div className={styles.divrow}>
-                    <div className={styles.wdthfrst} style={{ marginTop: "20px" }}>
-                      <div style={{ display: this.state.createDocumentCheckBoxDiv }}>
-                        <TooltipHost
-                          content="Check if the template or attachment is added"
-                          //id={tooltipId}
-                          calloutProps={calloutProps}
-                          styles={hostStyles}>
-                          {/* <Checkbox label="Create Document ? " boxSide="start"
-                            onChange={this._onCreateDocChecked}
-                            checked={this.state.createDocument} /> */}
-                          <Label> Create Document :</Label>
-                        </TooltipHost>
-                      </div>
+                    <div className={styles.wdthrgt}>
+                      <TextField
+                        label="Department"
+                        value={this.state.department} readOnly />
+                    </div>
+                    <div className={styles.wdthlft}>
+                      <TextField
+                        label="Category"
+                        value={this.state.category} readOnly />
+                    </div>
+                    <div className={styles.wdthlft}>
+                      <TextField
+                        label="Sub Category"
+                        value={this.state.subCategory} readOnly />
+                    </div>
+                  </div>
+                  <div style={{ display: this.state.hideCreate }}>
+                    <div className={styles.divrow}>
                       <div style={{ display: this.state.replaceDocument }}>
+                        <div style={{ display: "flex" }}><Label >Document :</Label>
+                          <div className={styles.divLabel}> <a href={this.state.linkToDoc} target="_blank">
+                            {this.state.documentName}</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className={styles.documentMainDiv} style={{ display: this.state.createDocumentCheckBoxDiv }}>
+                      <div className={styles.radioDiv} style={{ display: this.state.hideDoc }}>
+                        <ChoiceGroup selectedKey={this.state.uploadOrTemplateRadioBtn}
+                          onChange={this.onUploadOrTemplateRadioBtnChange}
+                          options={uploadOrTemplateRadioBtnOptions} styles={choiceGroupStyles}
+                        />
+                      </div>
+                      <div className={styles.uploadDiv} style={{ display: this.state.hideupload }}>
+                        <div ><input type="file" name="myFile" id="editqdms" onChange={this._add} /></div>
+                        <div style={{ display: this.state.insertdocument, color: "#dc3545" }}>Please select Document </div>
+                      </div>
+                      <div className={styles.templateDiv} style={{ display: this.state.hidetemplate }}>
+                        <div className={styles.divColumn2} style={{ display: "flex" }}>
+                          <div className={styles.divColumn2}>
+                            <Dropdown id="t7"
+                              label="Source"
+                              placeholder="Select an option"
+                              selectedKey={this.state.sourceId}
+                              options={Source}
+                              onChanged={this._sourcechange} />
+                          </div>
+                          <div className={styles.divColumn2} >
+                            <Dropdown id="t7"
+                              label="Select a Template"
+                              placeholder="Select an option"
+                              selectedKey={this.state.templateId}
+                              options={this.state.templateDocuments}
+                              onChanged={this._templatechange} style={{ width: "150%", maxWidth: "150%" }} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className={styles.divrow}>
+                      <div className={styles.wdthfrst}>
+                        {/* <div style={{ display: this.state.createDocumentCheckBoxDiv }}>
+                          <TooltipHost
+                            content="Check if the template or attachment is added"
+                            //id={tooltipId}
+                            calloutProps={calloutProps}
+                            styles={hostStyles}>
+                            <Checkbox label="Create Document ? " boxSide="start"
+                              onChange={this._onCreateDocChecked}
+                              checked={this.state.createDocument} />
+                          </TooltipHost>
+                        </div> */}
+                        <div style={{ display: this.state.replaceDocument }}>
+                          <TooltipHost
+                            content="Check if the template or attachment is added"
+                            //id={tooltipId}
+                            calloutProps={calloutProps}
+                            styles={hostStyles}>
+                            <Checkbox label="Replace Document ? " boxSide="start"
+                              onChange={this._onReplaceDocumentChecked}
+                              checked={this.state.replaceDocumentCheckbox} />
+                          </TooltipHost>
+                        </div>
+                      </div>
+                      {/* <div className={styles.wdthmid} style={{ display: this.state.hideDoc }}>
+                        <Checkbox label="Upload existing file " boxSide="start"
+                          onChange={this._onUploadCheck}
+                          checked={this.state.upload} />
+                      </div>
+                      <div className={styles.wdthlst} style={{ display: this.state.hideDoc }}>
+                        <Checkbox label="Create document using existing template" boxSide="start"
+                          onChange={this._onTemplateCheck}
+                          checked={this.state.template} />
+                      </div> */}
+                    </div>
+                    {this.state.replaceDocumentCheckbox === true &&
+                      <div className={styles.divrow} style={{ marginTop: "10px" }}>
+                        <div className={styles.wdthfrst}><Label>Upload Document:</Label>
+                          <input type="file" name="myFile" id="editqdms" onChange={this._add} />
+                          <div style={{ display: this.state.validDocType, color: "#dc3545" }}>Please select valid Document </div>
+                          <div style={{ display: this.state.insertdocument, color: "#dc3545" }}>Please select valid Document or Please uncheck Create Document</div>
+                        </div>
+                      </div>}
+                    <div className={styles.divrow}>
+                      <div className={styles.wdthfrst} style={{ display: this.state.hideDirect }}>
                         <TooltipHost
-                          content="Check if the template or attachment is added"
+                          content="The document to published library without sending it for review/approval"
                           //id={tooltipId}
                           calloutProps={calloutProps}
                           styles={hostStyles}>
-                          <Checkbox label="Replace Document ? " boxSide="start"
-                            onChange={this._onReplaceDocumentChecked}
-                            checked={this.state.replaceDocumentCheckbox} />
-                        </TooltipHost>
-                      </div>
-                    </div>
-                    <div className={styles.wdthmid} style={{ display: this.state.hideDoc }}>
-                      <ChoiceGroup selectedKey={this.state.uploadOrTemplateRadioBtn}
-                        onChange={this.onUploadOrTemplateRadioBtnChange}
-                        options={uploadOrTemplateRadioBtnOptions} styles={choiceGroupStyles}
-                      /></div>
-                    {/* <div className={styles.wdthmid} style={{ display: this.state.hideDoc }}>
-                  <Checkbox label="Upload ? " boxSide="start"
-                    onChange={this._onUploadCheck}
-                    checked={this.state.upload} />
-                </div>
-                <div className={styles.wdthlst} style={{ display: this.state.hideDoc }}>
-                  <Checkbox label="Template ? " boxSide="start"
-                    onChange={this._onTemplateCheck}
-                    checked={this.state.template} />
-                </div> */}
-                  </div>
-                  <div className={styles.divrow} style={{ display: this.state.hideupload, marginTop: "10px" }}>
-                    <div className={styles.wdthfrst}><Label>Upload Document:</Label></div>
-                    <div className={styles.wdthmid}>  <input type="file" name="myFile" id="editqdms" onChange={this._add}></input></div>
-                    <div style={{ display: this.state.validDocType, color: "#dc3545" }}>Please select valid Document </div>
-                    <div style={{ display: this.state.insertdocument, color: "#dc3545" }}>Please select valid Document or Please uncheck Create Document</div>
-                  </div>
-                  <div className={styles.divrow} >
-                    <div className={styles.wdthrgt} style={{ display: this.state.hidesource }}>
-                      <Dropdown id="t7"
-                        label="Source"
-                        placeholder="Select an option"
-                        selectedKey={this.state.sourceId}
-                        options={Source}
-                        onChanged={this._sourcechange} /></div>
-                    <div className={styles.wdthlft} style={{ display: this.state.hidetemplate }}>
-                      <Dropdown id="t7"
-                        label="Select a Template"
-                        placeholder="Select an option"
-                        selectedKey={this.state.templateId}
-                        options={this.state.templateDocuments}
-                        onChanged={this._templatechange} /></div>
-                  </div>
-                  {/* <div style={{ display: this.state.hideDoc }} >
-                      <div className={styles.wdthmid} style={{ marginTop: "10px" }}> <Label>Upload Document: </Label></div>
-                      <div className={styles.wdthlst} style={{ marginTop: "10px" }}> <input type="file" name="myFile" id="editqdms" onChange={(e) => this._add(e)} ref={ref => this.myfile = ref}></input></div>
-                      <div style={{ display: this.state.validDocType, color: "#dc3545" }}>Please select valid Document </div>
-                      <div style={{ display: this.state.insertdocument, color: "#dc3545" }}>Please select valid Document or Please uncheck Create Document</div>
-                    </div>
-
-                    <div className={styles.wdthlst} style={{ display: this.state.hideSelectTemplate }} >
-                      <Dropdown id="t7"
-                        label="Select a Template"
-                        placeholder="Select an option"
-                        selectedKey={this.state.templateId}
-                        options={this.state.templateDocuments}
-                        onChanged={this._templatechange} />
-                    </div> */}
-                  {/* </div > */}
-                  <div className={styles.divrow}>
-                    <div className={styles.wdthfrst} style={{ display: this.state.hideDirect }}>
-                      <TooltipHost
-                        content="The document to published library without sending it for review/approval"
-                        //id={tooltipId}
-                        calloutProps={calloutProps}
-                        styles={hostStyles}>
-                        <Checkbox label="Direct Publish?" boxSide="start" onChange={this._onDirectPublishChecked} checked={this.state.directPublishCheck} />
-                      </TooltipHost></div>
-                    <div className={styles.wdthmid} style={{ display: this.state.checkdirect }}><Spinner label={'Please Wait...'} /></div>
-                    <div className={styles.wdthmid} style={{ display: this.state.hidePublish }}>
-                      <DatePicker label="Published Date"
-                        style={{ width: '200px' }}
-                        value={this.state.approvalDateEdit}
-                        onSelectDate={this._onApprovalDatePickerChange}
-                        placeholder="Select a date..."
-                        ariaLabel="Select a date" minDate={new Date()} maxDate={new Date()}
-                        formatDate={this._onFormatDate} /></div>
-                    <div className={styles.wdthlst} style={{ display: this.state.hidePublish }}>
-                      <div style={{ display: this.state.isdocx }}>
-                        <Dropdown id="t2" required={true}
-                          label="Publish Option"
-                          selectedKey={this.state.publishOption}
-                          placeholder="Select an option"
-                          options={publishOptions}
-                          onChanged={this._publishOptionChange} /></div>
-                      <div style={{ display: this.state.nodocx }}>
-                        <Dropdown id="t2" required={true}
-                          label="Publish Option"
-                          selectedKey={this.state.publishOption}
-                          placeholder="Select an option"
-                          options={publishOption}
-                          onChanged={this._publishOptionChange} /></div>
-                      <div style={{ color: "#dc3545" }}>
-                        {this.validator.message("publish", this.state.publishOption, "required")}{""}</div>
-                    </div>
-                  </div>
-                </div>
-                {/* <div><Label>Do you want to replace the document</Label>
-                <IconButton iconProps={Go} title="Update Document" ariaLabel="Update Document" onClick={() => this._updatefileDocument()} /></div> */}
-
-                <div className={styles.divrow}>
-                  <div className={styles.wdthfrst} style={{ marginTop: "10px" }}> <TooltipHost
-                    content="Is the document Critical?"
-                    calloutProps={calloutProps}
-                    styles={hostStyles}>
-                    <Checkbox label="Critical Document? " boxSide="start" onChange={this._onCriticalChecked} checked={this.state.criticalDocument} />
-                  </TooltipHost></div>
-                  <div className={styles.wdthmid} style={{ marginTop: "10px" }}> <TooltipHost
-                    content="Is the document a template?"
-                    //id={tooltipId}
-                    calloutProps={calloutProps}
-                    styles={hostStyles}>
-                    <Checkbox label="Template document? " boxSide="start" onChange={this._onTemplateChecked} checked={this.state.templateDocument} />
-                  </TooltipHost></div>
-                </div>
-                <div style={{ display: this.state.messageBar }}>
-                  {/* Show Message bar for Notification*/}
-                  {this.state.statusMessage.isShowMessage ?
-                    <MessageBar
-                      messageBarType={this.state.statusMessage.messageType}
-                      isMultiline={false}
-                      dismissButtonAriaLabel="Close"
-                    >{this.state.statusMessage.message}</MessageBar>
-                    : ''}
-                </div>
-                <div className={styles.mt}>
-                  <div hidden={this.state.hideLoading}><Spinner label={'Publishing...'} /></div>
-                </div>
-                <div className={styles.mt}>
-                  <div style={{ display: this.state.hideCreateLoading }}><Spinner label={'Updating...'} /></div>
-                </div>
-                <div className={styles.mt}>
-                  <div style={{ display: this.state.norefresh, color: "Red", fontWeight: "bolder", textAlign: "center" }}>
-                    <Label>***PLEASE DON'T REFRESH***</Label>
-                  </div>
-                </div>
-                <DialogFooter>
-
-                  <div className={styles.rgtalign}>
-                    <div style={{ fontStyle: "italic", fontSize: "12px" }}><span style={{ color: "red", fontSize: "23px" }}>*</span>fields are mandatory </div>
-                  </div>
-                  <div style={{ display: this.state.hidebutton }} >
-                    <div className={styles.rgtalign} >
-                      <PrimaryButton id="b2" className={styles.btn} disabled={this.state.updateDisable} onClick={this._onUpdateClick} >Update</PrimaryButton >
-                      <PrimaryButton id="b1" className={styles.btn} onClick={this._onCancel}>Cancel</PrimaryButton >
-                    </div>
-                  </div>
-                </DialogFooter>
-                {/* {/ {/ Cancel Dialog Box /} /} */}
-
-                <div>
-                  <Dialog
-                    hidden={this.state.confirmDialog}
-                    dialogContentProps={this.dialogContentProps}
-                    onDismiss={this._dialogCloseButton}
-                    styles={this.dialogStyles}
-                    modalProps={this.modalProps}>
-                    <DialogFooter>
-                      <PrimaryButton onClick={this._confirmYesCancel} text="Yes" />
-                      <DefaultButton onClick={this._confirmNoCancel} text="No" />
-                    </DialogFooter>
-                  </Dialog>
-                </div>
-
-                <br />
-
-                {/* editDocument div close */}
-
-              </PivotItem>
-
-              <PivotItem headerText="Version History">
-                <div>
-                  <IconButton iconProps={back} title="Back" onClick={this._back} />
-                  <Iframe id="iframeModal" url={this.props.siteUrl + "/_layouts/15/Versions.aspx?list={" + this.sourceDocumentLibraryId + "}&ID=" + this.sourceDocumentID + "&IsDlg=0"}
-                    width={"100%"} frameBorder={0}
-                    height={"500rem"} />
-                  {/* <iframe src={"https://ccsdev01.sharepoint.com/sites/TrialTest/_layouts/15/Versions.aspx?list=%7Bda53146b-3f5c-4321-926e-c3c2adbff323%7D&ID=1&IsDlg=0"} style={{overflow: "hidden",width:"100%",border:"white"}}></iframe>*/}
-                </div>
-              </PivotItem>
-              <PivotItem headerText="RevisionHistory">
-                <div>
-                  <IconButton iconProps={back} title="Back" onClick={this._back} />
-                  <Iframe id="iframeModal" url={this.props.siteUrl + "/SitePages/" + this.props.revisionHistoryPage + ".aspx?did=" + this.documentIndexID}
-                    width={"100%"} frameBorder={0}
-                    height={"500rem"} />
-                </div>
-              </PivotItem>
-            </Pivot>
-          </div>
-        </div>
-        {/* Edit document view for Project */}
-        <div style={{ display: this.state.projectEditDocumentView }} >
-          {/* Edit Document QDMS */}
-          <div className={styles.border}>
-            <div className={styles.alignCenter}>{this.props.webpartHeader}</div>
-            <Pivot aria-label="Links of Tab Style Pivot Example" >
-              <PivotItem headerText="Document Info" >
-                <div style={{ display: "flex" }}>
-                  <Label>Document ID : </Label> <div className={styles.divLabel}>{this.state.documentid}</div>
-                </div>
-                <div>
-                  <TextField required id="t1"
-                    label="Title"
-                    onChange={this._titleChange}
-                    value={this.state.title} readOnly={this.state.titleReadonly} ></TextField>
-                  <div style={{ color: "#dc3545", fontWeight: "bold", display: this.state.checkrename }}>Checking your permission to rename.Please wait...</div>
-                  <div style={{ color: "#dc3545" }}>
-                    {this.validator.message("Name", this.state.title, "required|alpha_num_dash_space|max:200")}{" "}</div>
-                </div>
-                <div className={styles.divrow}>
-                  <div className={styles.wdthrgt}>
-                    <TextField
-                      label="Department"
-                      value={this.state.department} readOnly></TextField>
-                  </div>
-                  <div className={styles.wdthlft}>
-                    <TextField
-                      label="Category"
-                      value={this.state.category} readOnly></TextField>
-                  </div>
-                  <div className={styles.wdthlft}>
-                    <TextField
-                      label="Sub Category"
-                      value={this.state.subCategory} readOnly></TextField>
-                  </div>
-                </div>
-                <div style={{ display: this.state.hideCreate }}>
-                  <div className={styles.divrow}>
-                    <div style={{ display: this.state.replaceDocument }}>
-                      <div style={{ display: "flex" }}><Label >Document :</Label>
-                        <div className={styles.divLabel}> <a href={this.state.linkToDoc} target="_blank">
-                          {this.state.documentName}</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.documentMainDiv} style={{ display: this.state.createDocumentCheckBoxDiv }}>
-                    <div className={styles.radioDiv} style={{ display: this.state.hideDoc }}>
-                      <ChoiceGroup selectedKey={this.state.uploadOrTemplateRadioBtn}
-                        onChange={this.onUploadOrTemplateRadioBtnChange}
-                        options={uploadOrTemplateRadioBtnOptions} styles={choiceGroupStyles}
-                      />
-                    </div>
-                    <div className={styles.uploadDiv} style={{ display: this.state.hideupload }}>
-                      <div ><input type="file" name="myFile" id="editqdms" onChange={this._add}></input></div>
-                      <div style={{ display: this.state.insertdocument, color: "#dc3545" }}>Please select Document </div>
-                    </div>
-                    <div className={styles.templateDiv} style={{ display: this.state.hidetemplate }}>
-                      <div className={styles.divColumn2} style={{ display: "flex" }}>
-                        <div className={styles.divColumn2}>
-                          <Dropdown id="t7"
-                            label="Source"
+                          <Checkbox label="Direct Publish?" boxSide="start" onChange={this._onDirectPublishChecked} checked={this.state.directPublishCheck} />
+                        </TooltipHost></div>
+                      <div className={styles.wdthmid} style={{ display: this.state.checkdirect }}><Spinner label={'Please Wait...'} /></div>
+                      <div className={styles.wdthmid} style={{ display: this.state.hidePublish }}>
+                        <DatePicker label="Published Date"
+                          style={{ width: '200px' }}
+                          value={this.state.approvalDateEdit}
+                          onSelectDate={this._onApprovalDatePickerChange}
+                          placeholder="Select a date..."
+                          ariaLabel="Select a date" minDate={new Date()} maxDate={new Date()}
+                          formatDate={this._onFormatDate} /></div>
+                      <div className={styles.wdthlst} style={{ display: this.state.hidePublish }}>
+                        <div style={{ display: this.state.isdocx }}>
+                          <Dropdown id="t2" required={true}
+                            label="Publish Option"
+                            selectedKey={this.state.publishOption}
                             placeholder="Select an option"
-                            selectedKey={this.state.sourceId}
-                            options={Source}
-                            onChanged={this._sourcechange} />
-                        </div>
-                        <div className={styles.divColumn2}>
-                          <Dropdown id="t7"
-                            label="Select a Template"
+                            options={publishOptions}
+                            onChanged={this._publishOptionChange} /></div>
+                        <div style={{ display: this.state.nodocx }}>
+                          <Dropdown id="t2" required={true}
+                            label="Publish Option"
+                            selectedKey={this.state.publishOption}
                             placeholder="Select an option"
-                            selectedKey={this.state.templateId}
-                            options={this.state.templateDocuments}
-                            onChanged={this._templatechange} style={{ width: "154%" }} />
-                        </div>
+                            options={publishOption}
+                            onChanged={this._publishOptionChange} /></div>
+                        <div style={{ color: "#dc3545" }}>
+                          {this.validator.message("publish", this.state.publishOption, "required")}{""}</div>
                       </div>
                     </div>
                   </div>
                   <div className={styles.divrow}>
-                    <div className={styles.wdthfrst}>
-                      <div style={{ display: this.state.replaceDocument }}>
-                        <TooltipHost
-                          content="Check if the template or attachment is added"
-                          //id={tooltipId}
-                          calloutProps={calloutProps}
-                          styles={hostStyles}>
-                          <Checkbox label="Replace Document ? " boxSide="start"
-                            onChange={this._onReplaceDocumentChecked}
-                            checked={this.state.replaceDocumentCheckbox} />
-                        </TooltipHost>
-                      </div>
+                    <div style={{ width: "77%" }}>
+                      <PeoplePicker
+                        context={this.props.context as any}
+                        titleText="Owner"
+                        personSelectionLimit={1}
+                        groupName={""} // Leave this blank in case you want to filter from all users    
+                        showtooltip={true}
+                        required={true}
+                        disabled={false}
+                        ensureUser={true}
+                        onChange={this._selectedOwner}
+                        defaultSelectedUsers={[this.props.context.pageContext.user.email]}
+                        showHiddenInUI={false}
+                        principalTypes={[PrincipalType.User]}
+                        resolveDelay={1000} />
                     </div>
-                  </div>
-                  {this.state.replaceDocumentCheckbox === true &&
-                    <div className={styles.divrow} style={{ marginTop: "10px" }}>
-                      <div className={styles.wdthfrst}><Label>Upload Document:</Label></div>
-                      <div className={styles.wdthmid}>
-                        <input type="file" name="myFile" id="editqdms" onChange={this._add}></input>
-                        <div style={{ display: this.state.validDocType, color: "#dc3545" }}>Please select valid Document </div>
-                        <div style={{ display: this.state.insertdocument, color: "#dc3545" }}>Please select valid Document or Please uncheck Create Document</div>
-                      </div>
-                    </div>
-                  }
-                  <div className={styles.divrow}>
-                    <div className={styles.wdthfrst} style={{ display: this.state.hideDirect }}>
-                      <TooltipHost
-                        content="The document to published library without sending it for review/approval"
-                        //id={tooltipId}
-                        calloutProps={calloutProps}
-                        styles={hostStyles}>
-                        <Checkbox label="Direct Publish?" boxSide="start" onChange={this._onDirectPublishChecked} checked={this.state.directPublishCheck} />
-                      </TooltipHost></div>
-                    <div className={styles.wdthmid} style={{ display: this.state.checkdirect }}><Spinner label={'Please Wait...'} /></div>
-                    <div className={styles.wdthmid} style={{ display: this.state.hidePublish }}>
-                      <DatePicker label="Published Date"
-                        style={{ width: '200px' }}
-                        value={this.state.approvalDateEdit}
-                        onSelectDate={this._onApprovalDatePickerChange}
-                        placeholder="Select a date..."
-                        ariaLabel="Select a date" minDate={new Date()} maxDate={new Date()}
-                        formatDate={this._onFormatDate} /></div>
-                    <div className={styles.wdthlst} style={{ display: this.state.hidePublish }}>
-                      <div style={{ display: this.state.isdocx }}>
-                        <Dropdown id="t2" required={true}
-                          label="Publish Option"
-                          selectedKey={this.state.publishOption}
-                          placeholder="Select an option"
-                          options={publishOptions}
-                          onChanged={this._publishOptionChange} /></div>
-                      <div style={{ display: this.state.nodocx }}>
-                        <Dropdown id="t2" required={true}
-                          label="Publish Option"
-                          selectedKey={this.state.publishOption}
-                          placeholder="Select an option"
-                          options={publishOption}
-                          onChanged={this._publishOptionChange} /></div>
+                    <div className={styles.wdthlft}>
+                      <PeoplePicker
+                        context={this.props.context as any}
+                        titleText="Document Controller"
+                        personSelectionLimit={1}
+                        groupName={""} // Leave this blank in case you want to filter from all users    
+                        showtooltip={true}
+                        required={false}
+                        disabled={false}
+                        ensureUser={true}
+                        onChange={(items) => this._selectedDCC(items)}
+                        defaultSelectedUsers={[this.state.dccName]}
+                        showHiddenInUI={false}
+                        principalTypes={[PrincipalType.User]}
+                        resolveDelay={1000} />
                       <div style={{ color: "#dc3545" }}>
-                        {this.validator.message("publish", this.state.publishOption, "required")}{""}</div>
+                        {this.validator.message("DocumentController", this.state.dcc, "required")}{" "}</div>
                     </div>
-                  </div>
-                </div>
-
-                <div className={styles.divrow}>
-                  <div style={{ width: "33%", marginTop: "11px" }} >
-                    <PeoplePicker
-                      context={this.props.context as any}
-                      titleText="Owner"
-                      personSelectionLimit={1}
-                      groupName={""} // Leave this blank in case you want to filter from all users    
-                      showtooltip={true}
-                      required={false}
-                      disabled={false}
-                      ensureUser={true}
-                      onChange={this._selectedOwner}
-                      defaultSelectedUsers={[this.state.ownerName]}
-                      showHiddenInUI={false}
-                      principalTypes={[PrincipalType.User]}
-                      resolveDelay={1000} />
-                    <div style={{ color: "#dc3545" }}>
-                      {this.validator.message("Owner", this.state.owner, "required")}{" "}
-                    </div>
-                  </div>
-                  <div style={{ width: "33%", marginTop: "11px", marginLeft: "10px" }}>
-                    <PeoplePicker
-                      context={this.props.context as any}
-                      titleText="Document Controller"
-                      personSelectionLimit={1}
-                      groupName={""} // Leave this blank in case you want to filter from all users    
-                      showtooltip={true}
-                      required={false}
-                      disabled={false}
-                      ensureUser={true}
-                      onChange={(items) => this._selectedDCC(items)}
-                      defaultSelectedUsers={[this.state.dccName]}
-                      showHiddenInUI={false}
-                      principalTypes={[PrincipalType.User]}
-                      resolveDelay={1000} />
-                    <div style={{ color: "#dc3545" }}>
-                      {this.validator.message("DocumentController", this.state.dcc, "required")}{" "}</div>
-                  </div>
-                  <div className={styles.wdthmid}>
-                    <div style={{ marginLeft: "12px", width: "100%" }}>
+                    <div style={{ width: "75%", marginLeft: "10px" }}>
                       <PeoplePicker
                         context={this.props.context as any}
                         titleText="Reviewer(s)"
-                        personSelectionLimit={20}
+                        personSelectionLimit={10}
                         groupName={""} // Leave this blank in case you want to filter from all users
                         showtooltip={true}
                         required={false}
@@ -3049,148 +2564,222 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
                         onChange={(items) => this._selectedReviewers(items)}
                         defaultSelectedUsers={this.state.reviewersName}
                         principalTypes={[PrincipalType.User]}
-                        resolveDelay={1000} />
-                    </div>
-                  </div>
-                  <div className={styles.wdthlst} style={{ marginLeft: "12px" }}>
-
-                    <div style={{ marginLeft: "12px", }}>
+                        resolveDelay={1000}
+                        peoplePickerCntrlclassName={"testClass"} /></div>
+                    <div className={styles.divApprover}>
                       <PeoplePicker
                         context={this.props.context as any}
                         titleText="Approver"
                         personSelectionLimit={1}
                         groupName={""} // Leave this blank in case you want to filter from all users    
                         showtooltip={true}
-                        required={false}
+                        required={true}
                         disabled={false}
                         ensureUser={true}
                         onChange={(items) => this._selectedApprover(items)}
+                        // onChange={this._selectedApprover}
                         showHiddenInUI={false}
                         defaultSelectedUsers={[this.state.approverName]}
                         principalTypes={[PrincipalType.User]}
                         resolveDelay={1000} />
                     </div>
+                  </div>
 
-                    <div style={{ color: "#dc3545" }}>
-                      {this.validator.message("Approver", this.state.approver, "required")}{" "}
+                  <div className={styles.divrow} >
+                    <div className={styles.wdthrgt}>
+                      <Dropdown id="t2" required={true}
+                        label="Revision Coding"
+                        selectedKey={this.state.revisionCodingId}
+                        placeholder="Select an option"
+                        options={this.state.revisionSettingsArray}
+                        onChanged={this._revisionCodingChange} />
+                      <div style={{ color: "#dc3545" }}>
+                        {this.validator.message("Revision", this.state.revisionCodingId, "required")}{" "}</div>
                     </div>
-                  </div>
-                </div>
-                <div className={styles.divrow}>
-                  <div style={{ width: "33%", marginTop: "10px" }}>
-                    <Dropdown id="t2" required={true}
-                      label="Revision Coding"
-                      selectedKey={this.state.revisionCodingId}
-                      placeholder="Select an option"
-                      options={this.state.revisionSettingsArray}
-                      onChanged={this._revisionCodingChange} />
-                    <div style={{ color: "#dc3545" }}>
-                      {this.validator.message("Revision", this.state.revisionCodingId, "required")}{" "}</div>
-                  </div>
-                  <div className={styles.wdthmid}>
-                    <div style={{ marginLeft: "12px", width: "100%" }}>
+                    <div className={styles.wdthlft}>
                       <TextField label="Sub-Contractor Document Number" onChange={this._subContractorNumberChange} value={this.state.subContractorNumber}></TextField>
                     </div>
-                  </div>
-                  <div className={styles.wdthlst} style={{ marginLeft: "12px" }}>
-                    <div style={{ marginLeft: "12px", }}>
+                    <div className={styles.wdthlft}>
                       <TextField label="Customer Document Number" onChange={this._CustomerNumberChange} value={this.state.customerNumber}></TextField>
                     </div>
                   </div>
-                </div>
-                <div className={styles.divrow}>
-                  <div>
-                    <DatePicker label="Expiry Date"
-                      style={{ width: '16rem' }}
-                      value={this.state.expiryDate}
-                      onSelectDate={this._onExpDatePickerChange}
-                      placeholder="Select a date..."
-                      ariaLabel="Select a date" minDate={new Date()}
-                      formatDate={this._onFormatDate} />
-                    {/* <div style={{ color: "#dc3545" }}>
-                      {this.validator.message("expiryDate", this.state.expiryDate, "required")}{""}</div> */}
+                  <div className={styles.divrow}>
+                    <div className={styles.divDate} style={{ display: this.state.hideExpiry }}>
+                      <DatePicker label="Expiry Date"
+                        value={this.state.expiryDate}
+                        onSelectDate={this._onExpDatePickerChange}
+                        placeholder="Select a date..."
+                        ariaLabel="Select a date"
+                        minDate={new Date()}
+                        formatDate={this._onFormatDate} />
+                      <div >
+                        <div style={{ color: "#dc3545" }}>
+                          {this.validator.message("expiryDate", this.state.expiryDate, "required")}{""}
+                        </div></div>
+                    </div>
+                    <div className={styles.wdthmid} style={{ display: this.state.hideExpiry, width: "14.5%", }}>
+                      <TextField id="Expiry Reminder" name="Expiry Reminder (Days)"
+                        label="Expiry Reminder(Days)" onChange={this._expLeadPeriodChange}
+                        value={this.state.expiryLeadPeriod}>
+                      </TextField>
+                      <div >
+                        <div style={{ color: "#dc3545" }}>
+                          {this.validator.message("ExpiryLeadPeriod", this.state.expiryLeadPeriod, "required")}{""}
+                        </div></div>
+                      <div style={{ color: "#dc3545", display: this.state.leadmsg }}>
+                        Enter only numbers less than 100
+                      </div>
+                    </div>
+                    <div style={{ marginTop: "45px", marginLeft: "11px" }}>
+                      <TooltipHost
+                        content="Do you want to make this as a template?"
+                        //id={tooltipId}
+                        calloutProps={calloutProps}
+                        styles={hostStyles}>
+                        <Checkbox label="Save as template " boxSide="start" onChange={this._onTemplateChecked} checked={this.state.templateDocument} />
+                      </TooltipHost></div>
+                    <div style={{ marginTop: "45px", marginLeft: "11px" }}>
+                      <TooltipHost
+                        content="Check if the document is for transmittal"
+                        //id={tooltipId}
+                        calloutProps={calloutProps}
+                        styles={hostStyles}>
+                        <Checkbox label="Transmittal Document ? " boxSide="start"
+                          onChange={this._onTransmittalChecked}
+                          checked={this.state.transmittalCheck} />
+                      </TooltipHost>
+                    </div>
+                    <div style={{ display: this.state.hideDirect, marginTop: "36px", marginLeft: "15px" }}>
+                      <TooltipHost
+                        content="Without review or approval, the document will be published."
+                        //id={tooltipId}
+                        calloutProps={calloutProps}
+                        styles={hostStyles}>
+                        <Checkbox label="Direct Publish?" boxSide="start" onChange={this._onDirectPublishChecked} checked={this.state.directPublishCheck} />
+                      </TooltipHost></div>
+                    <div style={{ marginLeft: "31px", display: this.state.hidePublish }}>
+                      <Dropdown id="t2" required={true}
+                        label="Publish Option"
+                        selectedKey={this.state.publishOption}
+                        placeholder="Select an option"
+                        options={this.state.isdocx === "" ? publishOptions : publishOption}
+                        onChanged={this._publishOptionChange} />
+                      <div style={{ color: "#dc3545" }}>
+                        {this.validator.message("publish", this.state.publishOption, "required")}{""}</div>
+                    </div>
                   </div>
-                  <div style={{ marginLeft: "8px" }}>
-                    <TextField id="Expiry Reminder" name="Expiry Reminder (Days)"
-                      label="Expiry Reminder (Days)" onChange={this._expLeadPeriodChange}
-                      value={this.state.expiryLeadPeriod}>
-                    </TextField>
-                    {/* <div style={{ color: "#dc3545" }}>
-                      {this.validator.message("ExpiryLeadPeriod", this.state.expiryLeadPeriod, "required")}{""}</div> */}
-                    <div style={{ color: "#dc3545", display: this.state.leadmsg }}>
-                      Enter only numbers less than 101
-                    </div></div>
-                  <div className={styles.wdthfrst} style={{ marginTop: "35px", marginLeft: "16px" }}> <TooltipHost
-                    content="Do you want to make this as a template?"
-                    //id={tooltipId}
-                    calloutProps={calloutProps}
-                    styles={hostStyles}>
-                    <Checkbox label="Save as template" boxSide="start" onChange={this._onTemplateChecked} checked={this.state.templateDocument} />
-                  </TooltipHost></div>
-                </div>
-                <div style={{ display: this.state.messageBar }}>
-                  {/* Show Message bar for Notification*/}
-                  {this.state.statusMessage.isShowMessage ?
-                    <MessageBar
-                      messageBarType={this.state.statusMessage.messageType}
-                      isMultiline={false}
-                      dismissButtonAriaLabel="Close"
-                    >{this.state.statusMessage.message}</MessageBar>
-                    : ''}
-                </div>
-                <div className={styles.mt}>
-                  <div hidden={this.state.hideLoading}><Spinner label={'Publishing...'} /></div>
-                </div>
-                <div className={styles.mt}>
-                  <div style={{ display: this.state.hideCreateLoading }}><Spinner label={'Updating...'} /></div>
-                </div>
-                <div className={styles.mt}>
-                  <div style={{ display: this.state.norefresh, color: "Red", fontWeight: "bolder", textAlign: "center" }}>
-                    <Label>***PLEASE DON'T REFRESH***</Label>
+                  <div style={{ display: this.state.messageBar }}>
+                    {/* Show Message bar for Notification*/}
+                    {this.state.statusMessage.isShowMessage ?
+                      <MessageBar
+                        messageBarType={this.state.statusMessage.messageType}
+                        isMultiline={false}
+                        dismissButtonAriaLabel="Close"
+                      >{this.state.statusMessage.message}</MessageBar>
+                      : ''}
                   </div>
-                </div>
-                <div className={styles.divrow}>
-                  <div style={{ fontStyle: "italic", fontSize: "12px", position: "absolute" }}><span style={{ color: "red", fontSize: "23px" }}>*</span>fields are mandatory </div>
-                  <div style={{ display: this.state.hidebutton }} >
+                  <div className={styles.mt}>
+                    <div hidden={this.state.hideLoading}><Spinner label={'Publishing...'} /></div>
+                  </div>
+                  <div className={styles.mt}>
+                    <div style={{ display: this.state.hideCreateLoading }}><Spinner label={'Updating...'} /></div>
+                  </div>
+                  <div className={styles.mt}>
+                    <div style={{ display: this.state.norefresh, color: "Red", fontWeight: "bolder", textAlign: "center" }}>
+                      <Label>***PLEASE DON'T REFRESH***</Label>
+                    </div>
+                  </div>
+                  <div className={styles.divrow}>
+                    <div style={{ fontStyle: "italic", fontSize: "12px", position: "absolute" }}><span style={{ color: "red", fontSize: "23px" }}>*</span>fields are mandatory </div>
                     <div className={styles.rgtalign} >
-                      <PrimaryButton id="b2" className={styles.btn} disabled={this.state.updateDisable} onClick={this._onUpdateClick} >Update</PrimaryButton >
+                      {/* {this.state.directPublishCheck === false && <PrimaryButton id="b2" className={styles.btn} disabled={this.state.saveDisable} onClick={this._onSendForReview}>Update & Send for review and submit</PrimaryButton >} */}
+                      <PrimaryButton id="b2" className={styles.btn} disabled={this.state.saveDisable} onClick={this._onUpdateClick}>Update</PrimaryButton >
                       <PrimaryButton id="b1" className={styles.btn} onClick={this._onCancel}>Cancel</PrimaryButton >
                     </div>
                   </div>
-                </div>
-
-                {/* {/ {/ Cancel Dialog Box /} /} */}
-
-                <div>
-                  <Dialog
-                    hidden={this.state.confirmDialog}
-                    dialogContentProps={this.dialogContentProps}
-                    onDismiss={this._dialogCloseButton}
-                    styles={this.dialogStyles}
-                    modalProps={this.modalProps}>
-                    <DialogFooter>
-                      <PrimaryButton onClick={this._confirmYesCancel} text="Yes" />
-                      <DefaultButton onClick={this._confirmNoCancel} text="No" />
-                    </DialogFooter>
-                  </Dialog>
-                </div>
-                <br />
-                {/* editDocument div close */}
-              </PivotItem>
-            </Pivot>
+                  {/* {/ {/ Cancel Dialog Box /} /} */}
+                  <div>
+                    <Dialog
+                      hidden={this.state.confirmDialog}
+                      dialogContentProps={this.dialogContentProps}
+                      onDismiss={this._dialogCloseButton}
+                      styles={this.dialogStyles}
+                      modalProps={this.modalProps}>
+                      <DialogFooter>
+                        <PrimaryButton onClick={this._confirmYesCancel} text="Yes" />
+                        <DefaultButton onClick={this._confirmNoCancel} text="No" />
+                      </DialogFooter>
+                    </Dialog>
+                  </div>
+                  {/* <div style={{ padding: "18px" }} >
+                    <Modal
+                      isOpen={this.state.showReviewModal}
+                      isModeless={true}
+                      containerClassName={contentStyles.container}>
+                      <div style={{ padding: "18px" }}>
+                        <div className={styles.modalHeading} style={{ display: "flex" }}>
+                          <span style={{ textAlign: "center", display: "flex", justifyContent: "center", flexGrow: "1" }}><b>Send For Review</b></span>
+                          <IconButton
+                            iconProps={cancelIcon}
+                            ariaLabel="Close popup modal"
+                            onClick={this._closeModal}
+                            styles={iconButtonStyles}
+                          /></div>
+                        <DatePicker label="Due Date *"
+                          value={this.state.DueDate}
+                          onSelectDate={this._DueDateChange}
+                          placeholder="Select a date..."
+                          ariaLabel="Select a date"
+                          minDate={new Date()}
+                          formatDate={this._onFormatDate} />
+                        {this.state.dueDateMadatory === "Yes" &&
+                          <label style={{ color: 'Red' }}>This field is mandatory</label>}
+                        <TextField id="comments" autoComplete='true' label="Comments" onChange={this._commentChange} value={this.state.comments} multiline />
+                        <PrimaryButton style={{ float: "right", marginTop: "7px", marginBottom: "9px" }} className={styles.modalButton} id="b2" onClick={this.onConfirmReview} >Confirm</PrimaryButton >
+                      </div>
+                    </Modal>
+                  </div> */}
+                  <br />
+                  {/* editDocument div close */}
+                </PivotItem>
+                <PivotItem headerText="Version History">
+                  <div>
+                    <IconButton iconProps={back} title="Back" onClick={this._back} />
+                    <Iframe id="iframeModal" url={this.props.siteUrl + "/_layouts/15/Versions.aspx?list={" + this.sourceDocumentLibraryId + "}&ID=" + this.sourceDocumentID + "&IsDlg=0"}
+                      width={"100%"} frameBorder={0}
+                      height={"500rem"} />                  </div>
+                </PivotItem>
+                <PivotItem headerText="RevisionHistory">
+                  <div>
+                    <IconButton iconProps={back} title="Back" onClick={this._back} />
+                    <Iframe id="iframeModal" url={this.props.siteUrl + "/SitePages/" + this.props.revisionHistoryPage + ".aspx?did=" + this.documentIndexID}
+                      width={"100%"} frameBorder={0}
+                      height={"500rem"} />
+                  </div>
+                </PivotItem>
+                <PivotItem headerText="TransmittalHistory">
+                  <div>
+                    <IconButton iconProps={back} title="Back" onClick={this._back} />
+                    <Iframe id="iframeModal" url={this.props.siteUrl + "/SitePages/" + this.props.transmittalHistory + ".aspx?did=" + this.documentIndexID}
+                      width={"100%"} frameBorder={0}
+                      height={"500rem"} />
+                  </div>
+                </PivotItem>
+              </Pivot>
+            </div>
+          </div>
+          <div style={{ display: this.state.accessDeniedMessageBar }}>
+            {/* Show Message bar for Notification*/}
+            {this.state.statusMessage.isShowMessage ?
+              <MessageBar
+                messageBarType={this.state.statusMessage.messageType}
+                isMultiline={false}
+                dismissButtonAriaLabel="Close"
+              >{this.state.statusMessage.message}</MessageBar>
+              : ''}
           </div>
         </div>
-        <div style={{ display: this.state.accessDeniedMessageBar }}>
-          {/* Show Message bar for Notification*/}
-          {this.state.statusMessage.isShowMessage ?
-            <MessageBar
-              messageBarType={this.state.statusMessage.messageType}
-              isMultiline={false}
-              dismissButtonAriaLabel="Close"
-            >{this.state.statusMessage.message}</MessageBar>
-            : ''}
-        </div>
-      </section>
+      </div>
     );
   }
 }

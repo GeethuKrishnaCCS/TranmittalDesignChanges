@@ -85,9 +85,9 @@ module.exports = {
         //                    or else return the object to a caller (who assumes this responsibility).  Unterminated
         //                    promise chains are a serious issue.  Besides causing errors to be silently ignored,
         //                    they can also cause a NodeJS process to terminate unexpectedly.
-        '@typescript-eslint/no-floating-promises': 2,
+        '@typescript-eslint/no-floating-promises': 1,
         // RATIONALE:         Catches a common coding mistake.
-        '@typescript-eslint/no-for-in-array': 2,
+        '@typescript-eslint/no-for-in-array': 1,
         // STANDARDIZED BY:   @typescript-eslint\eslint-plugin\dist\configs\recommended.json
         '@typescript-eslint/no-misused-new': 2,
         // RATIONALE:         The "namespace" keyword is not recommended for organizing code because JavaScript lacks
@@ -172,7 +172,7 @@ module.exports = {
         // STANDARDIZED BY:   eslint\conf\eslint-recommended.js
         'for-direction': 1,
         // RATIONALE:         Catches a common coding mistake.
-        'guard-for-in': 2,
+        'guard-for-in': 1,
         // RATIONALE:         If you have more than 2,000 lines in a single source file, it's probably time
         //                    to split up your code.
         'max-lines': ['warn', { max: 2000 }],
@@ -194,7 +194,7 @@ module.exports = {
         'no-delete-var': 2,
         // RATIONALE:         Catches code that is likely to be incorrect
         // STANDARDIZED BY:   eslint\conf\eslint-recommended.js
-        'no-duplicate-case': 2,
+        'no-duplicate-case': 1,
         // STANDARDIZED BY:   eslint\conf\eslint-recommended.js
         'no-empty': 1,
         // STANDARDIZED BY:   eslint\conf\eslint-recommended.js

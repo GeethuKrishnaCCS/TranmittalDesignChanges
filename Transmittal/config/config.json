@@ -49,14 +49,6 @@
           "manifest": "./src/webparts/outboundTransmittalV2/OutboundTransmittalV2WebPart.manifest.json"
         }
       ]
-    },
-    "inbound-transmittal-sub-contractor-v-2-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/inboundTransmittalSubContractorV2/InboundTransmittalSubContractorV2WebPart.js",
-          "manifest": "./src/webparts/inboundTransmittalSubContractorV2/InboundTransmittalSubContractorV2WebPart.manifest.json"
-        }
-      ]
     }
   },
   "externals": {},
@@ -67,7 +59,6 @@
     "TransmittalSendRequestWebPartStrings": "lib/webparts/transmittalSendRequest/loc/{locale}.js",
     "TransmittalReviewDocumentWebPartStrings": "lib/webparts/transmittalReviewDocument/loc/{locale}.js",
     "TransmittalEditDocumentWebPartStrings": "lib/webparts/transmittalEditDocument/loc/{locale}.js",
-    "OutboundTransmittalV2WebPartStrings": "lib/webparts/outboundTransmittalV2/loc/{locale}.js",
-    "InboundTransmittalSubContractorV2WebPartStrings": "lib/webparts/inboundTransmittalSubContractorV2/loc/{locale}.js"
+    "OutboundTransmittalV2WebPartStrings": "lib/webparts/outboundTransmittalV2/loc/{locale}.js"
   }
 }
