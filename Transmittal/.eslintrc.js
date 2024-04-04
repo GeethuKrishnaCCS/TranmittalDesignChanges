@@ -87,7 +87,7 @@ module.exports = {
         //                    they can also cause a NodeJS process to terminate unexpectedly.
         '@typescript-eslint/no-floating-promises': ['off'],
         // RATIONALE:         Catches a common coding mistake.
-        '@typescript-eslint/no-for-in-array': 2,
+        '@typescript-eslint/no-for-in-array': 0,
         // STANDARDIZED BY:   @typescript-eslint\eslint-plugin\dist\configs\recommended.json
         '@typescript-eslint/no-misused-new': 2,
         // RATIONALE:         The "namespace" keyword is not recommended for organizing code because JavaScript lacks

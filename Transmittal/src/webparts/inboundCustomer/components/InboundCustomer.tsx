@@ -108,7 +108,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
       webpartView: "",
       submitDisable: false
     };
-    this._Service = new BaseService(this.props.context, window.location.protocol + "//" + window.location.hostname + this.props.hubSiteUrl);
+    this._Service = new BaseService(this.props.context, this.props.hubSiteUrl);
     this.Addindex = this.Addindex.bind(this);
     this.Addindex2 = this.Addindex2.bind(this);
     this.AddDoc = this.AddDoc.bind(this);
@@ -145,8 +145,8 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
   };
   //_LAUrlGettingForDocumentLibraryUpdate
   private _LAUrlGettingForDocumentLibraryUpdate = async () => {
-    const laUrl = await this.reqWeb.getList("/sites/" + this.props.hubsite + "/Lists/" + this.props.requestList).
-      items.filter("Title eq 'EMEC_InboundTransmittal'").get();
+    const hubSite = "/sites/" + this.props.hubsite;
+    const laUrl = await this._Service.getLAurl(hubSite, this.props.requestList, "EMEC_InboundTransmittal");
     console.log("PosturlForPermission", laUrl[0].PostUrl);
     this.flowUrlForDLUpdate = laUrl[0].PostUrl;
     this.triggerProjectDLUpdate();
@@ -199,7 +199,8 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
     this.setState({ access: "none", accessDeniedMsgBar: "none" });
   }
   private _LAUrlGettingForPermission = async () => {
-    const laUrl = await this.reqWeb.getList("/sites/" + this.props.hubsite + "/Lists/" + this.props.requestList).items.filter("Title eq 'EMEC_PermissionWebpart'").get();
+    const hubSite = "/sites/" + this.props.hubsite;
+    const laUrl = await this._Service.getLAurl(hubSite, this.props.requestList, "EMEC_PermissionWebpart");
     console.log("PosturlForPermission", laUrl[0].PostUrl);
     this.postUrlForPermission = laUrl[0].PostUrl;
     this.triggerProjectPermissionFlow(laUrl[0].PostUrl);
@@ -266,15 +267,16 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
   }
   public async DocIndex(option: { key: any; text: any }) {
     this.setState({ docId: option.key, docKey: option.text });
-    let select: "DocumentID,DocumentName,Owner/ID,Owner/Title,Owner/EMail,Revision,SourceDocument,CriticalDocument,CustomerDocumentNo";
-    let expand: "Owner";
-    const documentIndexItem: any = await this._Service.getItemWithFilterExpand(this.props.siteUrl, this.props.documentIndexList, select, expand, "ID eq '" + option.key + "'");
+    let select = "DocumentID,DocumentName,Owner/ID,Owner/Title,Owner/EMail,Revision,SourceDocument,CriticalDocument,CustomerDocumentNo";
+    let expand = "Owner";
+    let filter = "ID eq '" + option.key + "'";
+    const documentIndexItem: any = await this._Service.getItemWithFilterExpand(this.props.siteUrl, this.props.documentIndexList, select, filter, expand);
     console.log(documentIndexItem);
     this.setState({
-      OwnerId: documentIndexItem.Owner.ID,
-      OwnerTitle: documentIndexItem.Owner.Title,
-      ownerEmail: documentIndexItem.Owner.EMail,
-      outlookCustomerDocNo: documentIndexItem.CustomerDocumentNo
+      OwnerId: documentIndexItem[0].Owner.ID,
+      OwnerTitle: documentIndexItem[0].Owner.Title,
+      ownerEmail: documentIndexItem[0].Owner.EMail,
+      outlookCustomerDocNo: documentIndexItem[0].CustomerDocumentNo
     });
   }
   public Addindex() {
@@ -525,12 +527,13 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
     if (mailSend == "Yes") {
       const emailNotification: any[] = await this.reqWeb.getList("/sites/" + this.props.hubsite + "/Lists/" + "EmailNotificationSettings").items.get();
       console.log(emailNotification);
-      for (let k in emailNotification) {
-        if (emailNotification[k].Title == type) {
-          Subject = emailNotification[k].Subject;
-          Body = emailNotification[k].Body;
+      emailNotification.forEach(item => {
+        if (item.Title == type) {
+          Subject = item.Subject;
+          Body = item.Body;
         }
-      }
+      })
+
       // Subject = Subject.replace('[DocumentName]', docid);
       // Body = Body.replace('[DocumentName]', docid);
       let replacedSubject1 = replaceString(Subject, '[DocumentName]', docid);
@@ -680,7 +683,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
                 }
                 await this._Service.createNewItem(this.props.siteUrl, this.props.InboundTransmittalDetails, inboundDetails)
                   .then(async iar => {
-                    await iar.item.attachmentFiles.add(this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments.name, this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments);
+                    //   await iar.item.attachmentFiles.add(this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments.name, this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments);
                     let updateIndex = {
                       TransmittalLocation: "IN from Customer",
                       TransmittalStatus: "Received",
@@ -720,23 +723,24 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
                                 await this._Service.createNewItem(this.props.siteUrl, this.props.TransmittalHistory, transmittalHistory);
                                 let select = "SourceDocumentID,Owner/ID,Owner/Title,Owner/EMail,DocumentName,Approver/ID,Approver/Title,Approver/EMail,Reviewers/ID,Reviewers/Title,Reviewers/EMail";
                                 let expand = "Owner,Approver,Reviewers";
-                                this._Service.getItemSelectExpandById(this.props.siteUrl, "DocumentIndex", select, expand, this.state.ReactTableResult[i].docId)
+                                let filters = "ID eq '" + this.state.ReactTableResult[i].docId + "'"
+                                this._Service.getItemWithFilterExpand(this.props.siteUrl, "DocumentIndex", select, filters, expand)
                                   .then(forGettingOwner => {
-                                    this._sendmail(forGettingOwner.DocumentName, forGettingOwner.Owner.EMail, "InboundTransmittalFromCustomer", forGettingOwner.Owner.Title, this.state.ReactTableResult[i].transmittalCode);
-                                    this._sendmail(forGettingOwner.DocumentName, forGettingOwner.Approver.EMail, "InboundTransmittalFromCustomer", forGettingOwner.Approver.Title, this.state.ReactTableResult[i].transmittalCode);
-                                    if (forGettingOwner.Reviewers) {
-                                      for (let k in forGettingOwner.Reviewers) {
-                                        if (forGettingOwner.Reviewers[k].EMail != forGettingOwner.Owner.EMail || forGettingOwner.Reviewers[k].EMail != forGettingOwner.Approver.EMail) {
-                                          this._sendmail(forGettingOwner.DocumentName, forGettingOwner.Reviewers[k].EMail, "InboundTransmittalFromCustomer", forGettingOwner.Reviewers[k].Title, this.state.ReactTableResult[i].transmittalCode);
+                                    this._sendmail(forGettingOwner[0].DocumentName, forGettingOwner[0].Owner.EMail, "InboundTransmittalFromCustomer", forGettingOwner[0].Owner.Title, this.state.ReactTableResult[i].transmittalCode);
+                                    this._sendmail(forGettingOwner[0].DocumentName, forGettingOwner[0].Approver.EMail, "InboundTransmittalFromCustomer", forGettingOwner[0].Approver.Title, this.state.ReactTableResult[i].transmittalCode);
+                                    if (forGettingOwner[0].Reviewers) {
+                                      for (let k in forGettingOwner[0].Reviewers) {
+                                        if (forGettingOwner[0].Reviewers[k].EMail != forGettingOwner[0].Owner.EMail || forGettingOwner[0].Reviewers[k].EMail != forGettingOwner[0].Approver.EMail) {
+                                          this._sendmail(forGettingOwner[0].DocumentName, forGettingOwner[0].Reviewers[k].EMail, "InboundTransmittalFromCustomer", forGettingOwner[0].Reviewers[k].Title, this.state.ReactTableResult[i].transmittalCode);
                                         }
                                       }
                                     }
-                                    this._triggerPermission(forGettingOwner.SourceDocumentID);
+                                    this._triggerPermission(forGettingOwner[0].SourceDocumentID);
                                   });
                                 let selectHeaderItems = "TransmittalHeader/ID,TransmittalStatus";
                                 let filter = "TransmittalHeader/ID eq '" + Number(this.state.TransmittalHeaderId) + "' ";
                                 let expanditems = "TransmittalHeader";
-                                this._Service.getItemWithFilterExpand(this.props.siteUrl, this.props.OutboundTransmittalDetails, select, filter, expand)
+                                this._Service.getItemWithFilterExpand(this.props.siteUrl, this.props.OutboundTransmittalDetails, selectHeaderItems, filter, expanditems)
                                   .then(outboundTransmittalDetailsListName => {
                                     let length = outboundTransmittalDetailsListName.length;
                                     let recievedlength = 0;
@@ -835,7 +839,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
                 }
                 await this._Service.createNewItem(this.props.siteUrl, this.props.InboundTransmittalDetails, inboundDetails)
                   .then(iar => {
-                    iar.item.attachmentFiles.add(this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments.name, this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments);
+                    //iar.item.attachmentFiles.add(this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments.name, this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments);
                   });
               }
             }
@@ -879,18 +883,19 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
                             await this._Service.createNewItem(this.props.siteUrl, this.props.documentIndexList, updateIndex);
                             let select = "SourceDocumentID,Owner/ID,Owner/Title,Owner/EMail,DocumentName,Approver/ID,Approver/Title,Approver/EMail,Reviewers/ID,Reviewers/Title,Reviewers/EMail";
                             let expands = "Owner,Approver,Reviewers";
-                            this._Service.getItemSelectExpandById(this.props.siteUrl, "DocumentIndex", select, expands, this.state.ReactTableResult[i].docId)
+                            let filterss = "ID eq '" + this.state.ReactTableResult[i].docId + "'"
+                            this._Service.getItemWithFilterExpand(this.props.siteUrl, "DocumentIndex", select, filterss, expands)
                               .then(forGettingOwner => {
-                                this._sendmail(forGettingOwner.DocumentName, forGettingOwner.Owner.EMail, "InboundTransmittalFromCustomer", forGettingOwner.Owner.Title, this.state.ReactTableResult[i].transmittalCode);
-                                this._sendmail(forGettingOwner.DocumentName, forGettingOwner.Approver.EMail, "InboundTransmittalFromCustomer", forGettingOwner.Approver.Title, this.state.ReactTableResult[i].transmittalCode);
-                                if (forGettingOwner.Reviewers) {
-                                  for (let k in forGettingOwner.Reviewers) {
-                                    if (forGettingOwner.Reviewers[k].EMail != forGettingOwner.Owner.EMail || forGettingOwner.Reviewers[k].EMail != forGettingOwner.Approver.EMail) {
-                                      this._sendmail(forGettingOwner.DocumentName, forGettingOwner.Reviewers[k].EMail, "InboundTransmittalFromCustomer", forGettingOwner.Reviewers[k].Title, this.state.ReactTableResult[i].transmittalCode);
+                                this._sendmail(forGettingOwner[0].DocumentName, forGettingOwner[0].Owner.EMail, "InboundTransmittalFromCustomer", forGettingOwner[0].Owner.Title, this.state.ReactTableResult[i].transmittalCode);
+                                this._sendmail(forGettingOwner[0].DocumentName, forGettingOwner[0].Approver.EMail, "InboundTransmittalFromCustomer", forGettingOwner[0].Approver.Title, this.state.ReactTableResult[i].transmittalCode);
+                                if (forGettingOwner[0].Reviewers) {
+                                  for (let k in forGettingOwner[0].Reviewers) {
+                                    if (forGettingOwner[0].Reviewers[k].EMail != forGettingOwner[0].Owner.EMail || forGettingOwner[0].Reviewers[k].EMail != forGettingOwner[0].Approver.EMail) {
+                                      this._sendmail(forGettingOwner[0].DocumentName, forGettingOwner[0].Reviewers[k].EMail, "InboundTransmittalFromCustomer", forGettingOwner[0].Reviewers[k].Title, this.state.ReactTableResult[i].transmittalCode);
                                     }
                                   }
                                 }
-                                this._triggerPermission(forGettingOwner.SourceDocumentID);
+                                this._triggerPermission(forGettingOwner[0].SourceDocumentID);
                               });
                             //new code                            
                             let selectHeaderItems = "TransmittalHeader/ID,TransmittalStatus";
@@ -950,7 +955,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
         statusMessage: { isShowMessage: true, message: "Transmittal sent successfully", messageType: 4 },
       });
       setTimeout(() => {
-        window.location.replace(window.location.protocol + "//" + window.location.hostname + this.props.siteUrl)
+        //  window.location.replace(window.location.protocol + "//" + window.location.hostname + this.props.siteUrl)
       }, 10000);
     }
   }
@@ -1242,7 +1247,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
                   }
                   const inboundTransmittalDetails = await this._Service.createNewItem(this.props.siteUrl, this.props.InboundTransmittalDetails, inboundDetails)
                   if (inboundTransmittalDetails) {
-                    inboundTransmittalDetails.item.attachmentFiles.add(this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments.name, this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments);
+                    //  inboundTransmittalDetails.item.attachmentFiles.add(this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments.name, this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments);
                   }
                 }
                 catch (ex) {
@@ -1319,7 +1324,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
                   }
                   const inboundTransmittalDetails = await this._Service.createNewItem(this.props.siteUrl, this.props.InboundTransmittalDetails, inboundDetails)
                   if (inboundTransmittalDetails) {
-                    inboundTransmittalDetails.item.attachmentFiles.add(this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments.name, this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments);
+                    //inboundTransmittalDetails.item.attachmentFiles.add(this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments.name, this.state.ReactTableResult[i].Attachments == null ? null : this.state.ReactTableResult[i].Attachments);
                   }
                 }
                 catch (ex) {

@@ -142,8 +142,8 @@ export class BaseService {
     public gettriggerUnderApprovalPermission(url: string, listname: string): Promise<any> {
         return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("Title eq 'EMEC_DocumentPermission_UnderApproval'")()
     }
-    public getdirectpublish(url: string, listname: string): Promise<any> {
-        return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("Title eq 'EMEC_PermissionWebpart'")()
+    public getLAurl(url: string, listname: string, filter: string): Promise<any> {
+        return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("Title eq '" + filter + "'")()
     }
     public getnotification(url: string, listname: string, emailuser: string): Promise<any> {
         return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("EmailUser/EMail eq '" + emailuser + "'").select("Preference")()
