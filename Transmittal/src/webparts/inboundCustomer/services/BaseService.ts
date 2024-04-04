@@ -44,6 +44,13 @@ export class BaseService {
         console.log(data);
         return this._sp.web.getList(url + "/Lists/" + listname).items.getById(id).update(data);
     }
+    public updateItemDL(url: string, listname: string, id: number): Promise<any> {
+
+        return this._sp.web.getList(url + "/" + listname).items.getById(id).delete();
+    }
+    public deleteItem(url: string, listname: string, id: number): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.getById(id).delete();
+    }
     public updatehubItem(url: string, listname: string, data: any, id: number): Promise<any> {
         console.log(data);
         return this.sphub.web.getList(url + "/Lists/" + listname).items.getById(id).update(data);
@@ -53,6 +60,9 @@ export class BaseService {
         return this._sp.web.getList(url + "/" + libraryname).items.getById(id).update(data);
     }
     public uploadDocument(libraryName: string, Filename: any, filedata: any): Promise<any> {
+        return this._sp.web.getFolderByServerRelativePath(libraryName).files.addUsingPath(Filename, filedata, { Overwrite: true });
+    }
+    public uploadDocumentAndUpdate(libraryName: string, Filename: any, filedata: any): Promise<any> {
         return this._sp.web.getFolderByServerRelativePath(libraryName).files.addUsingPath(Filename, filedata, { Overwrite: true });
     }
     public getDocument(Url: string, publisheddocumentLibrary: string, publishName: string): Promise<any> {
@@ -79,8 +89,29 @@ export class BaseService {
     public getItemById(url: string, listname: string, id: number): Promise<any> {
         return this._sp.web.getList(url + "/Lists/" + listname).items.getById(id)();
     }
+    public UpdateItemById(url: string, listname: string, id: number, data: any): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.getById(id).update(data);
+    }
     public gethubItemById(url: string, listname: string, id: number): Promise<any> {
         return this._sp.web.getList(url + "/Lists/" + listname).items.getById(id)();
+    }
+    public getItemSelectExpandById(url: string, listname: string, select: string, expand: string, id: number): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.select(select).expand(expand).getById(id)();
+    }
+    public getItemWithFilterExpand(url: string, listname: string, select: string, filter: string, expand: string): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.select(select).expand(expand).filter(filter)();
+    }
+    public getItemWithSelectFilter(url: string, listname: string, select: string, filter: string): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.select(select).filter(filter)();
+    }
+    public getItemWithFilter(url: string, listname: string, filter: string): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.filter(filter)();
+    }
+    public getItemWithFilterDL(url: string, listname: string, filter: string): Promise<any> {
+        return this._sp.web.getList(url + "/" + listname).items.filter(filter)();
+    }
+    public getItemWithSelect(url: string, listname: string, select: string): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.select(select)();
     }
     public getApproverData(url: string, listname: string): Promise<any> {
         return this.sphub.web.getList(url + "/Lists/" + listname).items.select("ID,Title,Approver/Title,Approver/ID,Approver/EMail").expand("Approver")()

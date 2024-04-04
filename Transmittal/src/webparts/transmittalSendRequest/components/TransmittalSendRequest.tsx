@@ -191,12 +191,12 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
 
       }
       if (userMessageSettings[i].Title === "TaskDelegateDccReview") {
-        let TaskDelegateDccReview = userMessageSettings[i].Message;
+        const TaskDelegateDccReview = userMessageSettings[i].Message;
         this.taskDelegateDccReview = replaceString(TaskDelegateDccReview, '[DocumentName]', this.state.documentName);
 
       }
       if (userMessageSettings[i].Title === "TaskDelegateUnderApproval") {
-        let TaskDelegateUnderApproval = userMessageSettings[i].Message;
+        const TaskDelegateUnderApproval = userMessageSettings[i].Message;
         this.taskDelegateUnderApproval = replaceString(TaskDelegateUnderApproval, '[DocumentName]', this.state.documentName);
 
       }
@@ -211,8 +211,8 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   //Get Parameter from URL
   private async _queryParamGetting() {
     //Query getting...
-    let params = new URLSearchParams(window.location.search);
-    let documentindexid = params.get('did');
+    const params = new URLSearchParams(window.location.search);
+    const documentindexid = params.get('did');
 
     if (documentindexid !== "" && documentindexid !== null) {
       this.documentIndexID = parseInt(documentindexid);
@@ -287,36 +287,25 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   public async _bindSendRequestForm() {
     await this._Service.getItemById(this.props.siteUrl, this.props.documentIndexList, this.documentIndexID).then(async indexItems => {
       console.log("dataForEdit", indexItems);
-      let documentID;
-      let documentName;
-      let ownerName;
-      let ownerId;
-      let revision;
-      let linkToDocument;
-      let criticalDocument;
-      let approverName;
-      let approverId;
-      let approverEmail;
+
       let temReviewersID = [];
       let tempReviewers = [];
-      let businessUnitID;
-      let departmentId;
       //Get Document Index
       const documentIndexItem: any = await this._Service.getIndexDataId(this.props.siteUrl, this.props.documentIndexList, this.documentIndexID);
       console.log(documentIndexItem);
-      documentID = documentIndexItem.DocumentID;
-      documentName = documentIndexItem.DocumentName;
-      ownerName = documentIndexItem.Owner.Title;
-      ownerId = documentIndexItem.Owner.ID;
-      revision = documentIndexItem.Revision;
-      linkToDocument = documentIndexItem.SourceDocument.Url;
+      const documentID = documentIndexItem.DocumentID;
+      const documentName = documentIndexItem.DocumentName;
+      const ownerName = documentIndexItem.Owner.Title;
+      const ownerId = documentIndexItem.Owner.ID;
+      const revision = documentIndexItem.Revision;
+      const linkToDocument = documentIndexItem.SourceDocument.Url;
       // this.SourceDocumentID = DocumentIndexItem.SourceDocumentID;
-      criticalDocument = documentIndexItem.CriticalDocument;
-      approverName = documentIndexItem.Approver.Title;
-      approverId = documentIndexItem.Approver.ID;
-      approverEmail = documentIndexItem.Approver.EMail;
-      businessUnitID = documentIndexItem.BusinessUnitID;
-      departmentId = documentIndexItem.DepartmentID;
+      const criticalDocument = documentIndexItem.CriticalDocument;
+      const approverName = documentIndexItem.Approver.Title;
+      const approverId = documentIndexItem.Approver.ID;
+      const approverEmail = documentIndexItem.Approver.EMail;
+      const businessUnitID = documentIndexItem.BusinessUnitID;
+      const departmentId = documentIndexItem.DepartmentID;
       for (let k in documentIndexItem.Reviewers) {
         temReviewersID.push(documentIndexItem.Reviewers[k].ID);
         this.setState({
@@ -455,10 +444,9 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
     this.setState({ saveDisable: "" });
     let approverEmail;
     let approverName;
-    console.log(items);
     let getSelectedApprover = [];
     if (this.props.project) {
-      for (let item in items) {
+      for (const item in items) {
         approverEmail = items[item].secondaryText,
           approverName = items[item].text,
           getSelectedApprover.push(items[item].id);
@@ -927,26 +915,26 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
       }
       console.log(link);
       //Replacing the email body with current values
-      let dueDateformail = moment(this.state.dueDate).format("DD/MM/YYYY");
+      const dueDateformail = moment(this.state.dueDate).format("DD/MM/YYYY");
       console.log(dueDateformail);
-      let replacedSubject = replaceString(Subject, '[DocumentName]', this.state.documentName);
+      const replacedSubject = replaceString(Subject, '[DocumentName]', this.state.documentName);
       console.log(replacedSubject);
       const replacedSubjectWithDueDate = replaceString(replacedSubject, '[DueDate]', dueDateformail);
       console.log(replacedSubjectWithDueDate);
       console.log('Body' + Body);
       console.log('name:' + name);
-      let replaceRequester = replaceString(Body, '[Sir/Madam],', name);
+      const replaceRequester = replaceString(Body, '[Sir/Madam],', name);
       console.log(replaceRequester);
-      let replaceBody = replaceString(replaceRequester, '[DocumentName]', this.state.documentName);
+      const replaceBody = replaceString(replaceRequester, '[DocumentName]', this.state.documentName);
       console.log(replaceBody);
-      let replacelink = replaceString(replaceBody, '[Link]', link);
+      const replacelink = replaceString(replaceBody, '[Link]', link);
       console.log(replacelink);
-      let var1: any[] = replacelink.split('/');
+      const var1: any[] = replacelink.split('/');
       console.log(var1)
-      let FinalBody = replacelink;
+      const FinalBody = replacelink;
       console.log(FinalBody)
       //Create Body for Email  
-      let emailPostBody: any = {
+      const emailPostBody: any = {
         "message": {
           "subject": replacedSubjectWithDueDate,
           "body": {
@@ -976,7 +964,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   }
   // set permission for approver
   protected async _triggerPermission(sourceDocumentID: any) {
-    let siteUrl = window.location.protocol + "//" + window.location.hostname + this.props.siteUrl;
+    const siteUrl = window.location.protocol + "//" + window.location.hostname + this.props.siteUrl;
     const postURL = this.postUrl;
     const requestHeaders: Headers = new Headers();
     requestHeaders.append("Content-type", "application/json");
@@ -995,7 +983,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   }
   // set permission for reviewer
   protected async _triggerDocumentUnderReview(sourceDocumentID: any, type: any) {
-    let siteUrl = window.location.protocol + "//" + window.location.hostname + this.props.siteUrl;
+    const siteUrl = window.location.protocol + "//" + window.location.hostname + this.props.siteUrl;
     console.log(siteUrl);
     const postURL = this.postUrlForUnderReview;
     const requestHeaders: Headers = new Headers();
@@ -2323,8 +2311,8 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   public _adaptiveCard = async (Workflow: any, Email: any, Name: any, Type: any, Taskid: any) => {
     const siteUrl = window.location.protocol + "//" + window.location.hostname + this.props.siteUrl;
     const postURL = this.postUrlForAdaptive;
-    var splitted = this.state.documentName.split(".");
-    let ext = splitted[splitted.length - 1];
+    const splitted = this.state.documentName.split(".");
+    const ext = splitted[splitted.length - 1];
     const requestHeaders: Headers = new Headers();
     requestHeaders.append("Content-type", "application/json");
     const body: string = JSON.stringify({

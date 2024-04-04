@@ -182,7 +182,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     ];
     const dialogContentProps = {
       type: DialogType.normal,
-      title: (this.state.transmitTo == "Customer") ? "Select Customer Contacts" : "Select Sub-Contractors",
+      title: (this.state.transmitTo === "Customer") ? "Select Customer Contacts" : "Select Sub-Contractors",
       closeButtonAriaLabel: 'Close',
     };
     const options: IChoiceGroupOption[] = [
@@ -464,9 +464,9 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                       {/* <th style={{ padding: "5px 10px" }}>Doc Id</th> */}
                       <th style={{ padding: "5px 10px" }}>Document Name</th>
                       <th style={{ padding: "5px 10px" }}>Revision No</th>
-                      <th style={{ padding: "5px 10px", display: (this.state.transmitTo == "Customer") ? "" : "none" }}>Customer Document No</th>
-                      <th style={{ padding: "5px 10px", display: (this.state.transmitTo == "Sub-Contractor") ? "" : "none" }}>SubContractor Document No</th>
-                      <th style={{ padding: "5px 10px", display: (this.state.transmitTo == "Sub-Contractor") ? "none" : "none" }}>Acceptance Code</th>
+                      <th style={{ padding: "5px 10px", display: (this.state.transmitTo === "Customer") ? "" : "none" }}>Customer Document No</th>
+                      <th style={{ padding: "5px 10px", display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>SubContractor Document No</th>
+                      <th style={{ padding: "5px 10px", display: (this.state.transmitTo === "Sub-Contractor") ? "none" : "none" }}>Acceptance Code</th>
                       <th style={{ padding: "5px 10px" }}>Size (in MB)</th>
                       <th style={{ padding: "5px 10px" }}>Transmit For</th>
                       <th style={{ padding: "5px 10px" }}>Due Date</th>
@@ -479,9 +479,9 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                           <td style={{ padding: "5px 10px" }}>{key + 1}</td>
                           <td style={{ padding: "5px 10px" }}>{items.documentName} </td>
                           <td style={{ padding: "5px 10px" }}>{items.revision} </td>
-                          <td style={{ padding: "5px 10px", display: (this.state.transmitTo == "Customer") ? "" : "none" }}>{items.customerDocumentNo} </td>
-                          <td style={{ padding: "5px 10px", display: (this.state.transmitTo == "Sub-Contractor") ? "" : "none" }}>{items.subcontractorDocumentNo} </td>
-                          <td style={{ padding: "5px 10px", display: (this.state.transmitTo == "Sub-Contractor") ? "none" : "none" }}>{items.acceptanceCodeTitle}</td>
+                          <td style={{ padding: "5px 10px", display: (this.state.transmitTo === "Customer") ? "" : "none" }}>{items.customerDocumentNo} </td>
+                          <td style={{ padding: "5px 10px", display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>{items.subcontractorDocumentNo} </td>
+                          <td style={{ padding: "5px 10px", display: (this.state.transmitTo === "Sub-Contractor") ? "none" : "none" }}>{items.acceptanceCodeTitle}</td>
                           <td style={{ padding: "5px 10px" }}>{items.fileSizeInMB}</td>
                           <td style={{ padding: "5px 10px" }}>{items.transmitFor} </td>
                           <td style={{ padding: "5px 10px" }}>{items.DueDate}</td>
@@ -584,7 +584,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                     <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Internal CC: &nbsp;</span>{this.state.internalCCContactsDisplayNameForPreview}</div>
                     <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Total no of files:&nbsp; </span>{this.state.totalNoOfFiles}</div>
                     <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Total Size:&nbsp; </span>{this.state.fileSize}MB</div>
-                    <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Cover Letter Attached:&nbsp; </span>{this.state.coverLetterNeeded == true ? "Yes" : "No"}</div>
+                    <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Cover Letter Attached:&nbsp; </span>{this.state.coverLetterNeeded === true ? "Yes" : "No"}</div>
                     <div className={styles.wrapIitem} style={{ width: "100%", marginTop: "15px" }}><span>Note:&nbsp; </span>{this.state.notes}</div>
                   </div>
 
@@ -597,9 +597,9 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                             <div className={styles.divTableCell}>Slno</div>
                             <div className={styles.divTableCell}>Document Name</div>
                             <div className={styles.divTableCell}>Revision</div>
-                            <th className={styles.divTableCell} style={{ display: (this.state.transmitTo == "Customer") ? "" : "none" }}>Customer Document No</th>
-                            <th className={styles.divTableCell} style={{ display: (this.state.transmitTo == "Sub-Contractor") ? "" : "none" }}>SubContractor Document No</th>
-                            <div className={styles.divTableCell} style={{ display: this.state.transmitTo == "Sub-Contractor" ? "none" : "none" }}>AcceptanceCode</div>
+                            <th className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Customer") ? "" : "none" }}>Customer Document No</th>
+                            <th className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>SubContractor Document No</th>
+                            <div className={styles.divTableCell} style={{ display: this.state.transmitTo === "Sub-Contractor" ? "none" : "none" }}>AcceptanceCode</div>
                             <div className={styles.divTableCell}>Size(in MB)</div>
                             <div className={styles.divTableCell}>Transmit for</div>
                             <div className={styles.divTableCell}>Due date</div>
@@ -743,14 +743,14 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       transmittalTypekey: "",
       coverLetterNeeded: false
     });
-    if (option.text == "Customer") {
+    if (option.text === "Customer") {
       this.reqWeb.getList("/sites/" + this.props.hubSite + "/Lists/" + this.props.contactListName)
         .items
         .filter("CustomerOrVendorID eq '" + this.state.customerId + "'  and  LegalEntityId eq '" + this.state.legalId + "'")
         .getAll()
         .then(contacts => {
           for (var k in contacts) {
-            if (contacts[k].Active == true) {
+            if (contacts[k].Active === true) {
               let transmitForItemdata = {
                 key: contacts[k].Email,
                 text: contacts[k].Title + " " + (contacts[k].LastName !== null ? contacts[k].LastName : " ") + "<" + contacts[k].Email + ">",
@@ -777,7 +777,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       });
 
     }
-    else if (option.text == "Sub-Contractor") {
+    else if (option.text === "Sub-Contractor") {
       this.setState({
         documentSelect: "",
         documentSelectedDiv: true,
@@ -835,7 +835,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       .getAll()
       .then(contacts => {
         for (var k in contacts) {
-          if (contacts[k].Active == true) {
+          if (contacts[k].Active === true) {
             let transmitForItemdata = {
               key: contacts[k].Email,
               text: contacts[k].Title + " " + (contacts[k].LastName !== null ? contacts[k].LastName : " ") + "<" + contacts[k].Email + ">",
@@ -921,22 +921,22 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       .then(projectInformation => {
         if (projectInformation.length > 0) {
           for (var k in projectInformation) {
-            if (projectInformation[k].Key == "ProjectName") {
+            if (projectInformation[k].Key === "ProjectName") {
               this.setState({
                 projectName: projectInformation[k].Title,
               });
             }
-            if (projectInformation[k].Key == "Customer") {
+            if (projectInformation[k].Key === "Customer") {
               this.setState({
                 customerName: projectInformation[k].Title,
               });
             }
-            if (projectInformation[k].Key == "ContractNumber") {
+            if (projectInformation[k].Key === "ContractNumber") {
               this.setState({
                 contractNumber: projectInformation[k].Title,
               });
             }
-            if (projectInformation[k].Key == "ApprovalCycle") {
+            if (projectInformation[k].Key === "ApprovalCycle") {
               this.setState({
                 approvalLifeCycle: projectInformation[k].Title,
               });
@@ -950,17 +950,17 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                 dueDateForBindingApprovalLifeCycle: dueDate,
               });
             }
-            if (projectInformation[k].Key == "ProjectNumber") {
+            if (projectInformation[k].Key === "ProjectNumber") {
               this.setState({
                 projectNumber: projectInformation[k].Title,
               });
             }
-            if (projectInformation[k].Key == "CustomerID") {
+            if (projectInformation[k].Key === "CustomerID") {
               this.setState({
                 customerId: projectInformation[k].Title,
               });
             }
-            if (projectInformation[k].Key == "LegalEntityId") {
+            if (projectInformation[k].Key === "LegalEntityId") {
               this.setState({
                 legalId: projectInformation[k].Title,
               });
@@ -1080,11 +1080,11 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       transmittalType: option.text,
       documentSelectedDiv: true,
     });
-    if (option.text == 'Letter') {
+    if (option.text === 'Letter') {
       this._loadSourceDocumentsForLetter();
     }
-    else if (option.text == 'Document') {
-      if (this.state.transmitTo == "Sub-Contractor") {
+    else if (option.text === 'Document') {
+      if (this.state.transmitTo === "Sub-Contractor") {
         this._loadSourceDocuments();
       }
       else {
@@ -1121,7 +1121,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                 this.setState({
                   searchDocuments: publishedDocumentArray
                 });
-                if (publishedDocumentArray.length == 0) {
+                if (publishedDocumentArray.length === 0) {
                   this.setState({
                     documentSelectedDiv: false,
                     documentSelect: "No Project - Official Letter  for transmittal "
@@ -1132,7 +1132,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                 this.setState({
                   searchDocuments: publishedDocumentArray
                 });
-                if (publishedDocumentArray.length == 0) {
+                if (publishedDocumentArray.length === 0) {
                   this.setState({
                     documentSelectedDiv: false,
                     documentSelect: "No documents for transmittal "
@@ -1194,7 +1194,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                 this.setState({
                   searchDocuments: publishedDocumentArray
                 });
-                if (publishedDocumentArray.length == 0) {
+                if (publishedDocumentArray.length === 0) {
                   this.setState({
                     documentSelectedDiv: false,
                     documentSelect: "No documents for transmittal "
@@ -1251,7 +1251,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   public _onSendAsSharedFolder = async (ev: React.FormEvent<HTMLInputElement>, isChecked?: boolean) => {
     if (isChecked) {
       this.setState({ sendAsSharedFolder: true, recieveInSharedFolder: true, });
-      if (this.state.normalMsgBar == "") {
+      if (this.state.normalMsgBar === "") {
         this.setState({
           normalMsgBar: "none",
           statusMessage: { isShowMessage: false, message: "Recalled" + this.state.transmittalNo, messageType: 4 },
@@ -1288,7 +1288,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     this.setState({
       searchDiv: "none",
     });
-    if (this.state.transmitTo == "Customer") {
+    if (this.state.transmitTo === "Customer") {
       const publishDl: string = this.props.context.pageContext.web.serverRelativeUrl + "/" + this.props.publishDocumentLibraryName;
       const selectItems = "ID,DocumentID,FileSizeDisplay,DocumentName,Revision,DocumentIndex/ID,CustomerDocumentNo,SubcontractorDocumentNo";
       const filterItems = "ID eq '" + ID.value + "' ";
@@ -1301,7 +1301,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
           });
         });
     }
-    else if (this.state.transmitTo == "Sub-Contractor") {
+    else if (this.state.transmitTo === "Sub-Contractor") {
       const sourceDocumentsDl: string = this.props.context.pageContext.web.serverRelativeUrl + "/" + this.props.sourceDocumentLibraryName;
       const SourcedocumentItem = await this._Service.getDLItemById(sourceDocumentsDl, ID.value);
       this.setState({
@@ -1359,7 +1359,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       fileSizeDivForRebind: "none",
     });
     if (this.state.itemsForGrid.length > 0) {
-      let duplicate = this.state.itemsForGrid.filter(a => a.publishDoumentlibraryID == this.state.projectDocumentSelectKey);
+      let duplicate = this.state.itemsForGrid.filter(a => a.publishDoumentlibraryID === this.state.projectDocumentSelectKey);
       if (duplicate.length !== 0) {
         this.setState({
           documentSelectedDiv: false,
@@ -1371,7 +1371,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         if (this.validator.fieldValid("transmitTo") && this.validator.fieldValid("projectDocuments") && this.validator.fieldValid("transmitForKey")) {
           this.validator.hideMessages();
           let sizeOfDocument;
-          if (this.state.transmitTo == "Customer") {
+          if (this.state.transmitTo === "Customer") {
             sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
             // alert((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay/1024).toFixed(3))
             this.state.tempArrayForPublishedDocumentGrid.push({
@@ -1431,7 +1431,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
             }
 
           }
-          else if (this.state.transmitTo == "Sub-Contractor") {
+          else if (this.state.transmitTo === "Sub-Contractor") {
             sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
             // alert((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay/1024).toFixed(3))
             this.state.tempArrayForPublishedDocumentGrid.push({
@@ -1443,8 +1443,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
               revision: this.state.publishDocumentsItemsForGrid[0].Revision,
               documentID: this.state.publishDocumentsItemsForGrid[0].DocumentID,
               documentName: this.state.publishDocumentsItemsForGrid[0].DocumentName,
-              acceptanceCode: (this.state.sourceDocumentItem == null) ? " " : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode.ID,
-              acceptanceCodeTitle: (this.state.sourceDocumentItem == null) ? "" : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode.Title,
+              acceptanceCode: (this.state.sourceDocumentItem === null) ? " " : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode.ID,
+              acceptanceCodeTitle: (this.state.sourceDocumentItem === null) ? "" : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode.Title,
               fileSize: (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(2)),
               fileSizeInMB: (Number((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024) * 0.0009765625).toFixed(2)),
               transmitFor: this.state.transmitFor,
@@ -1501,7 +1501,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       if (this.validator.fieldValid("transmitTo") && this.validator.fieldValid("projectDocuments") && this.validator.fieldValid("transmitForKey")) {
         this.validator.hideMessages();
         let sizeOfDocument;
-        if (this.state.transmitTo == "Customer") {
+        if (this.state.transmitTo === "Customer") {
           sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
           this.state.tempArrayForPublishedDocumentGrid.push({
             publishDoumentlibraryID: this.state.publishDocumentsItemsForGrid[0].ID,
@@ -1547,7 +1547,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
             console.log(this.state.fileSize);
           }
         }
-        else if (this.state.transmitTo == "Sub-Contractor") {
+        else if (this.state.transmitTo === "Sub-Contractor") {
           sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
           // alert((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay/1024).toFixed(3))
           this.state.tempArrayForPublishedDocumentGrid.push({
@@ -1559,8 +1559,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
             revision: this.state.publishDocumentsItemsForGrid[0].Revision,
             documentID: this.state.publishDocumentsItemsForGrid[0].DocumentID,
             documentName: this.state.publishDocumentsItemsForGrid[0].DocumentName,
-            acceptanceCode: (this.state.sourceDocumentItem == null) ? null : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode.ID,
-            acceptanceCodeTitle: (this.state.sourceDocumentItem == null) ? "" : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode.Title,
+            acceptanceCode: (this.state.sourceDocumentItem === null) ? null : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode.ID,
+            acceptanceCodeTitle: (this.state.sourceDocumentItem === null) ? "" : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode.Title,
             fileSize: (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(2)),
             fileSizeInMB: (Number((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024) * 0.0009765625).toFixed(2)),
             transmitFor: this.state.transmitFor,
@@ -1763,16 +1763,16 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     title: "Do you want to Recall ?",
   };
   private _confirmDeleteItem = async (docID: any, items: any, key: any | number) => {
-    // if (this.transmittalID == "" || this.transmittalID == null) {
+    // if (this.transmittalID === "" || this.transmittalID === null) {
     //   this.setState({
     //     confirmDeleteDialog: true,
     //     deleteConfirmation: "none"
     //   });
     //   this.validator.hideMessages();
-    //   if (this.typeForDelete == "ProjectDocuments") {
+    //   if (this.typeForDelete === "ProjectDocuments") {
     //     this.itemDeleteFromGrid(items, key);
     //   }
-    //   else if (this.typeForDelete == "AdditionalDocuments") {
+    //   else if (this.typeForDelete === "AdditionalDocuments") {
     //     this.itemDeleteFromExternalGrid(items, key);
     //   }
 
@@ -1911,17 +1911,17 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   }
   //Delete button click
   private _openDeleteConfirmation = (items: { [x: string]: any; outboundDetailsID: any; additionalDocumentID: any; }, key: number, type: string) => {
-    if (this.transmittalID == "" || this.transmittalID == null) {
+    if (this.transmittalID === "" || this.transmittalID === null) {
       this.setState({
         deleteConfirmation: "",
         confirmDeleteDialog: false,
       });
       this.validator.hideMessages();
       console.log(items[key]);
-      if (type == "ProjectDocuments") {
+      if (type === "ProjectDocuments") {
         this.typeForDelete = "ProjectDocuments";
         this.keyForDelete = key;
-      } else if (type == "AdditionalDocuments") {
+      } else if (type === "AdditionalDocuments") {
         this.typeForDelete = "AdditionalDocuments";
         this.keyForDelete = key;
       }
@@ -1934,14 +1934,14 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       });
       this.validator.hideMessages();
       console.log(items[key]);
-      if (type == "ProjectDocuments") {
+      if (type === "ProjectDocuments") {
         // alert(items.outboundDetailsID);
         this.typeForDelete = "ProjectDocuments";
         this.keyForDelete = key;
         this.setState({
           tempDocIndexIDForDelete: items.outboundDetailsID,
         });
-      } else if (type == "AdditionalDocuments") {
+      } else if (type === "AdditionalDocuments") {
         // alert("additionalid" + items.additionalDocumentID);
         this.typeForDelete = "AdditionalDocuments";
         this.keyForDelete = key;
@@ -1955,8 +1955,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   //Save as draft 
   public _onSaveAsDraftBtnClick() {
     // alert("success");
-    let selectedContactsTo = (this.state.selectedContactsTo == null) ? "" : this.state.selectedContactsTo.toString();
-    let selectedContactsCC = (this.state.selectedContactsCC == null) ? "" : this.state.selectedContactsCC.toString();
+    let selectedContactsTo = (this.state.selectedContactsTo === null) ? "" : this.state.selectedContactsTo.toString();
+    let selectedContactsCC = (this.state.selectedContactsCC === null) ? "" : this.state.selectedContactsCC.toString();
     let sourceDocumentId;
     //total files
     let totalFiles: number;
@@ -1980,7 +1980,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       });
       console.log(this.state.fileSize);
     }
-    if (this.transmittalID == null || this.transmittalID == "") {
+    if (this.transmittalID === null || this.transmittalID === "") {
       console.log("Save as draft button clicked");
       //get value
       console.log(this.state.selectedContactsTo);
@@ -1993,7 +1993,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
             Title: this.state.transmittalNo,
             TransmittalCategory: this.state.transmitTo,
             Customer: this.state.customerName,
-            CustomerID: (this.state.transmitTo == "Customer") ? this.state.customerId : "",
+            CustomerID: (this.state.transmitTo === "Customer") ? this.state.customerId : "",
             SubContractor: this.state.subContractor,
             SubContractorID: (this.state.subContractorKey).toString(),
             ToEmails: selectedContactsTo,
@@ -2005,7 +2005,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
             SendAsSharedFolder: this.state.sendAsSharedFolder,
             ReceiveInSharedFolder: this.state.recieveInSharedFolder,
             SendAsMultipleEmails: this.state.sendAsMultipleFolder,
-            TransmittalSize: (this.state.itemsForGrid.length == 0) ? "" : (convertKBtoMB).toString(),
+            TransmittalSize: (this.state.itemsForGrid.length === 0) ? "" : (convertKBtoMB).toString(),
             TotalFiles: (totalFiles).toString(),
             ToName: this.state.selectedContactsToDisplayName,
             CCName: this.state.selectedContactsCCDisplayName,
@@ -2017,17 +2017,14 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
               this.setState({ outboundTransmittalHeaderId: outboundTransmittalHeader.data.ID });
               const UpdateLink = {
                 TransmittalLink: {
-                  "__metadata": { type: "SP.FieldUrlValue" },
                   Description: "Project workspace",
                   Url: this.props.siteUrl + "/SitePages/" + this.props.outBoundTransmittalSitePage + ".aspx?trid=" + outboundTransmittalHeader.data.ID + ""
                 },
                 TransmittalDetails: {
-                  "__metadata": { type: "SP.FieldUrlValue" },
                   Description: "Transmittal Details",
                   Url: this.props.siteUrl + "/Lists/" + this.props.outboundTransmittalDetailsListName + "/AllItems.aspx?FilterField1=TransmittalHeader&FilterValue1=" + outboundTransmittalHeader.data.ID + "&FilterType1=Lookup&viewid=6da3a1b3%2D0155%2D48d9%2Da7c7%2Dd2e862c07db5"
                 },
                 OutboundAdditionalDetails: {
-                  "__metadata": { type: "SP.FieldUrlValue" },
                   Description: "Outbound Additional Details",
                   Url: this.props.siteUrl + "/" + this.props.outboundAdditionalDocumentsListName + "/Forms/AllItems.aspx?FilterField1=TransmittalID&FilterValue1=" + outboundTransmittalHeader.data.ID + "&FilterType1=Lookup&viewid=bcc64a99-0907-4416-b9f6-8001acf1e000"
 
@@ -2106,8 +2103,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       }
     }
     else {
-      let selectedContactsTo = (this.state.selectedContactsTo == null) ? "" : this.state.selectedContactsTo.toString();
-      let selectedContactsCC = (this.state.selectedContactsCC == null) ? "" : this.state.selectedContactsCC.toString();
+      let selectedContactsTo = (this.state.selectedContactsTo === null) ? "" : this.state.selectedContactsTo.toString();
+      let selectedContactsCC = (this.state.selectedContactsCC === null) ? "" : this.state.selectedContactsCC.toString();
       if (this.state.transmitTo !== "" && this.state.transmittalTypekey !== "") {
         this.setState({ normalMsgBar: "", statusMessage: { isShowMessage: true, message: "Saved Successfully", messageType: 4 }, });
         const OHLUpdate = {
@@ -2122,7 +2119,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
           ReceiveInSharedFolder: this.state.recieveInSharedFolder,
           SendAsMultipleEmails: this.state.sendAsMultipleFolder,
           TotalFiles: (totalFiles).toString(),
-          TransmittalSize: (this.state.itemsForGrid.length == 0) ? "" : (convertKBtoMB).toString(),
+          TransmittalSize: (this.state.itemsForGrid.length === 0) ? "" : (convertKBtoMB).toString(),
           CoverLetter: this.state.coverLetterNeeded,
           InternalCCId: { results: this.state.internalCCContacts, }
         }
@@ -2213,14 +2210,14 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       });
       console.log(this.state.fileSize);
     }
-    if (Number(this.state.fileSize) > 10 && (this.state.sendAsSharedFolder == true)) {
+    if (Number(this.state.fileSize) > 10 && (this.state.sendAsSharedFolder === true)) {
       this.setState({
         normalMsgBar: "none",
         statusMessage: { isShowMessage: false, message: this.state.transmittalNo, messageType: 4 },
 
       });
     }
-    else if (Number(this.state.fileSize) < 10 && (this.state.sendAsSharedFolder == false)) {
+    else if (Number(this.state.fileSize) < 10 && (this.state.sendAsSharedFolder === false)) {
       this.setState({
         normalMsgBar: "none",
         statusMessage: { isShowMessage: false, message: this.state.transmittalNo, messageType: 4 },
@@ -2229,8 +2226,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     }
   }
   private _confirmAndSendBtnClick() {
-    let selectedContactsTo = (this.state.selectedContactsTo == null) ? "" : this.state.selectedContactsTo.toString();
-    let selectedContactsCC = (this.state.selectedContactsCC == null) ? "" : this.state.selectedContactsCC.toString();
+    let selectedContactsTo = (this.state.selectedContactsTo === null) ? "" : this.state.selectedContactsTo.toString();
+    let selectedContactsCC = (this.state.selectedContactsCC === null) ? "" : this.state.selectedContactsCC.toString();
     console.log(this.state.selectedContactsToDisplayName);
     let sourceDocumentId;
     let hidden = 1;
@@ -2259,11 +2256,11 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       console.log(this.state.fileSize);
     }
     //if size greater than 10 mb 
-    if (Number(convertKBtoMB) > 25 && (this.state.sendAsSharedFolder == false)) {
+    if (Number(convertKBtoMB) > 25 && (this.state.sendAsSharedFolder === false)) {
       this.setState({ normalMsgBar: "", statusMessage: { isShowMessage: true, message: "File size is greater than 25 MB.Please select the checkbox Send and Receive as shared folder", messageType: 1 }, });
     }
     else {
-      if (this.transmittalID == null || this.transmittalID == "") {
+      if (this.transmittalID === null || this.transmittalID === "") {
         let selectedContactsTo = this.state.selectedContactsTo.toString();
         let selectedContactsCC = this.state.selectedContactsCC.toString();
         //when add butten not clicked
@@ -2285,7 +2282,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
               Title: this.state.transmittalNo,
               TransmittalCategory: this.state.transmitTo,
               Customer: this.state.customerName,
-              CustomerID: (this.state.transmitTo == "Customer") ? this.state.customerId : "",
+              CustomerID: (this.state.transmitTo === "Customer") ? this.state.customerId : "",
               SubContractor: this.state.subContractor,
               SubContractorID: (this.state.subContractorKey).toString(),
               ToEmails: selectedContactsTo,
@@ -2309,13 +2306,12 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
               .then(async (outboundTransmittalHeader: { data: { ID: string; }; }) => {
                 this.setState({ outboundTransmittalHeaderId: outboundTransmittalHeader.data.ID });
                 for (let i = 0; i < this.state.itemsForGrid.length; i++) {
-                  if (this.state.itemsForGrid[i].approvalRequired == true) {
+                  if (this.state.itemsForGrid[i].approvalRequired === true) {
                     forTransmittalStatus = "true";
                   }
                 }
                 const UpdateLinks = {
                   TransmittalLink: {
-                    "__metadata": { type: "SP.FieldUrlValue" },
                     Description: "Project workspace",
                     Url: this.props.siteUrl + "/SitePages/" + this.props.outBoundTransmittalSitePage + ".aspx?trid=" + outboundTransmittalHeader.data.ID + ""
                   },
@@ -2356,7 +2352,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                       TransmittedForId: this.state.itemsForGrid[i].transmitForKey,
                       TransmitFor: this.state.itemsForGrid[i].transmitFor,
                       ApprovalRequired: this.state.itemsForGrid[i].approvalRequired,
-                      TransmittalStatus: (this.state.itemsForGrid[i].approvalRequired == true && this.state.transmitTo == "Customer") ? "Ongoing" : "Completed",
+                      TransmittalStatus: (this.state.itemsForGrid[i].approvalRequired === true && this.state.transmitTo == "Customer") ? "Ongoing" : "Completed",
                       DocumentLibraryID: this.state.itemsForGrid[i].publishDoumentlibraryID,
                       Slno: (Number(i) + Number(1)).toString(),
                       CustomerDocumentNo: this.state.itemsForGrid[i].customerDocumentNo,
@@ -2388,7 +2384,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                   }
                 }
                 for (let i = 0; i < this.state.itemsForGrid.length; i++) {
-                  if (this.state.transmitTo == "Customer") {
+                  if (this.state.transmitTo === "Customer") {
                     this._Service.getItembyID(this.props.siteUrl, this.props.documentIndex, this.state.itemsForGrid[i].documentIndexId)
                       .then((CurrentTransmittalItems: { hiddenFieldForOutboundTransmitta: number; CurrentTransmittalId: any; CurrentActualSubmitedDate: any; CurrentTransmittalRevision: any; }) => {
                         console.log("CurrentTransmittalItems", CurrentTransmittalItems);
@@ -2425,7 +2421,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                         }
                         else if (CurrentTransmittalItems.hiddenFieldForOutboundTransmitta === 2) {
                           const updateList3 = {
-                            TransmittalStatus: this.state.itemsForGrid[i].approvalRequired == true ? "Ongoing" : "Completed",
+                            TransmittalStatus: this.state.itemsForGrid[i].approvalRequired === true ? "Ongoing" : "Completed",
                             TransmittalLocation: "Out to " + this.state.transmitTo,
                             Workflow: "Transmittal",
                             TransmittalDueDate: this.state.itemsForGrid[i].dueDate,
@@ -2529,7 +2525,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                     this.setState({
                       currentOutboundDetailItem: outboundTransmittalDetailsListName,
                     });
-                    if (this.state.transmitTo == "Customer") {
+                    if (this.state.transmitTo === "Customer") {
                     }
                   });
               }).then((after: any) => {
@@ -2559,9 +2555,9 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         }
       }
       else {
-        let selectedContactsTo = (this.state.selectedContactsTo == null) ? "" : this.state.selectedContactsTo.toString();
-        let selectedContactsCC = (this.state.selectedContactsCC == null) ? "" : this.state.selectedContactsCC.toString();
-        if (this.state.itemsForGrid.length == 0 && this.state.transmitTo !== "" && this.state.transmittalTypekey !== "" && this.state.selectedContactsTo !== null && this.validator.fieldValid("selectedContactsTo")) {
+        let selectedContactsTo = (this.state.selectedContactsTo === null) ? "" : this.state.selectedContactsTo.toString();
+        let selectedContactsCC = (this.state.selectedContactsCC === null) ? "" : this.state.selectedContactsCC.toString();
+        if (this.state.itemsForGrid.length === 0 && this.state.transmitTo !== "" && this.state.transmittalTypekey !== "" && this.state.selectedContactsTo !== null && this.validator.fieldValid("selectedContactsTo")) {
           this.setState({ normalMsgBar: "", statusMessage: { isShowMessage: true, message: "Please click the project add button", messageType: 1 }, });
         }
         else {
@@ -2610,7 +2606,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                   TransmittedForId: this.state.itemsForGrid[k].transmitForKey,
                   TransmitFor: this.state.itemsForGrid[k].transmitFor,
                   ApprovalRequired: this.state.itemsForGrid[k].approvalRequired,
-                  TransmittalStatus: (this.state.itemsForGrid[k].approvalRequired == true && this.state.transmitTo == "Customer") ? "Ongoing" : "Completed",
+                  TransmittalStatus: (this.state.itemsForGrid[k].approvalRequired === true && this.state.transmitTo == "Customer") ? "Ongoing" : "Completed",
                   DocumentLibraryID: this.state.itemsForGrid[k].publishDoumentlibraryID,
                   Slno: (Number(k) + Number(1)).toString(),
                   CustomerDocumentNo: this.state.itemsForGrid[k].customerDocumentNo,
@@ -2652,16 +2648,16 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                   });
                   for (let i = 0; i < this.state.currentOutboundDetailItem.length; i++) {
                     const StatusUpdate = {
-                      TransmittalStatus: (this.state.currentOutboundDetailItem[i].ApprovalRequired == true && this.state.transmitTo == "Customer") ? "Ongoing" : "Completed",
+                      TransmittalStatus: (this.state.currentOutboundDetailItem[i].ApprovalRequired === true && this.state.transmitTo === "Customer") ? "Ongoing" : "Completed",
                     }
                     this._Service.updateList(this.props.siteUrl, this.props.outboundTransmittalDetailsListName, StatusUpdate, this.state.currentOutboundDetailItem[i].ID)
 
-                    if (this.state.transmitTo == "Customer") {
+                    if (this.state.transmitTo === "Customer") {
                       this._Service.getItembyID(this.props.siteUrl, this.props.documentIndex, this.state.currentOutboundDetailItem[i].DocumentIndex.ID)
                         .then((CurrentTransmittalItems: { hiddenFieldForOutboundTransmitta: number; CurrentTransmittalId: any; CurrentActualSubmitedDate: any; CurrentTransmittalRevision: any; }) => {
                           console.log("CurrentTransmittalItems", CurrentTransmittalItems);
                           const updatingIndex = {
-                            TransmittalStatus: this.state.currentOutboundDetailItem[i].ApprovalRequired == true ? "Ongoing" : "Completed",
+                            TransmittalStatus: this.state.currentOutboundDetailItem[i].ApprovalRequired === true ? "Ongoing" : "Completed",
                             TransmittalLocation: "Out to " + this.state.transmitTo,
                             Workflow: "Transmittal",
                             TransmittalDueDate: this.state.currentOutboundDetailItem[i].DueDate,
@@ -2674,9 +2670,9 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                             CurrentTransmittalRevision: this.state.currentOutboundDetailItem[i].Revision,
                             hiddenFieldForOutboundTransmitta: Number(CurrentTransmittalItems.hiddenFieldForOutboundTransmitta + 1),
                           }
-                          if (CurrentTransmittalItems.hiddenFieldForOutboundTransmitta === null || CurrentTransmittalItems.hiddenFieldForOutboundTransmitta == 5) {
+                          if (CurrentTransmittalItems.hiddenFieldForOutboundTransmitta === null || CurrentTransmittalItems.hiddenFieldForOutboundTransmitta === 5) {
                             const UpdateIndexWhennull = {
-                              TransmittalStatus: this.state.currentOutboundDetailItem[i].ApprovalRequired == true ? "Ongoing" : "Completed",
+                              TransmittalStatus: this.state.currentOutboundDetailItem[i].ApprovalRequired === true ? "Ongoing" : "Completed",
                               TransmittalLocation: "Out to " + this.state.transmitTo,
                               Workflow: "Transmittal",
                               TransmittalDueDate: this.state.currentOutboundDetailItem[i].DueDate,
@@ -2719,7 +2715,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                         });
                     }
                     const updateOne = {
-                      TransmittalStatus: (this.state.currentOutboundDetailItem[i].ApprovalRequired == true && this.state.transmitTo == "Customer") ? "Ongoing" : "Completed",
+                      TransmittalStatus: (this.state.currentOutboundDetailItem[i].ApprovalRequired === true && this.state.transmitTo === "Customer") ? "Ongoing" : "Completed",
                       TransmittalLocation: "Out to " + this.state.transmitTo,
                       Workflow: "Transmittal",
                       TransmittalDueDate: this.state.currentOutboundDetailItem[i].DueDate,
@@ -2747,13 +2743,13 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                           });
                       });
                   }//forloop from transmittal details           
-                  if (this.state.transmitTo == "Customer") {
+                  if (this.state.transmitTo === "Customer") {
                     for (let i = 0; i < this.state.currentOutboundDetailItem.length; i++) {
                       if (this.state.currentOutboundDetailItem[i].ApprovalRequired !== true) {
                         statusCount++;
                       }
                     }
-                    if (Number(statusCount) == this.state.currentOutboundDetailItem.length) {
+                    if (Number(statusCount) === this.state.currentOutboundDetailItem.length) {
                       const OTUpdate = {
                         TransmittalStatus: "Completed",
                       }
@@ -2789,8 +2785,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     let counter;
     let transmittalID;
     let transmitTo;
-    if (this.state.transmitTo == "Customer") { transmitTo = "Outbound Customer"; }
-    else if (this.state.transmitTo == "Sub-Contractor") { transmitTo = "Outbound Sub-contractor"; }
+    if (this.state.transmitTo === "Customer") { transmitTo = "Outbound Customer"; }
+    else if (this.state.transmitTo === "Sub-Contractor") { transmitTo = "Outbound Sub-contractor"; }
     await this._Service.getItemForSelectInListsWithFilter(this.props.siteUrl, this.props.transmittalIdSettingsListName, "TransmittalCategory eq '" + transmitTo + "' and(TransmittalType eq '" + this.state.transmittalType + "')")
       .then((transmittalIdSettingsItems: {
         Counter: any;
@@ -2844,7 +2840,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     console.log(responseJSON);
     if (response.ok) {
       console.log(responseJSON['Status']);
-      if (responseJSON['Status'] == "Valid") {
+      if (responseJSON['Status'] === "Valid") {
         // this.setState({
         //   loaderDisplay: "none",
         //   webpartView: "",
@@ -3018,7 +3014,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       'ProjectName': this.state.projectName,
       'ContractNumber': this.state.contractNumber,
       'ProjectNumber': this.state.projectNumber,
-      'CoverLetterNeeded': (this.state.coverLetterNeeded == true ? "Yes" : "NO"),
+      'CoverLetterNeeded': (this.state.coverLetterNeeded === true ? "Yes" : "NO"),
       'InternalContactsEmails': this.state.internalContactsEmail,
       'InternalContactsDisplayNames': this.state.internalCCContactsDisplayNameForPreview,
       'OutboundTransmittalDetails': this.state.itemsForGrid
@@ -3034,7 +3030,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     console.log(responseJSON);
     if (response.ok) {
       // alert(response.text);
-      if (responseJSON['Status'] == "MailSend") {
+      if (responseJSON['Status'] === "MailSend") {
         this.setState({
           hideButtonAfterSubmit: "none",
           hideUnlockButton: "none",
