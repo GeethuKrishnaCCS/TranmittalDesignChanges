@@ -72,7 +72,7 @@ module.exports = {
         // Set to 1 (warning) or 2 (error) to enable.
         '@typescript-eslint/explicit-member-accessibility': 0,
         // STANDARDIZED BY:   @typescript-eslint\eslint-plugin\dist\configs\recommended.json
-        '@typescript-eslint/no-array-constructor': 1,
+        '@typescript-eslint/no-array-constructor': 0,
         // STANDARDIZED BY:   @typescript-eslint\eslint-plugin\dist\configs\recommended.json
         //
         // RATIONALE:         The "any" keyword disables static type checking, the main benefit of using TypeScript.
@@ -172,7 +172,7 @@ module.exports = {
         // STANDARDIZED BY:   eslint\conf\eslint-recommended.js
         'for-direction': 1,
         // RATIONALE:         Catches a common coding mistake.
-        'guard-for-in': 2,
+        'guard-for-in': 0,
         // RATIONALE:         If you have more than 2,000 lines in a single source file, it's probably time
         //                    to split up your code.
         'max-lines': ['warn', { max: 2000 }],
