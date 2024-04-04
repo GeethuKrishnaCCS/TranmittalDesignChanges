@@ -22,7 +22,28 @@
     "description": { "default": "InboundSubcontractorV2 description" },
     "officeFabricIconFontName": "Page",
     "properties": {
-      "description": "InboundSubcontractorV2"
+      "description": "Inbound Transmittal",
+      "projectInformationListName":"ProjectInformation",
+      "revisionLevelList":"RevisionSettings",
+      "transmittalCodeSettings":"TransmittalCodeSettings",
+      "hubsite":"DigitalWorkSpace",
+      "hubUrl":"/sites/DigitalWorkSpace/",
+      "companyList":"Companies",
+      "transmittalOutlookLibrary":"TransmittalOutlookLibrary",
+      "documentIndexList":"DocumentIndex",
+      "transmittalIdSettings":"TransmittalIDSettings",
+      "inboundTransmittalHeaderList":"InboundTransmittalHeader",
+      "sourceDocumentLibrary":"SourceDocuments",
+      "inboundTransmittalDetailList":"InboundTransmittalDetails",
+      "inboundTransmittalSitePage":"InboundTransmittal-SubContractor",
+      "revisionHistoryPage":"RevisionHistory",
+      "revokePage":"CreateDocument",
+      "additionalDocumentLibrary":"InboundAdditionalDocuments",
+      "userMessageSettings":"UserMessageSettings",
+      "transmittalHistoryLogList":"TransmittalHistory",
+      "webpartHeader":"Inbound Transmittal",
+      "documentRevisionLogList":"DocumentRevisionLog",
+      "requestList":"Request"
     }
   }]
 }

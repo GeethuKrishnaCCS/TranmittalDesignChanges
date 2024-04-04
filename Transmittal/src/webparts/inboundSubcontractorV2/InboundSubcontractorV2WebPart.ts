@@ -16,7 +16,7 @@ export interface IInboundSubcontractorV2WebPartProps {
   description: string;
 }
 
-export default class InboundSubcontractorV2WebPart extends BaseClientSideWebPart<IInboundSubcontractorV2WebPartProps> {
+export default class InboundSubcontractorV2WebPart extends BaseClientSideWebPart<IInboundSubcontractorV2Props> {
 
   private _isDarkTheme: boolean = false;
   private _environmentMessage: string = '';
@@ -25,11 +25,32 @@ export default class InboundSubcontractorV2WebPart extends BaseClientSideWebPart
     const element: React.ReactElement<IInboundSubcontractorV2Props> = React.createElement(
       InboundSubcontractorV2,
       {
+        context: this.context,
         description: this.properties.description,
-        isDarkTheme: this._isDarkTheme,
-        environmentMessage: this._environmentMessage,
-        hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
+        redirectUrl:this.properties.redirectUrl,
+        siteUrl:this.context.pageContext.web.serverRelativeUrl,
+        projectInformationListName:this.properties.projectInformationListName,
+        revisionLevelList:this.properties.revisionLevelList,
+        transmittalCodeSettings:this.properties.transmittalCodeSettings,
+        hubUrl:this.properties.hubUrl,
+        hubsite:this.properties.hubsite,
+        companyList:this.properties.companyList,
+        transmittalOutlookLibrary:this.properties.transmittalOutlookLibrary,
+        documentIndexList:this.properties.documentIndexList,
+        transmittalIdSettings:this.properties.transmittalIdSettings,
+        inboundTransmittalHeaderList:this.properties.inboundTransmittalHeaderList,
+        sourceDocumentLibrary:this.properties.sourceDocumentLibrary,
+        inboundTransmittalDetailList:this.properties.inboundTransmittalDetailList,
+        inboundTransmittalSitePage:this.properties.inboundTransmittalSitePage,
+        revisionHistoryPage:this.properties.revisionHistoryPage,
+        revokePage:this.properties.revokePage,
+        additionalDocumentLibrary:this.properties.additionalDocumentLibrary,
+        userMessageSettings:this.properties.userMessageSettings,
+        transmittalHistoryLogList:this.properties.transmittalHistoryLogList,
+        headerRedirect:this.properties.headerRedirect,
+        webpartHeader:this.properties.webpartHeader,
+        documentRevisionLogList:this.properties.documentRevisionLogList,
+        requestList:this.properties.requestList
       }
     );
 
@@ -106,13 +127,90 @@ export default class InboundSubcontractorV2WebPart extends BaseClientSideWebPart
           },
           groups: [
             {
-              groupName: strings.BasicGroupName,
+              groupName: "Webpart Property",
               groupFields: [
-                PropertyPaneTextField('description', {
-                  label: strings.DescriptionFieldLabel
+               PropertyPaneTextField('webpartHeader', {
+                  label: 'webpartHeader'
+                }),
+              ]
+            },
+            {
+              groupName: "Hub Site",
+              groupFields: [
+                PropertyPaneTextField('hubUrl', {
+                  label: 'Hub Url'
+                }),
+                PropertyPaneTextField('hubsite', {
+                  label: 'Hubsite'
+                }),
+                PropertyPaneTextField('companyList', {
+                  label: 'Company List'
+                }),
+                PropertyPaneTextField('requestList', {
+                  label: 'Request List'
+                }),
+                PropertyPaneTextField('userMessageSettings', {
+                  label: 'userMessageSettings'
+                })
+              ]
+            },
+            {
+              groupName: "Current Site",
+              groupFields: [
+               PropertyPaneTextField('projectInformationListName', {
+                  label: 'Project Information'
+                }),
+                PropertyPaneTextField('revisionLevelList', {
+                  label: 'Revision Level List'
+                }),
+                PropertyPaneTextField('transmittalCodeSettings', {
+                  label: 'Transmittal Code Settings'
+                }),
+                PropertyPaneTextField('transmittalOutlookLibrary', {
+                  label: 'Transmittal Outlook Library'
+                }),
+                PropertyPaneTextField('documentIndexList', {
+                  label: 'Document Index List'
+                }),
+                PropertyPaneTextField('documentRevisionLogList', {
+                  label: 'DocumentRevisionLogList'
+                }),
+                PropertyPaneTextField('transmittalIdSettings', {
+                  label: 'Transmittal Id Settings '
+                }),
+                PropertyPaneTextField('inboundTransmittalHeaderList', {
+                  label: 'Inbound Transmittal Header List '
+                }),
+                PropertyPaneTextField('sourceDocumentLibrary', {
+                  label: 'Source Document Library '
+                }),
+                PropertyPaneTextField('inboundTransmittalDetailList', {
+                  label: 'Inbound Transmittal Detail List '
+                }),
+                PropertyPaneTextField('additionalDocumentLibrary', {
+                  label: 'Additional Document Library '
+                }),
+                PropertyPaneTextField('transmittalHistoryLogList', {
+                  label: 'transmittalHistoryLogList '
+                }),
+                
+              ]
+            },
+            {
+              groupName: "SitePages",
+              groupFields: [
+                PropertyPaneTextField('inboundTransmittalSitePage', {
+                  label: 'Inbound Transmittal SitePage'
+                }),
+                PropertyPaneTextField('revisionHistoryPage', {
+                  label: 'Revision History Page'
+                }),
+                PropertyPaneTextField('revokePage', {
+                  label: 'Revoke Page'
                 })
               ]
             }
+           
           ]
         }
       ]
