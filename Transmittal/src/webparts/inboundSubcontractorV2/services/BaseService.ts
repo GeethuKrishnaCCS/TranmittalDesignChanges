@@ -7,6 +7,7 @@ import "@pnp/sp/items";
 import "@pnp/sp/site-users/web";
 import "@pnp/sp/site-users/web";
 import "@pnp/sp/site-groups";
+import { PagedItemCollection } from '@pnp/sp/items';
 
 export class BaseService {
     private _sp: SPFI;
@@ -24,7 +25,7 @@ export class BaseService {
         return this.sphub.web.getList(url + "/Lists/" + listname).items();
     }
     public gethubUserMessageListItems(url: string, listname: string): Promise<any> {
-        return this.sphub.web.getList(url + "/Lists/" + listname).items.select("Title,Message").filter("PageName eq 'SendRequest'")()
+        return this.sphub.web.getList(url + "/Lists/" + listname).items.select("Title,Message").filter("PageName eq 'InboundSib-Contractor'")()
     }
     public getLibraryItems(url: string, listname: string): Promise<any> {
         return this._sp.web.getList(url + "/" + listname).items();
@@ -32,18 +33,12 @@ export class BaseService {
     public getCurrentUser(): Promise<any> {
         return this._sp.web.currentUser();
     }
-    public createNewItem(url: string, listname: string, data: any): Promise<any> {
-        console.log(data);
-        return this._sp.web.getList(url + "/Lists/" + listname).items.add(data);
-    }
+    
     public createhubNewItem(url: string, listname: string, data: any): Promise<any> {
         console.log(data);
         return this.sphub.web.getList(url + "/Lists/" + listname).items.add(data);
     }
-    public updateItem(url: string, listname: string, data: any, id: number): Promise<any> {
-        console.log(data);
-        return this._sp.web.getList(url + "/Lists/" + listname).items.getById(id).update(data);
-    }
+   
     public updatehubItem(url: string, listname: string, data: any, id: number): Promise<any> {
         console.log(data);
         return this.sphub.web.getList(url + "/Lists/" + listname).items.getById(id).update(data);
@@ -76,8 +71,11 @@ export class BaseService {
     public getHubsiteData(): Promise<any> {
         return this._sp.web.hubSiteData()
     }
-    public getItemById(url: string, listname: string, id: number): Promise<any> {
+    public getListItemById(url: string, listname: string, id: number): Promise<any> {
         return this._sp.web.getList(url + "/Lists/" + listname).items.getById(id)();
+    }
+    public getLibraryItemById(url: string, listname: string, id: number): Promise<any> {
+        return this._sp.web.getList(url + "/" + listname).items.getById(id)();
     }
     public gethubItemById(url: string, listname: string, id: number): Promise<any> {
         return this._sp.web.getList(url + "/Lists/" + listname).items.getById(id)();
@@ -123,4 +121,91 @@ export class BaseService {
     public gettaskdelegation(url: string, listname: string, Id: number): Promise<any> {
         return this.sphub.web.getList(url + "/Lists/" + listname).items.select("DelegatedFor/ID,DelegatedFor/Title,DelegatedFor/EMail,DelegatedTo/ID,DelegatedTo/Title,DelegatedTo/EMail,FromDate,ToDate").expand("DelegatedFor,DelegatedTo").filter("DelegatedFor/ID eq '" + Id + "' and(Status eq 'Active')")();
     }
+    public gettransmittaloutlooklibraryitem(url: string, libraryname: string): Promise<any> {
+        return this._sp.web.getList(url + "/" + libraryname).items
+        .select("ID,BaseName,SubContractor").filter("From eq 'Sub-Contractor'")();
+    }
+    public getIndexItems(url: string, listname: string, id: string): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.filter("ID eq '" + id + "'")();
+    }
+    public getdocumentIndexItem(url: string, listname: string, Id: number): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items
+        .select("Owner/Title,Owner/ID,RevisionCoding/Title,RevisionCoding/ID,DocumentID,Title,SubcontractorDocumentNo,DocumentName")
+        .expand("Owner,RevisionCoding")
+        .filter("ID eq '" + Id + "'")();
+    }
+    public gettransmittaloutlooklibraryitemName(url: string, libraryname: string): Promise<any> {
+        return this._sp.web.getList(url + "/" + libraryname).items
+        .select("LinkFilename,ID")();
+    }
+    public gettransmittaloutlooklibraryitemBuffer(fileurl: string): Promise<any> {
+        return this._sp.web.getFileByServerRelativePath(fileurl).getBuffer();
+    }
+    public deleteListItemById(url: string, listname: string, id: number): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.getById(id).delete();
+    }
+    public updateListItem(url: string, listname: string, data: any, id: number): Promise<any> {
+        console.log(data);
+        return this._sp.web.getList(url + "/Lists/" + listname).items.getById(id).update(data);
+    }
+    public getTransmittalDetailList(url: string, listname: string, Id: number): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items
+        .select("TransmittalHeaderId,DocumentIndex/ID,DocumentIndex/Title,DocumentIndex/DocumentName,Owner/ID,Owner/Title,SubContractorDocumentNumber,ReceivedDate,Comments,ID")
+      .expand("DocumentIndex,Owner")
+      .filter("TransmittalHeader/ID eq '" + Id + "' ")();
+    }
+    public deleteLibraryItemById(url: string, listname: string, id: number): Promise<any> {
+        return this._sp.web.getList(url + "/" + listname).items.getById(id).delete();
+    }
+    public getadditionaldocumentItems(url: string, listname: string, id: string): Promise<any> {
+        return this._sp.web.getList(url + "/" + listname).items.filter("TransmittalIDId eq '" + id + "'")();
+    }
+    public getIdSettingsItem(url: string, listname: string): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.filter("TransmittalCategory eq 'Inbound Sub-contractor'")();
+    }
+    public createNewItem(url: string, listname: string, data: any): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.add(data);
+    }
+    public gethubpermissionListItems(url: string, listname: string): Promise<any> {
+        return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("Title eq 'EMEC_DocumentPermission-Create Document'")();
+    }
+    public getinboundHeader(url: string, listname: string, ID: any): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.getById(ID).select("TransmittalStatus")();
+    }
+    public getinboundHeaderData(url: string, listname: string): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.select("Id,Title,TransmittalDate,DocumentController/ID,DocumentController/Title,SubContractorID,SubContractor")
+        .expand("DocumentController")();
+    }
+    public gettransmittalOutlookLibraryData(url: string, listname: string): Promise<any> {
+        return this._sp.web.getList(url + "/" + listname).items
+        .filter("From eq 'Sub-Contractor'").select("ID,BaseName,SubContractor")();
+    }
+    public getinboundAdditionalDocumentsData(url: string, listname: string, ID: any): Promise<any> {
+        return this._sp.web.getList(url + "/" + listname).items
+        .filter("TransmittalIDId eq '" + ID + "' ")();
+    }
+    public gethubSubcontractorListItems(url: string, listname: string,projectNumber:string): Promise<any> {
+        return this.sphub.web.getList(url + "/Lists/" + listname).items
+        .filter("ProjectId eq '" + projectNumber + "'")();
+    }
+    public async getListItemsPaged(url: string, listname: string): Promise<any[]> {
+        let finalItems: any[] = [];
+        let items: PagedItemCollection<any[]> = undefined;
+        do {
+            if (!items) {
+                items = await this._sp.web.getList(url + "/Lists/" + listname)
+                    .items
+                    .top(250)
+                    .getPaged();
+            }
+            else {
+                items = await items.getNext();
+            }
+            if (items.results.length > 0) {
+                finalItems = finalItems.concat(items.results);
+            }
+        } while (items.hasNext);
+        return finalItems;
+    }
+    
 } 
