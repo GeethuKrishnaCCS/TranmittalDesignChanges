@@ -235,7 +235,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
           .then(DocumentStatus => {
             this.sourceDocumentID = DocumentStatus.SourceDocumentID;
             if ((DocumentStatus.WorkflowStatus != "Under Review" && DocumentStatus.WorkflowStatus != "Under Approval" && DocumentStatus.TransmittalStatus != "Ongoing")) {
-              if (DocumentStatus.DocumentStatus == "Active") {
+              if (DocumentStatus.DocumentStatus === "Active") {
                 this.setState({ accessDeniedMessageBar: "none", qdmsEditDocumentView: "none", projectEditDocumentView: "none" });
                 //Permission handiling 
                 this.setState({
@@ -285,7 +285,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
           .then(DocumentStatus => {
             this.sourceDocumentID = DocumentStatus.SourceDocumentID;
             if ((DocumentStatus.WorkflowStatus != "Under Review" && DocumentStatus.WorkflowStatus != "Under Approval")) {
-              if (DocumentStatus.DocumentStatus == "Active") {
+              if (DocumentStatus.DocumentStatus === "Active") {
                 this.setState({ accessDeniedMessageBar: "none", qdmsEditDocumentView: "none", projectEditDocumentView: "none" });
                 //Permission handiling 
                 this.setState({
@@ -392,21 +392,21 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
             let date = new Date(dataForEdit.ExpiryDate);
             this.setState({ expiryDate: date, expiryCheck: true, hideExpiry: "" });
           }
-          if (dataForEdit.CriticalDocument == true) {
+          if (dataForEdit.CriticalDocument === true) {
             this.setState({ criticalDocument: true });
           }
-          if (dataForEdit.CreateDocument == true) {
+          if (dataForEdit.CreateDocument === true) {
             this.setState({ createDocument: true, hideCreate: "", createDocumentCheckBoxDiv: "none", replaceDocument: "", hidePublish: "none", hideDoc: "none" });
             this.isDocument = "Yes";
           }
-          if (dataForEdit.CreateDocument == false) {
+          if (dataForEdit.CreateDocument === false) {
             this._checkdirectPublish('QDMS_DirectPublish');
 
           }
-          if (dataForEdit.Template == true) {
+          if (dataForEdit.Template === true) {
             this.setState({ templateDocument: true });
           }
-          if (dataForEdit.DirectPublish == true) {
+          if (dataForEdit.DirectPublish === true) {
             let date = new Date(dataForEdit.ApprovedDate);
             this.setState({ directPublishCheck: true, hidePublish: "none", publishOptionKey: dataForEdit.PublishFormat, approvalDateEdit: date });
           }
@@ -434,7 +434,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
           await this._Service.gethubListItems(this.props.hubUrl, this.props.subCategory)
             .then(subcategory => {
               for (let i = 0; i < subcategory.length; i++) {
-                if (subcategory[i].CategoryId == indexItems.CategoryID) {
+                if (subcategory[i].CategoryId === indexItems.CategoryID) {
                   let subcategorydata = {
                     key: subcategory[i].ID,
                     text: subcategory[i].SubCategory,
@@ -489,21 +489,21 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
                 let date = new Date(dataForEdit.ExpiryDate);
                 this.setState({ expiryDate: date, expiryCheck: true, hideExpiry: "", });
               }
-              if (dataForEdit.CriticalDocument == true) {
+              if (dataForEdit.CriticalDocument === true) {
                 this.setState({ criticalDocument: true });
               }
-              if (dataForEdit.CreateDocument == true) {
+              if (dataForEdit.CreateDocument === true) {
                 this.isDocument = "Yes";
                 this.setState({ createDocument: true, hideCreate: "", createDocumentCheckBoxDiv: "none", replaceDocument: "", hidePublish: "none", hideDoc: "none" });
               }
-              if (dataForEdit.CreateDocument == false) {
+              if (dataForEdit.CreateDocument === false) {
 
                 this._checkdirectPublish('Project_DirectPublish');
               }
-              if (dataForEdit.Template == true) {
+              if (dataForEdit.Template === true) {
                 this.setState({ templateDocument: true });
               }
-              if (dataForEdit.DirectPublish == true) {
+              if (dataForEdit.DirectPublish === true) {
                 let date = new Date(dataForEdit.ApprovedDate);
                 this.setState({ directPublishCheck: true, hidePublish: "none", publishOptionKey: dataForEdit.PublishFormat, approvalDateEdit: date });
               }
@@ -527,10 +527,10 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
               });
 
               this._project();
-              if (dataForEdit.ExternalDocument == true) {
+              if (dataForEdit.ExternalDocument === true) {
                 this.setState({ externalDocument: true });
               }
-              if (dataForEdit.TransmittalDocument == true) {
+              if (dataForEdit.TransmittalDocument === true) {
                 this.setState({ transmittalCheck: true });
               }
               if (indexItems.DocumentControllerId != null) {
@@ -582,12 +582,12 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
     console.log("projectInformation", projectInformation);
     if (projectInformation.length > 0) {
       for (let k in projectInformation) {
-        if (projectInformation[k].Key == "ProjectName") {
+        if (projectInformation[k].Key === "ProjectName") {
           this.setState({
             projectName: projectInformation[k].Title,
           });
         }
-        if (projectInformation[k].Key == "ProjectNumber") {
+        if (projectInformation[k].Key === "ProjectNumber") {
           this.setState({
             projectNumber: projectInformation[k].Title,
           });
@@ -627,7 +627,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
     console.log(responseJSON);
     if (response.ok) {
       console.log(responseJSON['Status']);
-      if (responseJSON['Status'] == "Valid") {
+      if (responseJSON['Status'] === "Valid") {
         this.setState({
           titleReadonly: false,
           checkrename: "none"
@@ -670,7 +670,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
     console.log(responseJSON);
     if (response.ok) {
       console.log(responseJSON['Status']);
-      if (responseJSON['Status'] == "Valid") {
+      if (responseJSON['Status'] === "Valid") {
         this.setState({ checkdirect: "none", hideDirect: "", hidePublish: "none" });
       }
       else {
@@ -684,30 +684,30 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
     const userMessageSettings: any[] = await this._Service.gethubUserMessageListItems(this.props.hubUrl, this.props.userMessageSettings);
     console.log(userMessageSettings);
     for (let i in userMessageSettings) {
-      if (userMessageSettings[i].Title == "CreateDocumentSuccess") {
+      if (userMessageSettings[i].Title === "CreateDocumentSuccess") {
         let successmsg = userMessageSettings[i].Message;
         this.createDocument = replaceString(successmsg, '[DocumentName]', this.state.documentName);
       }
-      else if (userMessageSettings[i].Title == "DirectPublishSuccess") {
+      else if (userMessageSettings[i].Title === "DirectPublishSuccess") {
         let publishmsg = userMessageSettings[i].Message;
         this.directPublish = replaceString(publishmsg, '[DocumentName]', this.state.documentName);
       }
-      else if (userMessageSettings[i].Title == "EditDocumentSuccess") {
+      else if (userMessageSettings[i].Title === "EditDocumentSuccess") {
         let editmsg = userMessageSettings[i].Message;
         this.editDocument = replaceString(editmsg, '[DocumentName]', this.state.documentName);
       }
-      else if (userMessageSettings[i].Title == "DocumentRevokeSuccess") {
+      else if (userMessageSettings[i].Title === "DocumentRevokeSuccess") {
         let revokemsg = userMessageSettings[i].Message;
         this.revokeExpiry = replaceString(revokemsg, '[DocumentName]', this.state.documentName);
       }
-      else if (userMessageSettings[i].Title == "DocumentRevokeError") {
+      else if (userMessageSettings[i].Title === "DocumentRevokeError") {
         let revokeErrormsg = userMessageSettings[i].Message;
         this.revokeExpiryError = replaceString(revokeErrormsg, '[DocumentName]', this.state.documentName);
       }
-      else if (userMessageSettings[i].Title == "NoAccess") {
+      else if (userMessageSettings[i].Title === "NoAccess") {
         this.noAccess = userMessageSettings[i].Message;
       }
-      else if (userMessageSettings[i].Title == "InvalidQueryParams") {
+      else if (userMessageSettings[i].Title === "InvalidQueryParams") {
         this.setState({
           invalidQueryParam: userMessageSettings[i].Message,
         });
@@ -772,7 +772,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
       if (this.state.businessUnitID != null) {
         const businessUnit = await this._Service.getBusinessUnitItem(this.props.hubUrl, this.props.businessUnit);
         for (let i = 0; i < businessUnit.length; i++) {
-          if (businessUnit[i].ID == this.state.businessUnitID) {
+          if (businessUnit[i].ID === this.state.businessUnitID) {
             const approve = await this._Service.getByEmail(businessUnit[i].Approver.EMail);
             approverEmail = businessUnit[i].Approver.EMail;
             approverName = businessUnit[i].Approver.Title;
@@ -783,7 +783,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
       else {
         const departments = await this._Service.getBusinessUnitItem(this.props.hubUrl, this.props.department);
         for (let i = 0; i < departments.length; i++) {
-          if (departments[i].ID == this.state.departmentId) {
+          if (departments[i].ID === this.state.departmentId) {
             const deptapprove = await this._Service.getByEmail(departments[i].Approver.EMail);
             approverEmail = departments[i].Approver.EMail;
             approverName = departments[i].Approver.Title;
@@ -2135,10 +2135,10 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
             newRevision = (Number(currentRevision) + Number(incrementValue)).toString();
           }
         }
-        else if (startPrefix == '-' && endWith != '0') // No StartPrefix and with EndWith 
+        else if (startPrefix === '-' && endWith != '0') // No StartPrefix and with EndWith 
         {
           // cases A to E  then 0,1, 2,3 etc,
-          if (currentRevision == endWith) {
+          if (currentRevision === endWith) {
             newRevision = minN;
           }
           else// if(currentRevision != '0')
@@ -2147,14 +2147,14 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
             {
               newRevision = this.nextChar(firstChar, incrementValue);
             }
-            else // (currentRevision == startWith && endWith != null) // always alpha increment "X,,B"
+            else // (currentRevision === startWith && endWith != null) // always alpha increment "X,,B"
             {
               newRevision = (Number(currentRevision) + Number(incrementValue)).toString();
             }
           }
         }
       }
-      if (newRevision.indexOf('undefined') > -1 || newRevision == '') // Assigning with zero if array value exceeds.
+      if (newRevision.indexOf('undefined') > -1 || newRevision === '') // Assigning with zero if array value exceeds.
       {
         newRevision = '0';
       }
@@ -2170,7 +2170,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
   }
   // Creating next alpha char.
   private nextChar(currentChar: any, increment: any) {
-    if (currentChar == 'Z')
+    if (currentChar === 'Z')
       return 'A';
     else
       return String.fromCharCode(currentChar.charCodeAt(0) + increment);
@@ -2222,24 +2222,24 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
     const notificationPreference: any[] = await this._Service.getnotification(this.props.hubUrl, this.props.notificationPreference, emailuser);
     console.log(notificationPreference[0].Preference);
     if (notificationPreference.length > 0) {
-      if (notificationPreference[0].Preference == "Send all emails") {
+      if (notificationPreference[0].Preference === "Send all emails") {
         mailSend = "Yes";
       }
-      else if (notificationPreference[0].Preference == "Send mail for critical document" && this.state.criticalDocument == true) {
+      else if (notificationPreference[0].Preference === "Send mail for critical document" && this.state.criticalDocument === true) {
         mailSend = "Yes";
       }
       else {
         mailSend = "No";
       }
     }
-    else if (this.state.criticalDocument == true) {
+    else if (this.state.criticalDocument === true) {
       mailSend = "Yes";
     }
-    if (mailSend == "Yes") {
+    if (mailSend === "Yes") {
       const emailNotification: any[] = await this._Service.gethubListItems(this.props.hubUrl, this.props.emailNotification);
       console.log(emailNotification);
       for (let k in emailNotification) {
-        if (emailNotification[k].Title == type) {
+        if (emailNotification[k].Title === type) {
           Subject = emailNotification[k].Subject;
           Body = emailNotification[k].Body;
         }

@@ -268,7 +268,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
     this.setState({ docId: option.key, docKey: option.text });
     let select: "DocumentID,DocumentName,Owner/ID,Owner/Title,Owner/EMail,Revision,SourceDocument,CriticalDocument,CustomerDocumentNo";
     let expand: "Owner";
-    const documentIndexItem: any = await this._Service.getItemSelectExpandById(this.props.siteUrl, this.props.documentIndexList, select, expand, option.key);
+    const documentIndexItem: any = await this._Service.getItemWithFilterExpand(this.props.siteUrl, this.props.documentIndexList, select, expand, "ID eq '" + option.key + "'");
     console.log(documentIndexItem);
     this.setState({
       OwnerId: documentIndexItem.Owner.ID,
@@ -351,7 +351,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
     return users;
   }
   private async _checkingCurrent(userEmail) {
-    for (var k in userEmail) {
+    for (let k in userEmail) {
       if (this.currentEmail == userEmail[k].mail) {
         this.setState({ access: "none", accessDeniedMsgBar: "none" });
         this.valid = "Yes";
@@ -525,7 +525,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
     if (mailSend == "Yes") {
       const emailNotification: any[] = await this.reqWeb.getList("/sites/" + this.props.hubsite + "/Lists/" + "EmailNotificationSettings").items.get();
       console.log(emailNotification);
-      for (var k in emailNotification) {
+      for (let k in emailNotification) {
         if (emailNotification[k].Title == type) {
           Subject = emailNotification[k].Subject;
           Body = emailNotification[k].Body;
@@ -581,7 +581,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
         title = transmittalIdSettingsItems[0].Title;
         counter = transmittalIdSettingsItems[0].Counter;
         let increment = counter + 1;
-        var incrementValue = increment.toString();
+        let incrementValue = increment.toString();
         this._transmittalSequenceNumber(incrementValue, sequenceNumber);
         transmittalID = prefix + separator + title + separator + this.state.projectNumber + separator + this.state.incrementSequenceNumber;
         console.log("transmittalID", transmittalID);
@@ -597,7 +597,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
   }
   //transmittalSequenceNumber
   public _transmittalSequenceNumber(incrementvalue, sequenceNumber) {
-    var incrementSequenceNumber = incrementvalue;
+    let incrementSequenceNumber = incrementvalue;
     while (incrementSequenceNumber.length < sequenceNumber)
       incrementSequenceNumber = "0" + incrementSequenceNumber;
     console.log(incrementSequenceNumber);
@@ -701,7 +701,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
                             await this._Service.getItemWithFilterExpand(this.props.siteUrl, this.props.OutboundTransmittalDetails, select, filter, expand)
                               .then(async outboundTransmittalDetailsListNameh => {
                                 if (outboundTransmittalDetailsListNameh.length > 0) {
-                                  for (var k = 0; k < outboundTransmittalDetailsListNameh.length; k++) {
+                                  for (let k = 0; k < outboundTransmittalDetailsListNameh.length; k++) {
                                     this.setState({ TransmittalHeaderId: outboundTransmittalDetailsListNameh[k].TransmittalHeader.ID });
                                     let ouboundUpdate = {
                                       TransmittalStatus: "Completed",
@@ -725,7 +725,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
                                     this._sendmail(forGettingOwner.DocumentName, forGettingOwner.Owner.EMail, "InboundTransmittalFromCustomer", forGettingOwner.Owner.Title, this.state.ReactTableResult[i].transmittalCode);
                                     this._sendmail(forGettingOwner.DocumentName, forGettingOwner.Approver.EMail, "InboundTransmittalFromCustomer", forGettingOwner.Approver.Title, this.state.ReactTableResult[i].transmittalCode);
                                     if (forGettingOwner.Reviewers) {
-                                      for (var k in forGettingOwner.Reviewers) {
+                                      for (let k in forGettingOwner.Reviewers) {
                                         if (forGettingOwner.Reviewers[k].EMail != forGettingOwner.Owner.EMail || forGettingOwner.Reviewers[k].EMail != forGettingOwner.Approver.EMail) {
                                           this._sendmail(forGettingOwner.DocumentName, forGettingOwner.Reviewers[k].EMail, "InboundTransmittalFromCustomer", forGettingOwner.Reviewers[k].Title, this.state.ReactTableResult[i].transmittalCode);
                                         }
@@ -741,7 +741,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
                                     let length = outboundTransmittalDetailsListName.length;
                                     let recievedlength = 0;
                                     if (outboundTransmittalDetailsListName.length > 0) {
-                                      for (var k = 0; k < outboundTransmittalDetailsListName.length; k++) {
+                                      for (let k = 0; k < outboundTransmittalDetailsListName.length; k++) {
                                         if (outboundTransmittalDetailsListName[k].TransmittalStatus == "Completed") {
                                           recievedlength = recievedlength + 1;
                                         }
@@ -762,7 +762,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
               this._LAUrlGettingForDocumentLibraryUpdate();
             }
             if (this.state.ReactTableResult2.length > 0) {
-              for (var i = 0; i < this.state.ReactTableResult2.length; i++) {
+              for (let i = 0; i < this.state.ReactTableResult2.length; i++) {
                 await this._Service.uploadDocument(this.props.siteUrl + "/" + this.props.InboundAdditionalDocuments, this.state.transmittalID + this.state.ReactTableResult2[i].Attachments2.name, this.state.ReactTableResult2[i].Attachments2)
                   .then(async f => {
                     console.log("File Uploaded");
@@ -860,7 +860,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
                         await this._Service.getItemWithFilterExpand(this.props.siteUrl, this.props.OutboundTransmittalDetails, select, filter, expand)
                           .then(async outboundTransmittalDetailsListNameh => {
                             if (outboundTransmittalDetailsListNameh.length > 0) {
-                              for (var k = 0; k < outboundTransmittalDetailsListNameh.length; k++) {
+                              for (let k = 0; k < outboundTransmittalDetailsListNameh.length; k++) {
                                 this.setState({ TransmittalHeaderId: outboundTransmittalDetailsListNameh[k].TransmittalHeader.ID });
                                 let obDetailItems = {
                                   TransmittalStatus: "Completed",
@@ -884,7 +884,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
                                 this._sendmail(forGettingOwner.DocumentName, forGettingOwner.Owner.EMail, "InboundTransmittalFromCustomer", forGettingOwner.Owner.Title, this.state.ReactTableResult[i].transmittalCode);
                                 this._sendmail(forGettingOwner.DocumentName, forGettingOwner.Approver.EMail, "InboundTransmittalFromCustomer", forGettingOwner.Approver.Title, this.state.ReactTableResult[i].transmittalCode);
                                 if (forGettingOwner.Reviewers) {
-                                  for (var k in forGettingOwner.Reviewers) {
+                                  for (let k in forGettingOwner.Reviewers) {
                                     if (forGettingOwner.Reviewers[k].EMail != forGettingOwner.Owner.EMail || forGettingOwner.Reviewers[k].EMail != forGettingOwner.Approver.EMail) {
                                       this._sendmail(forGettingOwner.DocumentName, forGettingOwner.Reviewers[k].EMail, "InboundTransmittalFromCustomer", forGettingOwner.Reviewers[k].Title, this.state.ReactTableResult[i].transmittalCode);
                                     }
@@ -901,7 +901,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
                                 let length = outboundTransmittalDetailsListName.length;
                                 let recievedlength = 0;
                                 if (outboundTransmittalDetailsListName.length > 0) {
-                                  for (var k = 0; k < outboundTransmittalDetailsListName.length; k++) {
+                                  for (let k = 0; k < outboundTransmittalDetailsListName.length; k++) {
                                     if (outboundTransmittalDetailsListName[k].TransmittalStatus == "Completed") {
                                       recievedlength = recievedlength + 1;
                                     }
@@ -995,7 +995,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
       this._Service.getItemWithFilterExpand(this.props.siteUrl, this.props.InboundTransmittalDetails, selectHeaderItems, expandItems, filter)
         .then(inboundTransmittalDetailsListName => {
           if (inboundTransmittalDetailsListName.length > 0) {
-            for (var k = 0; k < inboundTransmittalDetailsListName.length; k++) {
+            for (let k = 0; k < inboundTransmittalDetailsListName.length; k++) {
               //this.setState({ transmittalIDedit: inboundTransmittalDetailsListName[k].Title });
               data = {
                 OwnerTitle: inboundTransmittalDetailsListName[k].Owner['Title'],
@@ -1033,7 +1033,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
         .then(inboundAdditionalDocumentsListName => {
           console.log(inboundAdditionalDocumentsListName);
           if (inboundAdditionalDocumentsListName.length > 0) {
-            for (var k = 0; k < inboundAdditionalDocumentsListName.length; k++) {
+            for (let k = 0; k < inboundAdditionalDocumentsListName.length; k++) {
               data2 = {
                 Attachments2: null,
                 documentName2: inboundAdditionalDocumentsListName[k].Title,
@@ -1227,7 +1227,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
           const updateTransmittalHeader = await this._Service.updateItem(this.props.siteUrl, this.props.InboundTransmittalHeader, inboundLinks, inboundTransmittalHeader.data.ID);
           if (updateTransmittalHeader) {
             if (this.state.ReactTableResult.length > 0) {
-              for (var i in this.state.ReactTableResult) {
+              for (let i in this.state.ReactTableResult) {
                 try {
                   let inboundDetails = {
                     Title: this.state.ReactTableResult[i].transmittalID,
@@ -1251,7 +1251,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
               }
             }
             if (this.state.ReactTableResult2.length > 0) {
-              for (var i in this.state.ReactTableResult2) {
+              for (let i in this.state.ReactTableResult2) {
                 const inboundadditionaldocuments = await this._Service.uploadDocument(this.props.siteUrl + "/" + this.props.InboundAdditionalDocuments, this.state.transmittalID + this.state.ReactTableResult2[i].Attachments2.name, this.state.ReactTableResult2[i].Attachments2)
                 if (inboundadditionaldocuments) {
                   const item = await inboundadditionaldocuments.file.getItem();
@@ -1304,7 +1304,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
 
           if (updateTransmittalHeader) {
             if (this.state.ReactTableResult.length > 0) {
-              for (var i in this.state.ReactTableResult) {
+              for (let i in this.state.ReactTableResult) {
                 try {
                   let inboundDetails = {
                     Title: this.state.ReactTableResult[i].transmittalID,
@@ -1328,7 +1328,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
               }
             }
             if (this.state.ReactTableResult2.length > 0) {
-              for (var i in this.state.ReactTableResult2) {
+              for (let i in this.state.ReactTableResult2) {
                 const inboundadditionaldocuments = await this._Service.uploadDocument(this.props.siteUrl + "/" + this.props.InboundAdditionalDocuments, this.state.transmittalID + this.state.ReactTableResult2[i].Attachments2.name, this.state.ReactTableResult2[i].Attachments2)
                 if (inboundadditionaldocuments) {
                   const item = await inboundadditionaldocuments.file.getItem();
@@ -1363,7 +1363,7 @@ export default class EmecInboundCustomerWp extends React.Component<IInboundCusto
     const projectInformation = await this._Service.getListItems(this.props.siteUrl, this.props.projectInformationListName);
     console.log("projectInformation", projectInformation);
     if (projectInformation.length > 0) {
-      for (var k in projectInformation) {
+      for (let k in projectInformation) {
         if (projectInformation[k].Key == "ProjectName") {
           this.setState({ projectName: projectInformation[k].Title, });
         }
