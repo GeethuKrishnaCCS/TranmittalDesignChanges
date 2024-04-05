@@ -194,14 +194,15 @@ export default class InboundSubcontractorV2 extends React.Component<IInboundSubc
     let transmittalID = params.get('trid');
     console.log("transmittalID", transmittalID);
     //console.log(this.detailID);
-    if (transmittalID != "" && transmittalID != null) {
+    if (transmittalID !== "" && transmittalID !== null && transmittalID !== undefined) {
       // alert(transmittalID);
       this.transmittalID = transmittalID;
       const inboundHeader = await this._Service.getinboundHeader(this.props.siteUrl,this.props.inboundTransmittalHeaderList,parseInt(transmittalID));
       console.log(inboundHeader);
-      if (inboundHeader.TransmittalStatus != "Completed") {
+      if (inboundHeader.TransmittalStatus !== "Completed") {
         this._bindInboundTransmittalSavedData(this.transmittalID);
         this.setState({
+          transmittalNo: "",
           access: "",
           loaderDisplay: "none"
         });
@@ -243,7 +244,7 @@ export default class InboundSubcontractorV2 extends React.Component<IInboundSubc
     const userMessageSettings: any[] = await this._Service.gethubUserMessageListItems(this.props.hubUrl,this.props.userMessageSettings);
     console.log(userMessageSettings);
     for (var i in userMessageSettings) {
-      if (userMessageSettings[i].Title == "InboundSub-ContractorSave") {
+      if (userMessageSettings[i].Title === "InboundSub-ContractorSave") {
         this.dataSaved = userMessageSettings[i].Message;
       }
     }
@@ -258,7 +259,7 @@ export default class InboundSubcontractorV2 extends React.Component<IInboundSubc
     .then(async inboundHeader => {
       console.log(inboundHeader);
       for (let l = 0; l < inboundHeader.length; l++) {
-        if (inboundHeader[l].Id == transmittalID) {
+        if (inboundHeader[l].Id === transmittalID) {
           transmittalDate = moment(inboundHeader[l].TransmittalDate).format("DD/MM/YYYY"),
             this.setState({
               dcc: inboundHeader[l].DocumentController.Title,
@@ -272,7 +273,7 @@ export default class InboundSubcontractorV2 extends React.Component<IInboundSubc
       }
       const document = await this._Service.gettransmittalOutlookLibraryData(this.props.siteUrl,this.props.transmittalOutlookLibrary);
       for (let i = 0; i < document.length; i++) {
-        if (document[i].SubContractor == this.state.subContractor) {
+        if (document[i].SubContractor === this.state.subContractor) {
           let transmittalOutlookDocument = {
             key: document[i].ID,
             text: document[i].BaseName
@@ -289,7 +290,7 @@ export default class InboundSubcontractorV2 extends React.Component<IInboundSubc
         console.log("inboundTransmittalDetailList", inboundTransmittalDetailList);
         if (inboundTransmittalDetailList.length > 0) {
           for (var k = 0; k <= inboundTransmittalDetailList.length; k++) {
-            if (inboundTransmittalDetailList[k].TransmittalHeaderId == this.transmittalID) {
+            if (inboundTransmittalDetailList[k].TransmittalHeaderId === this.transmittalID) {
               // alert(inboundTransmittalDetailList[k].DocumentIndex.ID);
               this.addDocument.push({
                 DocumentIndexId: inboundTransmittalDetailList[k].DocumentIndex.ID,
@@ -320,7 +321,7 @@ export default class InboundSubcontractorV2 extends React.Component<IInboundSubc
         if (inboundAdditionalDocumentsListName.length > 0) {
           for (var k = 0; k < inboundAdditionalDocumentsListName.length; k++) {
             // alert(inboundAdditionalDocumentsListName[k].TransmittalIDId);
-            if (inboundAdditionalDocumentsListName[k].TransmittalIDId == this.transmittalID) {
+            if (inboundAdditionalDocumentsListName[k].TransmittalIDId === this.transmittalID) {
               this.addExternalDocument.push({
                 DocName: inboundAdditionalDocumentsListName[k].Title,
                 ExternalDate: moment(inboundAdditionalDocumentsListName[k].ReceivedDate).format("DD/MM/YYYY"),
@@ -346,8 +347,8 @@ export default class InboundSubcontractorV2 extends React.Component<IInboundSubc
     let subContractor;
     const subContractoritems: any[] = await this._Service.gethubSubcontractorListItems(this.props.hubUrl,"SubContractorMaster",this.state.projectNumber);
      for (let i = 0; i < subContractoritems.length; i++) {
-       if (subContractoritems[i].ProjectId == this.state.projectNumber){
-         if(subContractoritems[i].Title == this.state.legalId){
+       if (subContractoritems[i].ProjectId === this.state.projectNumber){
+         if(subContractoritems[i].Title === this.state.legalId){
          subContractor = {
            key: subContractoritems[i].VendorId,
            text: subContractoritems[i].VendorName
@@ -367,17 +368,17 @@ export default class InboundSubcontractorV2 extends React.Component<IInboundSubc
     const projectInformation = await this._Service.getListItems(this.props.siteUrl,this.props.projectInformationListName);
     if (projectInformation.length > 0) {
       for (var k in projectInformation) {
-        if (projectInformation[k].Key == "ProjectName") {
+        if (projectInformation[k].Key === "ProjectName") {
           this.setState({
             projectName: projectInformation[k].Title,
           });
         }
-        if (projectInformation[k].Key == "ProjectNumber") {
+        if (projectInformation[k].Key === "ProjectNumber") {
           this.setState({
             projectNumber: projectInformation[k].Title,
           });
         }
-        if (projectInformation[k].Key == "LegalEntityId") {
+        if (projectInformation[k].Key === "LegalEntityId") {
           this.setState({
             legalId: projectInformation[k].Title,
           });
@@ -408,7 +409,7 @@ public async _getTransmittalSettings() {
   let sorted_transmittalCodeSettings = [];
   const transmittalCodeSettingsItem: any = await this._Service.getListItems(this.props.siteUrl,this.props.transmittalCodeSettings);
   for (let i = 0; i < transmittalCodeSettingsItem.length; i++) {
-    if (transmittalCodeSettingsItem[i].AcceptanceCode == false) {
+    if (transmittalCodeSettingsItem[i].AcceptanceCode === false) {
       let transmittalCodeSettingsItemdata = {
         key: transmittalCodeSettingsItem[i].ID,
         text: transmittalCodeSettingsItem[i].Title
@@ -428,7 +429,7 @@ public async _getDocumentIndex() {
   const documentIndexArrayItem: any = await this._Service.getListItemsPaged(this.props.siteUrl,this.props.documentIndexList);
   console.log(documentIndexArrayItem);
   for (let i = 0; i < documentIndexArrayItem.length; i++) {
-    if (documentIndexArrayItem[i].ExternalDocument == true) {
+    if (documentIndexArrayItem[i].ExternalDocument === true) {
       let documentIndexArrayItemdata = {
         key: documentIndexArrayItem[i].ID,
         text: documentIndexArrayItem[i].DocumentName
@@ -449,33 +450,33 @@ public async _getDocumentIndex() {
     let transmittalOutlookDocumentArray = [];
     let sorted_transmittalOutlookDocumentArray = [];
     this.setState({ subContractorID: option.key, subContractor: option.text });
-    let purchasearray = [];
-    let sorted_purchaseOrder = [];
-    let purchaseitem;
-    const purchaseitems = await this._Service.gethubListItems(this.props.hubUrl,"PurchaseOrderMaster");
-   console.log(purchaseitems);
-   for (let i = 0; i < purchaseitems.length; i++) {
-    if (purchaseitems[i].VendorId == option.key){
-      if(purchaseitems[i].Title == this.state.legalId){
-        if(purchaseitems[i].ProjectId == this.state.projectNumber){
-        purchaseitem = {
-        key: purchaseitems[i].ID,
-        text: purchaseitems[i].PurchaseOrderNo
-      };
-      purchasearray.push(purchaseitem);
-      }
-      }
+    // let purchasearray = [];
+    // let sorted_purchaseOrder = [];
+    // let purchaseitem;
+  //   const purchaseitems = await this._Service.gethubListItems(this.props.hubUrl,"PurchaseOrderMaster");
+  //  console.log(purchaseitems);
+  //  for (let i = 0; i < purchaseitems.length; i++) {
+  //   if (purchaseitems[i].VendorId === option.key){
+  //     if(purchaseitems[i].Title === this.state.legalId){
+  //       if(purchaseitems[i].ProjectId === this.state.projectNumber){
+  //       purchaseitem = {
+  //       key: purchaseitems[i].ID,
+  //       text: purchaseitems[i].PurchaseOrderNo
+  //     };
+  //     purchasearray.push(purchaseitem);
+  //     }
+  //     }
       
-  }
-    }
-    console.log(purchasearray);
-    sorted_purchaseOrder = _.orderBy(purchasearray, 'text', ['asc']);
-    this.setState({
-      purchaseOrderArray: sorted_purchaseOrder
-    });
+  // }
+  //   }
+  //   console.log(purchasearray);
+  //   sorted_purchaseOrder = _.orderBy(purchasearray, 'text', ['asc']);
+  //   this.setState({
+  //     purchaseOrderArray: sorted_purchaseOrder
+  //   });
     const document = await this._Service.gettransmittaloutlooklibraryitem(this.props.siteUrl,this.props.transmittalOutlookLibrary);
     for (let i = 0; i < document.length; i++) {
-      if (document[i].SubContractor == option.text) {
+      if (document[i].SubContractor === option.text) {
         let transmittalOutlookDocument = {
           key: document[i].ID,
           text: document[i].BaseName
@@ -484,7 +485,7 @@ public async _getDocumentIndex() {
       }
     }
     sorted_transmittalOutlookDocumentArray = _.orderBy(transmittalOutlookDocumentArray, 'text', ['asc']);
-    if (sorted_transmittalOutlookDocumentArray.length == 0) {
+    if (sorted_transmittalOutlookDocumentArray.length === 0) {
       this.setState({
         disableOutlook: true
       });
@@ -514,8 +515,8 @@ public async _getDocumentIndex() {
     console.log(option);
     this.setState({ validDocumentIndex: "none" });
     if (this.state.gridDocument.length > 0) {
-      let duplicate = this.state.gridDocument.filter(a => a.DocumentIndexId == option.key);
-      if (duplicate.length != 0) {
+      let duplicate = this.state.gridDocument.filter(a => a.DocumentIndexId === option.key);
+      if (duplicate.length !== 0) {
         this.setState({
           documentSelectedDiv: false,
         });
@@ -524,7 +525,7 @@ public async _getDocumentIndex() {
         const documentIndex = await this._Service.getIndexItems(this.props.siteUrl,this.props.documentIndexList,option.key);
         const documentIndexItem = await this._Service.getdocumentIndexItem(this.props.siteUrl,this.props.documentIndexList,option.key);
         console.log(documentIndex);
-        if (documentIndex[0].RevisionCodingId != null) {
+        if (documentIndex[0].RevisionCodingId !== null) {
           this.setState({
             revisionCodingId: documentIndexItem[0].RevisionCoding.ID
           });
@@ -547,7 +548,7 @@ public async _getDocumentIndex() {
       const documentIndex = await this._Service.getIndexItems(this.props.siteUrl,this.props.documentIndexList,option.key);
       const documentIndexItem = await await this._Service.getdocumentIndexItem(this.props.siteUrl,this.props.documentIndexList,option.key);
       console.log(documentIndex);
-      if (documentIndex[0].RevisionCodingId != null) {
+      if (documentIndex[0].RevisionCodingId !== null) {
         this.setState({
           revisionCodingId: documentIndexItem[0].RevisionCoding.ID
         });
@@ -581,7 +582,7 @@ public async _getDocumentIndex() {
     });
     let doctype;
     let type;
-    if (this.state.documentIndexID == "") {
+    if (this.state.documentIndexID === "") {
       this.setState({ validDocumentIndex: "" });
       (document.querySelector("#newfile") as HTMLInputElement).value = null;
     }
@@ -590,7 +591,7 @@ public async _getDocumentIndex() {
       const di = await this._Service.getListItemById(this.props.siteUrl,this.props.documentIndexList,parseInt(this.state.documentIndexID));
       console.log(di);
       let sdid = di.SourceDocumentID;
-      if (sdid != null) {
+      if (sdid !== null) {
         let docname = di.DocumentName;
         var docsplitted = docname.split(".");
         doctype = docsplitted[docsplitted.length - 1];
@@ -598,7 +599,7 @@ public async _getDocumentIndex() {
         console.log(myfile);
         var splitted = myfile.name.split(".");
         type = splitted[splitted.length - 1];
-        if (doctype != type) {
+        if (doctype !== type) {
           this.setState({ validDocument: "" });
           (document.querySelector("#newfile") as HTMLInputElement).value = null;
         }
@@ -662,20 +663,20 @@ public async _getDocumentIndex() {
     // this.state.documentIndexTitle;
     var splitted;
 
-    if (this.state.dcc == undefined) {
+    if (this.state.dcc === undefined) {
       this.setState({ noDcc: "" });
     }
-    else if (this.state.documentIndexID == "") {
+    else if (this.state.documentIndexID === "") {
       this.setState({ validDocumentIndex: "" });
     }
-    else if (this.state.transmittalSettingsId == null) {
+    else if (this.state.transmittalSettingsId === null) {
       this.setState({ notransmittal: "" });
     }
-    else if (this.state.comments == "") {
+    else if (this.state.comments === "") {
       this.setState({ validComment: "" });
     }
     else {
-      if ((document.querySelector("#newfile") as HTMLInputElement).files[0] != null) {
+      if ((document.querySelector("#newfile") as HTMLInputElement).files[0] !== null) {
         let myfile = (document.querySelector("#newfile") as HTMLInputElement).files[0];
         let myfileName = myfile.name;
         splitted = myfileName.split(".");
@@ -720,13 +721,13 @@ public async _getDocumentIndex() {
           this.myfile.value = "";
         }
       }
-      else if (this.state.transmittalOutlookId != "" && this.state.transmittalOutlookId != null) {
+      else if (this.state.transmittalOutlookId !== "" && this.state.transmittalOutlookId !== null) {
         let content;
         await this._Service.gettransmittaloutlooklibraryitemName(this.props.siteUrl,this.props.transmittalOutlookLibrary)
         .then(async transmittalOutlookdoc => {
           console.log(transmittalOutlookdoc);
           for (let j = 0; j < transmittalOutlookdoc.length; j++) {
-            if (transmittalOutlookdoc[j].ID == this.state.transmittalOutlookId) {
+            if (transmittalOutlookdoc[j].ID === this.state.transmittalOutlookId) {
               transmittalOutlookName = transmittalOutlookdoc[j].LinkFilename;
             }
           }
@@ -790,7 +791,7 @@ public async _getDocumentIndex() {
   }
   // On deletebutton click
   private _openDeleteConfirmation = (items, key, type) => {
-    if (this.transmittalID == "" || this.transmittalID == null || this.transmittalID == undefined) {
+    if (this.transmittalID === "" || this.transmittalID === null || this.transmittalID === undefined) {
       this.setState({
         deleteConfirmMsg: "",
         confirmDeleteDialog: false,
@@ -798,10 +799,10 @@ public async _getDocumentIndex() {
       this.validator.hideMessages();
       console.log(items[key]);
       console.log(items.DocumentIndexId);
-      if (type == "ProjectDocuments") {
+      if (type === "ProjectDocuments") {
         this.typeForDelete = "ProjectDocuments";
         this.keyForDelete = key;
-      } else if (type == "AdditionalDocuments") {
+      } else if (type === "AdditionalDocuments") {
         this.typeForDelete = "AdditionalDocuments";
         this.keyForDelete = key;
       }
@@ -816,14 +817,14 @@ public async _getDocumentIndex() {
       this.docIndexId = items.DocumentIndexId;
       this.validator.hideMessages();
       console.log(items[key]);
-      if (type == "ProjectDocuments") {
+      if (type === "ProjectDocuments") {
         // alert(items.outboundDetailsID);
         this.typeForDelete = "ProjectDocuments";
         this.keyForDelete = key;
         this.setState({
           tempDocIndexIDForDelete: items.DetailId,
         });
-      } else if (type == "AdditionalDocuments") {
+      } else if (type === "AdditionalDocuments") {
         // alert("additionalid" + items.additionalDocumentID);
         this.typeForDelete = "AdditionalDocuments";
         this.keyForDelete = key;
@@ -852,14 +853,14 @@ public _onDatePickerChange = (date?: Date): void => {
 }
 // Add external document
 public _addexternalindex() {
-  if (this.state.dcc == undefined) {
+  if (this.state.dcc === undefined) {
     this.setState({ noDcc: "" });
   }
-  else if (this.state.externalComments == "") {
+  else if (this.state.externalComments === "") {
     this.setState({ validAdditionalComment: "" });
   }
   else {
-    if ((document.querySelector("#externalFile") as HTMLInputElement).files[0] != null) {
+    if ((document.querySelector("#externalFile") as HTMLInputElement).files[0] !== null) {
       let myfile = (document.querySelector("#externalFile") as HTMLInputElement).files[0];
       var docname = myfile.name;
 
@@ -883,7 +884,7 @@ public _addexternalindex() {
 }
 // Save as draft button click
 public async _saveAsDraft() {
-  if (this.state.gridDocument.length == 0) {
+  if (this.state.gridDocument.length === 0) {
     this.setState({ statusMessage: { isShowMessage: true, message: "Please add all mandatory fields ", messageType: 1 }, });
     setTimeout(() => {
       this.setState({ statusMessage: { isShowMessage: false, message: "Please add all mandatory fields ", messageType: 1 }, });
@@ -892,7 +893,7 @@ public async _saveAsDraft() {
   else {
     this.setState({ submitDisable: true });
     this.status = "Save";
-    if (this.transmittalID == null || this.transmittalID == "") {
+    if (this.transmittalID === null || this.transmittalID === "") {
       console.log("Save as draft button clicked");
       this.setState({ checksend: "" });
       this._idGeneration();
@@ -905,7 +906,7 @@ public async _saveAsDraft() {
 }
  // submit button click
  public _submit() {
-  if (this.state.gridDocument.length == 0) {
+  if (this.state.gridDocument.length === 0) {
     this.setState({ statusMessage: { isShowMessage: true, message: "Please add all mandatory fields ", messageType: 1 }, });
     setTimeout(() => {
       this.setState({ statusMessage: { isShowMessage: false, message: "Please add all mandatory fields ", messageType: 1 }, });
@@ -915,7 +916,7 @@ public async _saveAsDraft() {
     this.setState({ submitDisable: true });
     this.status = "Submit";
     //  alert("add");
-    if (this.transmittalID == null || this.transmittalID == "") {
+    if (this.transmittalID === null || this.transmittalID === "" || this.transmittalID === undefined) {
       console.log("Save as draft button clicked");
       this.setState({ checksend: "" });
       this._idGeneration();
@@ -1042,7 +1043,7 @@ let headeriddata = {
         if (fileuploaded) {
           const item = await fileuploaded.file.getItem();
           sourceDocumentId = item["ID"];
-          if (this.state.gridDocument[i].type == "pdf" || this.state.gridDocument[i].type == "Pdf" || this.state.gridDocument[i].type == "PDF") {
+          if (this.state.gridDocument[i].type === "pdf" || this.state.gridDocument[i].type === "Pdf" || this.state.gridDocument[i].type === "PDF") {
             documenturl = item["ServerRedirectedEmbedUrl"];
           }
           else {
@@ -1052,7 +1053,7 @@ let headeriddata = {
           }
           this.sourceDocumentID = sourceDocumentId;
           let reviewerId;
-          if (indexItems.ReviewersId == null) { reviewerId = []; }
+          if (indexItems.ReviewersId === null) { reviewerId = []; }
           else { reviewerId = indexItems.ReviewersId; }
           let sourceDocumentLibrarydata = {
             Title: indexItems.Title,
@@ -1084,7 +1085,7 @@ let headeriddata = {
             SubcontractorDocumentNo:indexItems.SubcontractorDocumentNo
           }
           const updatelist = await this._Service.updateLibraryItem(this.props.siteUrl,this.props.sourceDocumentLibrary,sourceDocumentLibrarydata,this.sourceDocumentID);
-          if (indexItems.ExpiryDate != null) {
+          if (indexItems.ExpiryDate !== null) {
             const updateexpirydata = {
               ExpiryDate: indexItems.ExpiryDate,
               ExpiryLeadPeriod: indexItems.ExpiryLeadPeriod
@@ -1092,7 +1093,7 @@ let headeriddata = {
             const updateexpiry = await this._Service.updateLibraryItem(this.props.siteUrl,this.props.sourceDocumentLibrary,updateexpirydata,this.sourceDocumentID);
           }
           if (updatelist) {
-            if (indexItems.SourceDocumentID == null) {
+            if (indexItems.SourceDocumentID === null) {
               let logdata = {
                 Title: indexItems.DocumentID,
                 Status: "Document Created",
@@ -1152,7 +1153,7 @@ let headeriddata = {
         }
       }
     }
-    if (this.status == "Submit") {
+    if (this.status === "Submit") {
 
       //alert("insideupdatell");
       await this._updateall();
@@ -1224,7 +1225,7 @@ public async _newAddDocument() {
         sourceDocumentId = item["ID"];
         this.sourceDocumentID = sourceDocumentId;
         let reviewerId;
-        if (indexItems.ReviewersId == null) { reviewerId = []; }
+        if (indexItems.ReviewersId === null) { reviewerId = []; }
         else { reviewerId = indexItems.ReviewersId; }
         let sddata ={
           Title: indexItems.Title,
@@ -1257,7 +1258,7 @@ public async _newAddDocument() {
         }
         const SDLib = await this._Service.updateLibraryItem(this.props.siteUrl,this.props.sourceDocumentLibrary,sddata,this.sourceDocumentID);
         if (SDLib) {
-          if (indexItems.SourceDocumentID == null) {
+          if (indexItems.SourceDocumentID === null) {
             let logdata = {
               Title: indexItems.DocumentID,
               Status: "Document Created",
@@ -1321,7 +1322,7 @@ public async _newAddDocument() {
         }
       }
     }
-    if (this.status == "Submit") {
+    if (this.status === "Submit") {
       await this._updateall();
     }
     else {
@@ -1342,7 +1343,7 @@ public async _updateall() {
   let SourceDocumentID;
   let headerid;
   let DocumentID;
-  if (this.transmittalID == null || this.transmittalID == "") {
+  if (this.transmittalID === null || this.transmittalID === "") {
     headerid = this.transmittalID;
   }
   else {
@@ -1462,16 +1463,16 @@ private _dialogCloseButton = () => {
 }
 // confirm delete item
 private _confirmDeleteItem = async (docID, items, key) => {
-  if (this.transmittalID == "" || this.transmittalID == null || this.transmittalID == undefined) {
+  if (this.transmittalID === "" || this.transmittalID === null || this.transmittalID === undefined) {
     this.setState({
       deleteConfirmMsg: "none",
       confirmDeleteDialog: true,
     });
     this.validator.hideMessages();
-    if (this.typeForDelete == "ProjectDocuments") {
+    if (this.typeForDelete === "ProjectDocuments") {
       this.itemDeleteFromGrid(items, key);
     }
-    else if (this.typeForDelete == "AdditionalDocuments") {
+    else if (this.typeForDelete === "AdditionalDocuments") {
       this.itemDeleteFromExternalGrid(items, key);
     }
 
@@ -1484,7 +1485,7 @@ private _confirmDeleteItem = async (docID, items, key) => {
     this.validator.hideMessages();
     console.log(items[key]);
     // alert(docID);
-    if (this.typeForDelete == "ProjectDocuments") {
+    if (this.typeForDelete === "ProjectDocuments") {
       // alert(docID);
       this.itemDeleteFromGrid(items, key);
       await this._Service.deleteListItemById(this.props.siteUrl,this.props.inboundTransmittalDetailList,parseInt(docID));
@@ -1503,7 +1504,7 @@ private _confirmDeleteItem = async (docID, items, key) => {
         gridDocument: this.state.gridDocument,
       });
     }
-    else if (this.typeForDelete == "AdditionalDocuments") {
+    else if (this.typeForDelete === "AdditionalDocuments") {
       // alert("additional" + docID);
       this.itemDeleteFromExternalGrid(items, key);
       await this._Service.deleteLibraryItemById(this.props.siteUrl,this.props.additionalDocumentLibrary,parseInt(docID));
@@ -1601,7 +1602,7 @@ private modalProps = {
               </div>
               <div className={styles.wdthlft}>
                 <PeoplePicker
-                  context={this.props.context as any}
+                context={this.props.context as any}
                   titleText="DCC"
                   personSelectionLimit={1}
                   groupName={""} // Leave this blank in case you want to filter from all users
@@ -1694,7 +1695,7 @@ private modalProps = {
                   options={this.state.purchaseOrderArray}
                   onChanged={this._poNumberChange}
                   selectedKey={this.state.poNumberID}
-                />
+                /> 
                 {/* <TextField label="Sub-Contractor Contract Number" onChange={this._poNumberChange} value={this.state.poNumber}></TextField> */}
               </div>
               <div className={styles.wdthlft}>
