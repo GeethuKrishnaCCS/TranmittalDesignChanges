@@ -1,5 +1,4 @@
 import { WebPartContext } from "@microsoft/sp-webpart-base";
-
 // import pnp and pnp logging system
 import { spfi, SPFI, SPFx } from "@pnp/sp";
 import { LogLevel, PnPLogging } from "@pnp/logging";
@@ -9,8 +8,8 @@ import "@pnp/sp/items";
 import "@pnp/sp/batching";
 import "@pnp/sp/files";
 import "@pnp/sp/folders";
-import "@pnp/sp/items/get-all";
 import "@pnp/sp/site-users/web";
+import "@pnp/sp/items/get-all";
 let _sp: SPFI = null;
 
 export const getSP = (context?: WebPartContext): SPFI => {

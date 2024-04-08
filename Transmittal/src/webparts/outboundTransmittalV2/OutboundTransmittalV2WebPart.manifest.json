@@ -1,58 +1,48 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
-  "id": "fd32d0c8-ff4a-4243-be18-bd5aa8d4581c",
+  "id": "e72e56aa-5c35-4861-8b06-00bd0d8dfe08",
   "alias": "OutboundTransmittalV2WebPart",
   "componentType": "WebPart",
+
   // The "*" signifies that the version should be taken from the package.json
   "version": "*",
   "manifestVersion": 2,
+
   // If true, the component can only be installed on sites where Custom Script is allowed.
   // Components that allow authors to embed arbitrary script code should set this to true.
   // https://support.office.com/en-us/article/Turn-scripting-capabilities-on-or-off-1f2c515f-5d7e-448a-9fd7-835da935584f
   "requiresCustomScript": false,
-  "supportedHosts": [
-    "SharePointWebPart",
-    "TeamsPersonalApp",
-    "TeamsTab",
-    "SharePointFullPage"
-  ],
+  "supportedHosts": ["SharePointWebPart", "TeamsPersonalApp", "TeamsTab", "SharePointFullPage"],
   "supportsThemeVariants": true,
-  "preconfiguredEntries": [
-    {
-      "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Advanced
-      "group": {
-        "default": "Advanced"
-      },
-      "title": {
-        "default": "OutboundTransmittalV2"
-      },
-      "description": {
-        "default": "OutboundTransmittalV2 description"
-      },
-      "officeFabricIconFontName": "Page",
-      "properties": {
-        "description": "EMEC_OutboundTransmittalWP",
-        "projectInformationListName": "ProjectInformation",
-        "hubSiteUrl": "",
-        "companiesListName": "Companies",
-        "hubSite": "emechub",
-        "publishDocumentLibraryName": "PublishedDocuments",
-        "transmittalCodeSettings": "TransmittalCodeSettings",
-        "contacts": "Contacts",
-        "sourceDocumentLibraryName": "SourceDocuments",
-        "maxFileSize": "15",
-        "transmittalIdSettingsListName": "TransmittalIDSettings",
-        "outboundTransmittalHeaderListName": "OutboundTransmittalHeader",
-        "outBoundTransmittalSitePage": "OutboundTransmittal",
-        "outboundTransmittalDetailsListName": "OutboundTransmittalDetails",
-        "outboundAdditionalDocumentsListName": "OutboundAdditionalDocuments",
-        "userMessageSettings": "userMessageSettings",
-        "transmittalHistoryLogList": "TransmittalHistory",
-        "notificationPrefListName": "NotificationPreferenceSettings",
-        "modalBGColor": "",
-        "permissionMatrixSettings": "PermissionMatrixSettings",
-        "accessGroupDetailsListName": "AccessGroupDetails"
-      }
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Advanced
+    "group": { "default": "Advanced" },
+    "title": { "default": "OutboundTransmittalV2" },
+    "description": { "default": "OutboundTransmittalV2 description" },
+    "officeFabricIconFontName": "Page",
+    "properties": {
+      "description": "EMEC_OutboundTransmittalWP",
+      "projectInformationListName": "ProjectInformation",
+      "hubSiteUrl": "",
+      "companiesListName": "Companies",
+      "hubSite": "emechub",
+      "publishDocumentLibraryName": "PublishedDocuments",
+      "transmittalCodeSettings": "TransmittalCodeSettings",
+      "contacts": "Contacts",
+      "sourceDocumentLibraryName": "SourceDocuments",
+      "maxFileSize": "15",
+      "transmittalIdSettingsListName": "TransmittalIDSettings",
+      "outboundTransmittalHeaderListName": "OutboundTransmittalHeader",
+      "outBoundTransmittalSitePage": "OutboundTransmittal",
+      "outboundTransmittalDetailsListName": "OutboundTransmittalDetails",
+      "outboundAdditionalDocumentsListName": "OutboundAdditionalDocuments",
+      "userMessageSettings": "userMessageSettings",
+      "transmittalHistoryLogList": "TransmittalHistory",
+      "notificationPrefListName": "NotificationPreferenceSettings",
+      "modalBGColor": "",
+      "permissionMatrixSettings": "PermissionMatrixSettings",
+      "accessGroupDetailsListName": "AccessGroupDetails"
     }
-  ]
+  }]
 }

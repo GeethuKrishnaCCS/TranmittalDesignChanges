@@ -10,7 +10,6 @@ declare interface IOutboundTransmittalV2WebPartStrings {
   AppTeamsTabEnvironment: string;
   AppOfficeEnvironment: string;
   AppOutlookEnvironment: string;
-  UnknownEnvironment: string;
 }
 
 declare module 'OutboundTransmittalV2WebPartStrings' {

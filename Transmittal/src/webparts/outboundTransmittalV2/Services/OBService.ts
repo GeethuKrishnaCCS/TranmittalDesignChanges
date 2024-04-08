@@ -1,15 +1,41 @@
 import { BaseService } from "./BaseService";
 import { WebPartContext } from '@microsoft/sp-webpart-base';
-import { SPFI } from "@pnp/sp";
+import { SPFI, SPFx } from "@pnp/sp";
 import { PagedItemCollection } from '@pnp/sp/items';
+import { getSP } from "../shared/PnP/pnpjsConfig";
 
 export class OBService extends BaseService {
-    private _spfi: any;
-    constructor(context: WebPartContext) {
-        super(context);
-        this._spfi = SPFI;
-    }
+    private _spfi: SPFI;
+    private ctx: WebPartContext;
+    private _hublSP: SPFI;
 
+    constructor(context: WebPartContext, hubUrl: string) {
+        super(context, hubUrl);
+        this.ctx = context;
+        this._spfi = getSP(this.ctx);
+        this._hublSP = new SPFI(hubUrl).using(SPFx(context));
+    }
+    public async getHubItemsWithFilter(listname: string, filter: string, hubUrl: string): Promise<any> {
+        let finalItems: any[] = [];
+        let items: PagedItemCollection<any[]> = undefined;
+        do {
+            if (!items) {
+                items = await this._hublSP.web.getList(hubUrl + "/Lists/" + listname)
+                    .items
+                    .filter(filter)
+                    .top(250)
+                    .orderBy("Title", true)
+                    .getPaged();
+            }
+            else {
+                items = await items.getNext();
+            }
+            if (items.results.length > 0) {
+                finalItems = finalItems.concat(items.results);
+            }
+        } while (items.hasNext);
+        return finalItems;
+    }
     public async getListItems(siteUrl: string, listName: string): Promise<any> {
         let finalItems: any[] = [];
         let items: PagedItemCollection<any[]> = undefined;
@@ -33,7 +59,7 @@ export class OBService extends BaseService {
         return this._spfi.web.getList(url + "/Lists/" + listname).items.getById(id)();
     }
     public getCurrentUserId(): Promise<any> {
-        return this._spfi.web.currentUser.get();
+        return this._spfi.web.currentUser();
     }
     public async getTransmitFor(siteUrl: string, listName: string): Promise<any> {
         let finalItems: any[] = [];
@@ -55,15 +81,15 @@ export class OBService extends BaseService {
         } while (items.hasNext);
         return finalItems;
     }
-    public async getLibraryItems(url: string,): Promise<any> {
+    public async getLibraryItems(url: string, filter: string): Promise<any> {
         let finalItems: any[] = [];
         let items: PagedItemCollection<any[]> = undefined;
         do {
             if (!items) {
                 items = await this._spfi.web.getList(url)
                     .items
-                    .select("FileLeafRef,ID,FileSizeDisplay,TransmittalDocument,TransmittalStatus,DocumentName,DocumentIndexId,WorkflowStatus,DocumentStatus,Category")
-                    .filter("TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published')")
+                    .select("FileLeafRef,DocumentID,Revision,ID,FileSizeDisplay,TransmittalDocument,TransmittalStatus,DocumentName,DocumentIndexId,WorkflowStatus,DocumentStatus,Category,CustomerDocumentNo,SubcontractorDocumentNo")
+                    .filter(filter)
                     .top(250)
                     .getPaged();
             }
@@ -165,22 +191,15 @@ export class OBService extends BaseService {
         } while (items.hasNext);
         return finalItems;
     }
-    public async addToList(siteUrl: string, listName: string, items: any): Promise<any> {
-        return this._spfi.web.getList(siteUrl + "/Lists/" + listName).items.add(items);
-    }
-    public async updateList(siteUrl: string, listName: string, items: any, itemId: number): Promise<any> {
-        return this._spfi.web.getList(siteUrl + "/Lists/" + listName).items.getById(itemId).update(items);
-    }
-    public async updateLibrary(libraryUrl: string, items: any, itemId: number): Promise<any> {
-        return this._spfi.web.getList(libraryUrl).items.getById(itemId).update(items);
-    }
-    public async getItemForSelectInListsWithFilter(siteUrl: string, listName: string, filter: string,): Promise<any> {
+    public async getItemForSelectInListsWithExpand(siteUrl: string, listName: string, select: string, expand: string, filter: string,): Promise<any> {
         let finalItems: any[] = [];
         let items: PagedItemCollection<any[]> = undefined;
         do {
             if (!items) {
                 items = await this._spfi.web.getList(siteUrl + "/Lists/" + listName)
                     .items
+                    .select(select)
+                    .expand(expand)
                     .filter(filter)
                     .top(250)
                     .getPaged();
@@ -194,90 +213,40 @@ export class OBService extends BaseService {
         } while (items.hasNext);
         return finalItems;
     }
-    public async getItemForSelectExpandInListsWithFilter(siteUrl: string, listName: string, select: string, filter: string, expand: string): Promise<any> {
-        let finalItems: any[] = [];
-        let items: PagedItemCollection<any[]> = undefined;
-        do {
-            if (!items) {
-                items = await this._spfi.web.getList(siteUrl + "/Lists/" + listName)
-                    .items
-                    .select(select)
-                    .filter(filter)
-                    .expand(expand)
-                    .top(250)
-                    .getPaged();
-            }
-            else {
-                items = await items.getNext();
-            }
-            if (items.results.length > 0) {
-                finalItems = finalItems.concat(items.results);
-            }
-        } while (items.hasNext);
-        return finalItems;
+    public updateSiteItem(siteUrl: string, listname: string, id: number, data: any): Promise<any> {
+        return this._spfi.web.getList(siteUrl + "/Lists/" + listname).items.getById(id).update(data);
     }
-    public async getItemWithSelectAndExpand(siteUrl: string, listName: string, select: string, expand: string): Promise<any> {
-        let finalItems: any[] = [];
-        let items: PagedItemCollection<any[]> = undefined;
-        do {
-            if (!items) {
-                items = await this._spfi.web.getList(siteUrl + "/Lists/" + listName)
-                    .items
-                    .select(select)
-                    .expand(expand)
-                    .top(250)
-                    .getPaged();
-            }
-            else {
-                items = await items.getNext();
-            }
-            if (items.results.length > 0) {
-                finalItems = finalItems.concat(items.results);
-            }
-        } while (items.hasNext);
-        return finalItems;
+    public createNewSiteProcess(siteUrl: string, listname: string, data: any): Promise<any> {
+        return this._spfi.web.getList(siteUrl + "/Lists/" + listname)
+            .items.add(data);
     }
-    public async getItemWithSelectAndExpandWithId(siteUrl: string, listName: string, select: string, expand: string, Id: any): Promise<any> {
-        let finalItems: any[] = [];
-        let items: PagedItemCollection<any[]> = undefined;
-        do {
-            if (!items) {
-                items = await this._spfi.web.getList(siteUrl + "/Lists/" + listName)
-                    .items
-                    .select(select)
-                    .expand(expand)
-                    .getById(Id)
-                    .top(250)
-                    .getPaged();
-            }
-            else {
-                items = await items.getNext();
-            }
-            if (items.results.length > 0) {
-                finalItems = finalItems.concat(items.results);
-            }
-        } while (items.hasNext);
-        return finalItems;
-    }
-
-    public async getlistItemById(siteUrl: string, listName: string, id: number): Promise<any> {
-        return this._spfi.web.getList(siteUrl + "/Lists/" + listName).items.getById(id)();
-    }
-
     public async uploadDocument(filename: string, filedata: any, libraryname: string, metadata: any): Promise<any> {
-        const file = await this._spfi.web.getFolderByServerRelativePath(libraryname)
-            .files.addUsingPath(filename, filedata, { Overwrite: true });
+        let file: any;
+        if (filedata.size <= 10485760) {
+            file = await this._spfi.web.getFolderByServerRelativePath(libraryname)
+                .files.addUsingPath(filename, filedata, { Overwrite: true });
+        }
+        else {
+            file = await this._spfi.web.getFolderByServerRelativePath(libraryname)
+                .files.addChunked(filename, filedata, data => {
+                    console.log(`progress`);
+                }, true);
+
+        }
         const item = await file.file.getItem();
         item.update({
-            Title: metadata.Title,
+            Title: metadata.documentName,
             TransmittalIDId: metadata.TransmittalIDId,
             Size: metadata.Size,
             Comments: metadata.Comments,
+            SentDate: metadata.SentDate,
             TransmittalStatus: metadata.TransmittalStatus,
             Slno: metadata.Slno,
-            SentDate: metadata.SentDate,
+
         });
-        return file;
+        const itemId = item.Id;
+
+        return { file, itemId };
     }
 }
 

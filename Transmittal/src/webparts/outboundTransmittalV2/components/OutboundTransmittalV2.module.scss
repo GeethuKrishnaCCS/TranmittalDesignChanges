@@ -1,285 +1,6 @@
 @import '~@fluentui/react/dist/sass/References.scss';
 
 .outboundTransmittalV2 {
-
-
-  .container {
-    max-width: 700px;
-    margin: 0px auto;
-  }
-
-  .row {
-    @include ms-Grid-row;
-    padding: 20px;
-  }
-
-  .outSideBorder {
-    display: "inline-block";
-    width: "100%";
-    margin: "10px 0";
-  }
-
-  .transmittalNo {
-    width: "50%";
-    float: "left";
-  }
-
-  .projectName {
-    width: "50%";
-    margin-left: "450px";
-  }
-
-
-
-
-  .column {
-    @include ms-Grid-col;
-    @include ms-lg10;
-    @include ms-xl8;
-    @include ms-xlPush2;
-    @include ms-lgPush1;
-  }
-
-  .title {
-    @include ms-font-xl;
-  }
-
-  .subTitle {
-    @include ms-font-l;
-  }
-
-  .description {
-    @include ms-font-l;
-  }
-
-  .borderForToCC {
-    border: 1px solid #000;
-    width: 100%;
-    border-radius: 23px;
-    padding: 0px 2px 15px 10px;
-  }
-
-  .button {
-    // Our button
-    text-decoration: none;
-    height: 32px;
-
-    // Primary Button
-    min-width: 80px;
-    outline: transparent;
-    position: relative;
-    font-family: "Segoe UI WestEuropean", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
-    -webkit-font-smoothing: antialiased;
-    font-size: $ms-font-size-m;
-    font-weight: $ms-font-weight-regular;
-    border-width: 0;
-    text-align: center;
-    cursor: pointer;
-    display: inline-block;
-    padding: 0 16px;
-
-    .label {
-      font-weight: $ms-font-weight-semibold;
-      font-size: $ms-font-size-m;
-      height: 32px;
-      line-height: 32px;
-      margin: 0 4px;
-      vertical-align: top;
-      display: inline-block;
-    }
-  }
-
-  .border {
-    border: 1px solid black;
-  }
-
-  .span {
-    margin: 0 0 0 11px;
-  }
-
-  .align {
-    text-align: center;
-  }
-
-  .ms-SearchBox {
-    width: 70%;
-    height: 35px;
-    margin: 1px;
-
-    input {
-      padding: 0 5px;
-    }
-  }
-
-  i.icon-145 {
-    font-size: 87px;
-  }
-
-  .innerBorder {
-    outline-color: rgb(8, 8, 8);
-    outline-style: double;
-  }
-
-  hr.new4 {
-    border: 1px solid rgb(7, 7, 7);
-
-  }
-
-  .tableModal {
-    border-collapse: collapse;
-    margin-top: 13px;
-    width: 90%;
-    margin-left: 10px;
-  }
-
-
-  //for preview
-  .wrap {
-    width: 90%;
-    margin-left: 77px;
-  }
-
-  .w100 {
-    width: 100%
-  }
-
-  .w50 {
-    width: 50%
-  }
-
-  .mt1 {
-    margin-top: 5px
-  }
-
-  .mt2 {
-    margin-top: 10px
-  }
-
-  .mt3 {
-    margin-top: 15px
-  }
-
-  .pr {
-    padding-right: 15px;
-  }
-
-  .title {
-    font-size: 18px;
-    font-weight: 600;
-    text-align: center;
-    padding: 15px 0;
-  }
-
-  .subtitle {
-    font-size: 17px;
-    font-weight: 600;
-    text-align: left;
-    padding: 15px 0;
-  }
-
-  .wrapIitem {
-    float: left;
-    margin-bottom: 15px;
-  }
-
-  span {
-    font-weight: bold;
-  }
-
-  .wrapSection {
-    margin: 10px 0 0;
-    display: inline-block;
-    width: calc(100% - 30px);
-    padding: 15px 15px 0;
-  }
-
-  .wrapTable {
-    margin: 10px 0 0;
-    display: inline-block;
-    width: 100%;
-  }
-
-  .borderStyle {
-    border: 1px solid rgb(0, 45, 114);
-  }
-
-  .borderStyleForCheckBoxDiv {
-    border: 1mm solid rgb(173, 186, 247);
-    margin-top: 8px;
-    margin-left: 98px;
-    display: inline-flex;
-  }
-
-  .textleft {
-    text-align: left;
-  }
-
-  .textcenter {
-    text-align: center;
-  }
-
-  .textright {
-    text-align: right;
-  }
-
-  .divTable {
-    display: table;
-    width: 100%;
-  }
-
-  .divTableRow {
-    display: table-row;
-  }
-
-  .divTableHeading {
-    background-color: #EEE;
-    display: table-header-group;
-  }
-
-  .divTableCell,
-  .divTableHead {
-    border: 1px solid #333;
-    display: table-cell;
-    padding: 3px 10px;
-    font-weight: bold;
-  }
-
-  .divTableHeading {
-    background-color: #EEE;
-    display: table-header-group;
-    font-weight: bold;
-  }
-
-  .divTableFoot {
-    background-color: #EEE;
-    display: table-footer-group;
-    font-weight: bold;
-  }
-
-  .divTableBody {
-    display: table-row-group;
-  }
-
-  .overflow {
-    overflow: auto;
-    width: 100%;
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    font-family: Arial, Helvetica, sans-serif;
-  }
-
-  .borderForToCC {
-    border: 1px solid #000;
-    width: 60%;
-    border-radius: 23px;
-    padding: 0px 2px 15px 10px;
-  }
-
   overflow: hidden;
   padding: 1em;
   color: "[theme:bodyText, default: #323130]";
@@ -290,25 +11,348 @@
   }
 }
 
-.welcome {
+
+
+.divrow {
+  width: 100%;
+  display: flex;
+}
+
+.wdthfrst {
+  margin-top: 10px;
+  width: 33%
+}
+
+.wdthThirdColm {
+  width: 33%;
+  margin-top: 10px;
+  padding-right: 10px;
+}
+
+.dragDropContainer {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+  background-size: cover;
+  background-position: center;
+  color: #333;
+  /* Other styles */
+}
+
+.custom-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.custom-table th,
+.custom-table td {
+  border: 1px solid #000;
+  /* Border style for cells */
+  padding: 8px;
+  /* Padding for content */
+  position: relative;
+}
+
+.custom-table th {
+  background-color: #f6dfd2;
+  /* Background color for table header */
+  padding: 8px;
+  /* Padding for content */
+  white-space: normal;
+  position: sticky;
+  /* Enable text wrapping */
+}
+
+.custom-table tr {
+  border-bottom: 1px solid #ccc;
+  /* Border style for rows */
+  background-color: #f2f2f2;
+}
+
+.subContractorDropDwn {
+  margin-left: "10px";
+  width: "248px";
+  margin-top: "22px",
+}
+
+.container {
+  max-width: 700px;
+  margin: 0px auto;
+}
+
+.row {
+  @include ms-Grid-row;
+  padding: 20px;
+}
+
+.outSideBorder {
+  display: "inline-block";
+  width: "100%";
+  margin: "10px 0";
+}
+
+.transmittalNo {
+  width: "50%";
+  float: "left";
+}
+
+.projectName {
+  width: "50%";
+  margin-left: "450px";
+}
+
+.column {
+  @include ms-Grid-col;
+  @include ms-lg10;
+  @include ms-xl8;
+  @include ms-xlPush2;
+  @include ms-lgPush1;
+}
+
+.title {
+  @include ms-font-xl;
+}
+
+.subTitle {
+  @include ms-font-l;
+}
+
+.description {
+  @include ms-font-l;
+}
+
+.borderForToCC {
+  border: 1px solid #000;
+  width: 100%;
+  border-radius: 23px;
+  padding: 0px 2px 15px 10px;
+}
+
+.button {
+  // Our button
+  text-decoration: none;
+  height: 32px;
+
+  // Primary Button
+  min-width: 80px;
+  outline: transparent;
+  position: relative;
+  font-family: "Segoe UI WestEuropean", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-size: $ms-font-size-m;
+  font-weight: $ms-font-weight-regular;
+  border-width: 0;
+  text-align: center;
+  cursor: pointer;
+  display: inline-block;
+  padding: 0 16px;
+
+  .label {
+    font-weight: $ms-font-weight-semibold;
+    font-size: $ms-font-size-m;
+    height: 32px;
+    line-height: 32px;
+    margin: 0 4px;
+    vertical-align: top;
+    display: inline-block;
+  }
+
+
+
+}
+
+.border {
+  border: 1px solid black;
+}
+
+.span {
+  margin: 0 0 0 11px;
+}
+
+.align {
   text-align: center;
 }
 
-.welcomeImage {
-  width: 100%;
-  max-width: 420px;
+.ms-SearchBox {
+  width: 70%;
+  height: 35px;
+  margin: 1px;
+
+  input {
+    padding: 0 5px;
+  }
 }
 
-.links {
-  a {
-    text-decoration: none;
-    color: "[theme:link, default:#03787c]";
-    color: var(--link); // note: CSS Custom Properties support is limited to modern browsers only
+i.icon-145 {
+  font-size: 87px;
+}
 
-    &:hover {
-      text-decoration: underline;
-      color: "[theme:linkHovered, default: #014446]";
-      color: var(--linkHovered); // note: CSS Custom Properties support is limited to modern browsers only
-    }
-  }
+.innerBorder {
+  outline-color: rgb(8, 8, 8);
+  outline-style: double;
+}
+
+hr.new4 {
+  border: 1px solid rgb(7, 7, 7);
+
+}
+
+.tableModal {
+  border-collapse: collapse;
+  margin-top: 13px;
+  width: 90%;
+  margin-left: 10px;
+}
+
+
+//for preview
+.wrap {
+  width: 90%;
+  margin-left: 77px;
+}
+
+.w100 {
+  width: 100%
+}
+
+.w50 {
+  width: 50%
+}
+
+.mt1 {
+  margin-top: 5px
+}
+
+.mt2 {
+  margin-top: 10px
+}
+
+.mt3 {
+  margin-top: 15px
+}
+
+.pr {
+  padding-right: 15px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  padding: 15px 0;
+}
+
+.subtitle {
+  font-size: 17px;
+  font-weight: 600;
+  text-align: left;
+  padding: 15px 0;
+}
+
+.wrapIitem {
+  float: left;
+  margin-bottom: 15px;
+}
+
+span {
+  font-weight: bold;
+}
+
+.wrapSection {
+  margin: 10px 0 0;
+  display: inline-block;
+  width: calc(100% - 30px);
+  padding: 15px 15px 0;
+}
+
+.wrapTable {
+  margin: 10px 0 0;
+  display: inline-block;
+  width: 100%;
+}
+
+.borderStyle {
+  border: 1px solid rgb(0, 45, 114);
+}
+
+.borderStyleForCheckBoxDiv {
+  border: 1mm solid rgb(173, 186, 247);
+  margin-top: 8px;
+  margin-left: 98px;
+  display: inline-flex;
+}
+
+.textleft {
+  text-align: left;
+}
+
+.textcenter {
+  text-align: center;
+}
+
+.textright {
+  text-align: right;
+}
+
+.divTable {
+  display: table;
+  width: 100%;
+}
+
+.divTableRow {
+  display: table-row;
+}
+
+.divTableHeading {
+  background-color: #EEE;
+  display: table-header-group;
+}
+
+.rounded {
+  border-radius: 8px; // Adjust the value as needed
+}
+
+.divTableCell,
+.divTableHead {
+  border: 1px solid #333;
+  display: table-cell;
+  padding: 3px 10px;
+  font-weight: bold;
+}
+
+.divTableHeading {
+  background-color: #EEE;
+  display: table-header-group;
+  font-weight: bold;
+}
+
+.divTableFoot {
+  background-color: #EEE;
+  display: table-footer-group;
+  font-weight: bold;
+}
+
+.divTableBody {
+  display: table-row-group;
+}
+
+.overflow {
+  overflow: auto;
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.borderForToCC {
+  border: 1px solid #000;
+  width: 99%;
+  border-radius: 23px;
+  padding: 0px 2px 15px 10px;
 }

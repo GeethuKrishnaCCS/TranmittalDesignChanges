@@ -1,11 +1,11 @@
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 
 export interface IOutboundTransmittalV2Props {
+  description: string;
   isDarkTheme: boolean;
   environmentMessage: string;
   hasTeamsContext: boolean;
   userDisplayName: string;
-  description: string;
   projectInformationListName: string;
   context: WebPartContext;
   siteUrl: string;
@@ -149,7 +149,7 @@ export interface IOutboundTransmittalV2State {
   internalCCContactsDisplayName: any;
   internalCCContactsDisplayNameForPreview: any;
   internalContactsEmail: any;
-  vendorarray: any;
+  settingsListArray: any[];
   selectedVendor: any;
   //searching contacts
   searchContactsTo: any[];
@@ -159,6 +159,10 @@ export interface IOutboundTransmittalV2State {
   //displaying to and cc
   divForToAndCC: string;
   divForToAndCCSearch: string;
+  TypeOFDelete: string;
+  selectedDocuments: any[],
+  settingsListsItemsArray: any[],
+  documentFilters: any[],
 }
 //for msg bar
 export interface IMessage {
