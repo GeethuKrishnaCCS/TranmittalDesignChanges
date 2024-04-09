@@ -272,7 +272,25 @@ export default class OutboundTransmittalV2 extends React.Component<
       { key: "Letter", text: "Letter" },
     ];
     const dropdownStyles: Partial<IDropdownStyles> = {
-      dropdown: { width: "50%" },
+      title: {
+        borderRadius: 100,
+        borderWidth: 2,
+        borderColor: "#DDD9D9",
+        height: 48,
+        lineHeight: 41,
+        paddingLeft: 20,
+        color: "#666666",
+        fontSize: 16,
+      },
+      caretDownWrapper: {
+        height: 48,
+        lineHeight: 47,
+        right: 15,
+      },
+      caretDown: {
+        fontSize: 17,
+        color: "#666666",
+      },
     };
     // const AddIcon: IIconProps = { iconName: 'CircleAdditionSolid' };
     const DeleteIcon: IIconProps = { iconName: "Delete" };
@@ -346,31 +364,24 @@ export default class OutboundTransmittalV2 extends React.Component<
             <div className={styles.outboundTransmittalV2}>
               <div className={styles.documenttitle}>
                 {this.props.description}
-              </div>
-
-              <div style={{ marginLeft: "522px" }} />
-
-              <div className={styles.outSideBorder}>
                 <div className={styles.transmittalNo}>
                   <Label style={{ display: this.state.transmittalNo }}>
-                    Transmittal No : {this.state.transmittalNo}{" "}
+                    Transmittal No : {this.state.transmittalNo}
                   </Label>
                 </div>
               </div>
-              <div className={styles.border}>
-                <div style={{ width: "50%", marginLeft: "450px" }}>
-                  <Label>Project : {this.state.projectName}</Label>
-                </div>
-                <div className={styles.row}>
-                  <div style={{ display: "flex", marginBottom: "10px" }}>
-                    <div
-                      style={{
-                        marginLeft: "10px",
-                        display: "flex",
-                        width: "100%",
-                      }}
-                    >
+
+              <div>
+                <div className={styles.formwrap}>
+                  <div>
+                    <h3 className={styles.subtext}>
+                      Project : {this.state.projectName}
+                    </h3>
+                  </div>
+                  <div className={styles.flex}>
+                    <div className={styles.wfull}>
                       <Dropdown
+                        styles={dropdownStyles}
                         id="t3"
                         required={true}
                         selectedKey={this.state.transmitToKey}
@@ -382,58 +393,58 @@ export default class OutboundTransmittalV2 extends React.Component<
                         disabled={this.state.dropDownReadonly}
                       />
                     </div>
-                    <div
-                      style={{ display: this.state.hideCustomer, width: "50%" }}
-                    >
-                      <div style={{ display: "flex", marginTop: "22px" }}>
-                        <Label>Customer : </Label>
-                        <Label
-                          style={{ fontWeight: "bold", paddingLeft: "5px" }}
-                        >
-                          {" "}
-                          {this.state.customerName}
-                        </Label>
-                      </div>
-                    </div>
-                    {this.state.hideSubContractor === "" && (
-                      <div style={{ width: "100%" }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            marginLeft: "123px",
-                            marginTop: "3px",
-                          }}
-                        >
-                          <Label required>Sub-Contractor : </Label>
-                          <Select
-                            placeholder="Select Sub-Contractor"
-                            isMulti={false}
-                            options={this.state.subContractorItems}
-                            onChange={this._drpdwnSubContractor.bind(this)}
-                            isSearchable={true}
-                            value={this.state.subContractorKey}
-                            maxMenuHeight={150}
-                            className={styles.subContractorDropDwn}
-                          />
-
+                    <div className={styles.wfull}>
+                      <div
+                        style={{
+                          display: this.state.hideCustomer,
+                        }}
+                      >
+                        <div style={{ display: "flex", marginTop: "22px" }}>
+                          <Label>Customer : </Label>
                           <Label
-                            style={{
-                              marginLeft: "10px",
-                              display: this.state.subContractorLabel,
-                            }}
+                            style={{ fontWeight: "bold", paddingLeft: "5px" }}
                           >
-                            {this.state.subContractor}{" "}
+                            {" "}
+                            {this.state.customerName}
                           </Label>
                         </div>
-                        <div style={{ color: "#dc3545", marginLeft: "123px" }}>
-                          {this.validator.message(
-                            "subContractor",
-                            this.state.subContractorKey,
-                            "required"
-                          )}{" "}
-                        </div>
                       </div>
-                    )}
+                      {this.state.hideSubContractor === "" && (
+                        <div style={{ width: "100%" }}>
+                          <div>
+                            <Label required>Sub-Contractor : </Label>
+                            <Select
+                              placeholder="Select Sub-Contractor"
+                              isMulti={false}
+                              options={this.state.subContractorItems}
+                              onChange={this._drpdwnSubContractor.bind(this)}
+                              isSearchable={true}
+                              value={this.state.subContractorKey}
+                              maxMenuHeight={150}
+                              className={styles.subContractorDropDwn}
+                            />
+
+                            <Label
+                              style={{
+                                marginLeft: "10px",
+                                display: this.state.subContractorLabel,
+                              }}
+                            >
+                              {this.state.subContractor}{" "}
+                            </Label>
+                          </div>
+                          <div
+                            style={{ color: "#dc3545", marginLeft: "123px" }}
+                          >
+                            {this.validator.message(
+                              "subContractor",
+                              this.state.subContractorKey,
+                              "required"
+                            )}{" "}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <div style={{ color: "#dc3545" }}>
                     {this.validator.message(
@@ -442,64 +453,65 @@ export default class OutboundTransmittalV2 extends React.Component<
                       "required"
                     )}{" "}
                   </div>
-                  <hr />
+                  <hr className={styles.my30} />
 
                   <div
-                    style={{ marginBottom: "10px" }}
+                    style={{ marginBottom: "20px" }}
                     className={styles.borderForToCC}
                   >
-                    <span className={styles.span} />
-                    <div
-                      style={{
-                        width: "97%",
-                        display: this.state.divForToAndCCSearch,
-                      }}
-                    >
-                      <label style={{ fontWeight: "bold" }}>To</label>
-                      <MultiSelect
-                        options={this.state.contactsForSearch}
-                        value={this.state.selectedContactsToName}
-                        onChange={this.setSelectedContactsTo}
-                        labelledBy="To"
-                        hasSelectAll={true}
-                      />
-                      <div style={{ color: "#dc3545" }}>
-                        {this.validator.message(
-                          "selectedContactsTo",
-                          this.state.selectedContactsTo,
-                          "required"
-                        )}{" "}
+                    <div className={styles.flex}>
+                      <div
+                        style={{
+                          width: "100%%",
+                          display: this.state.divForToAndCCSearch,
+                        }}
+                      >
+                        <label style={{ fontWeight: "bold" }}>To</label>
+                        <MultiSelect
+                          options={this.state.contactsForSearch}
+                          value={this.state.selectedContactsToName}
+                          onChange={this.setSelectedContactsTo}
+                          labelledBy="To"
+                          hasSelectAll={true}
+                        />
+                        <div style={{ color: "#dc3545" }}>
+                          {this.validator.message(
+                            "selectedContactsTo",
+                            this.state.selectedContactsTo,
+                            "required"
+                          )}{" "}
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          width: "100%",
+                          display: this.state.divForToAndCC,
+                        }}
+                      >
+                        <Dropdown
+                          placeholder="Select To contacts"
+                          label="To"
+                          defaultSelectedKeys={this.state.selectedContactsTo1}
+                          multiSelect
+                          multiSelectDelimiter={","}
+                          options={this.state.contacts}
+                          styles={dropdownStyles}
+                          //onChange={this._onDrpdwnCntact}
+                          title="To"
+                        />
+                        <div style={{ color: "#dc3545" }}>
+                          {this.validator.message(
+                            "selectedContactsTo",
+                            this.state.selectedContactsTo,
+                            "required"
+                          )}{" "}
+                        </div>
                       </div>
                     </div>
+
                     <div
                       style={{
-                        width: "195%",
-                        display: this.state.divForToAndCC,
-                      }}
-                    >
-                      <Dropdown
-                        placeholder="Select To contacts"
-                        label="To"
-                        defaultSelectedKeys={this.state.selectedContactsTo1}
-                        multiSelect
-                        multiSelectDelimiter={","}
-                        options={this.state.contacts}
-                        styles={dropdownStyles}
-                        //onChange={this._onDrpdwnCntact}
-                        title="To"
-                      />
-                      <div style={{ color: "#dc3545" }}>
-                        {this.validator.message(
-                          "selectedContactsTo",
-                          this.state.selectedContactsTo,
-                          "required"
-                        )}{" "}
-                      </div>
-                    </div>
-                    <span className={styles.span} />
-                    <div
-                      style={{
-                        width: "97%",
+                        width: "100%",
                         display: this.state.divForToAndCCSearch,
                       }}
                     >
@@ -637,7 +649,7 @@ export default class OutboundTransmittalV2 extends React.Component<
                       </div>
                     </div>
                   </div>
-                  <hr />
+                  <hr className={styles.my30} />
                   {/* Notes */}
                   <div style={{ marginLeft: "9px" }}>
                     <TextField
@@ -649,7 +661,7 @@ export default class OutboundTransmittalV2 extends React.Component<
                       style={{ marginLeft: "20px", width: "290px" }}
                     />
                   </div>
-                  <hr />
+                  <hr className={styles.my30} />
 
                   {/* filesizeDiv */}
                   {this.state.itemsForGrid.length > 0 && (
@@ -870,7 +882,7 @@ export default class OutboundTransmittalV2 extends React.Component<
                       </table>
                     </div>
                   )}
-                  <hr style={{ marginTop: "20px" }} />
+                  <hr className={styles.my30} />
                   <Accordion allowZeroExpanded>
                     <AccordionItem>
                       <AccordionItemHeading>
@@ -975,6 +987,45 @@ export default class OutboundTransmittalV2 extends React.Component<
                       })}
                     </table>
                   </div>
+                  <div className={styles.submitsection}>
+                    <div className={styles.btngroup}>
+                      <DefaultButton
+                        className={`${styles.btn} ${styles.cancelpruple}`}
+                        text="Cancel"
+                        onClick={this._hideGrid}
+                      />
+                      <PrimaryButton
+                        text="Save as draft"
+                        style={{
+                          display: this.state.hideButtonAfterSubmit,
+                        }}
+                        className={`${styles.btn} ${styles.primarypruple}`}
+                        //onClick={() => this._onSaveAsDraftBtnClick()}
+                      />
+                      <PrimaryButton
+                        text="Preview"
+                        className={`${styles.btn} ${styles.primarypruple}`}
+                        onClick={this._onPreviewBtnClick}
+                      />
+                      <PrimaryButton
+                        text="Confirm & Send"
+                        style={{
+                          display: this.state.hideButtonAfterSubmit,
+                        }}
+                        className={`${styles.btn} ${styles.submitpruple}`}
+                        disabled={transmitForUnseleted === true ? true : false}
+                        onClick={this._confirmAndSendBtnClick}
+                      />
+                      <PrimaryButton
+                        text="Recall"
+                        style={{
+                          display: this.state.hideUnlockButton,
+                        }}
+                        className={`${styles.btn} ${styles.primarypruple}`}
+                        onClick={this._recallTransmittalConfirmation}
+                      />
+                    </div>
+                  </div>
                 </div>
                 <div style={{ display: this.state.normalMsgBar }}>
                   {/* Show Message bar for Notification*/}
@@ -999,52 +1050,6 @@ export default class OutboundTransmittalV2 extends React.Component<
                   }}
                   label={"Transmittal Sending.Please Wait..."}
                 />
-                <div
-                  style={{
-                    display: "flex",
-                    padding: "10px 0px 12px 2px",
-                    float: "right",
-                  }}
-                >
-                  <PrimaryButton
-                    text="Save as draft"
-                    style={{
-                      marginLeft: "auto",
-                      marginRight: "11px",
-                      display: this.state.hideButtonAfterSubmit,
-                    }}
-                    //onClick={() => this._onSaveAsDraftBtnClick()}
-                  />
-                  <PrimaryButton
-                    text="Preview"
-                    style={{ marginRight: "11px", marginLeft: "auto" }}
-                    onClick={this._onPreviewBtnClick}
-                  />
-                  <PrimaryButton
-                    text="Confirm & Send"
-                    style={{
-                      marginRight: "11px",
-                      marginLeft: "auto",
-                      display: this.state.hideButtonAfterSubmit,
-                    }}
-                    disabled={transmitForUnseleted === true ? true : false}
-                    onClick={this._confirmAndSendBtnClick}
-                  />
-                  <PrimaryButton
-                    text="Recall"
-                    style={{
-                      marginRight: "11px",
-                      marginLeft: "auto",
-                      display: this.state.hideUnlockButton,
-                    }}
-                    onClick={this._recallTransmittalConfirmation}
-                  />
-                  <PrimaryButton
-                    text="Cancel"
-                    style={{ marginLeft: "auto" }}
-                    onClick={this._hideGrid}
-                  />
-                </div>
               </div>
               <div />
               {/* div for preview  */}

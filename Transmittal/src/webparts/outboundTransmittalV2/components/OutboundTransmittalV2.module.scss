@@ -1,4 +1,5 @@
 @import "~@fluentui/react/dist/sass/References.scss";
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
 .outboundTransmittalV2 {
   overflow: hidden;
@@ -14,11 +15,42 @@
     font-weight: bold;
     text-align: center;
     font-family: "Roboto", sans-serif;
+    .grow {
+      flex-grow: 1;
+    }
   }
 
   &.teams {
     font-family: $ms-font-family-fallbacks;
   }
+  .formwrap {
+    padding: 40px;
+    h3.subtext {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 0 0 15px;
+    }
+    .submitsection {
+      padding-top: 40px;
+      display: flex;
+      justify-content: flex-end;
+      .btngroup {
+        display: flex;
+        gap: 10px;
+      }
+    }
+  }
+  .flex {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+  .wfull {
+    width: 100%;
+  }
+}
+hr.my30 {
+  margin: 30px 0;
 }
 
 .divrow {
@@ -101,8 +133,10 @@
 }
 
 .transmittalNo {
-  width: "50%";
-  float: "left";
+  display: block;
+  label {
+    color: #fff;
+  }
 }
 
 .projectName {
@@ -131,10 +165,9 @@
 }
 
 .borderForToCC {
-  border: 1px solid #000;
-  width: 100%;
-  border-radius: 23px;
-  padding: 0px 2px 15px 10px;
+  border-radius: 20px;
+  padding: 20px;
+  background: #fff6f6;
 }
 
 .button {
@@ -169,7 +202,6 @@
 }
 
 .border {
-  border: 1px solid black;
 }
 
 .span {
@@ -349,14 +381,25 @@ span {
 * {
   box-sizing: border-box;
 }
-
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Roboto", sans-serif;
 }
-
-.borderForToCC {
-  border: 1px solid #000;
-  width: 99%;
-  border-radius: 23px;
-  padding: 0px 2px 15px 10px;
+.btn {
+  border-radius: 100px;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 14px 30px;
+  min-height: 48px;
+  font-size: 16px;
+  border: none;
+}
+.primarypruple {
+  background: #6d4085;
+}
+.cancelpruple {
+  background: #e8dbef;
+  color: #6d4085;
+}
+.submitpruple {
+  background: #2d033b;
 }
