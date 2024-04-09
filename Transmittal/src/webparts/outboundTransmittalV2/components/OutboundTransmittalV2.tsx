@@ -1,22 +1,62 @@
-import * as React from 'react';
-import styles from './OutboundTransmittalV2.module.scss';
-import { IOutboundTransmittalV2Props, IOutboundTransmittalV2State } from '../Interfaces/IOutboundTransmittalV2Props';
-import { Checkbox, ChoiceGroup, DatePicker, DefaultButton, Dialog, DialogFooter, DialogType, Dropdown, FontWeights, IChoiceGroupOption, IDropdownOption, IDropdownStyles, IIconProps, IconButton, Label, MessageBar, Modal, PrimaryButton, Spinner, SpinnerSize, TextField, getTheme, mergeStyleSets } from '@fluentui/react';
-import { PeoplePicker, PrincipalType } from '@pnp/spfx-controls-react/lib/PeoplePicker';
-import { MultiSelect } from 'react-multi-select-component';
-import SimpleReactValidator from 'simple-react-validator';
-import { OBService } from '../Services/OBService';
-import * as moment from 'moment';
-import replaceString from 'replace-string';
-import * as _ from 'lodash';
-import { add } from 'lodash';
-import Select from 'react-select';
-import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel } from 'react-accessible-accordion';
-import CustomFileInput from './CustomFileInput';
-import { DragDropFiles } from '@pnp/spfx-controls-react/lib/DragDropFiles';
-import { IHttpClientOptions, HttpClient } from '@microsoft/sp-http';
+import * as React from "react";
+import styles from "./OutboundTransmittalV2.module.scss";
+import {
+  IOutboundTransmittalV2Props,
+  IOutboundTransmittalV2State,
+} from "../Interfaces/IOutboundTransmittalV2Props";
+import {
+  Checkbox,
+  ChoiceGroup,
+  DatePicker,
+  DefaultButton,
+  Dialog,
+  DialogFooter,
+  DialogType,
+  Dropdown,
+  FontWeights,
+  IChoiceGroupOption,
+  IDropdownOption,
+  IDropdownStyles,
+  IIconProps,
+  IconButton,
+  Label,
+  MessageBar,
+  Modal,
+  PrimaryButton,
+  Spinner,
+  SpinnerSize,
+  TextField,
+  getTheme,
+  mergeStyleSets,
+} from "@fluentui/react";
+import {
+  PeoplePicker,
+  PrincipalType,
+} from "@pnp/spfx-controls-react/lib/PeoplePicker";
+import { MultiSelect } from "react-multi-select-component";
+import SimpleReactValidator from "simple-react-validator";
+import { OBService } from "../Services/OBService";
+import * as moment from "moment";
+import replaceString from "replace-string";
+import * as _ from "lodash";
+import { add } from "lodash";
+import Select from "react-select";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionItemButton,
+  AccordionItemHeading,
+  AccordionItemPanel,
+} from "react-accessible-accordion";
+import CustomFileInput from "./CustomFileInput";
+import { DragDropFiles } from "@pnp/spfx-controls-react/lib/DragDropFiles";
+import { IHttpClientOptions, HttpClient } from "@microsoft/sp-http";
 
-export default class OutboundTransmittalV2 extends React.Component<IOutboundTransmittalV2Props, IOutboundTransmittalV2State, {}> {
+export default class OutboundTransmittalV2 extends React.Component<
+  IOutboundTransmittalV2Props,
+  IOutboundTransmittalV2State,
+  {}
+> {
   private validator: SimpleReactValidator;
   private _Service: OBService;
   //private reqWeb = Web(window.location.protocol + "//" + window.location.hostname + "/sites/" + this.props.hubSiteUrl);
@@ -28,7 +68,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   private transmittalID: string;
   private keyForDelete: any;
   private typeForDelete;
-  private myfileadditional: { value: string; };
+  private myfileadditional: { value: string };
   constructor(props: IOutboundTransmittalV2Props) {
     super(props);
     this.state = {
@@ -164,9 +204,15 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       divForToAndCCSearch: "",
       selectedDocuments: [],
       settingsListsItemsArray: [],
-      documentFilters: []
+      documentFilters: [],
     };
-    this._Service = new OBService(this.props.context, window.location.protocol + "//" + window.location.hostname + this.props.hubSiteUrl);
+    this._Service = new OBService(
+      this.props.context,
+      window.location.protocol +
+        "//" +
+        window.location.hostname +
+        this.props.hubSiteUrl
+    );
     this._drpdwnTransmitTo = this._drpdwnTransmitTo.bind(this);
     this._drpdwnSubContractor = this._drpdwnSubContractor.bind(this);
     this._currentUser = this._currentUser.bind(this);
@@ -182,24 +228,29 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     this._onPreviewBtnClick = this._onPreviewBtnClick.bind(this);
     this._loadSourceDocuments = this._loadSourceDocuments.bind(this);
     this.itemDeleteFromGrid = this.itemDeleteFromGrid.bind(this);
-    this.itemDeleteFromExternalGrid = this.itemDeleteFromExternalGrid.bind(this);
+    this.itemDeleteFromExternalGrid =
+      this.itemDeleteFromExternalGrid.bind(this);
     // this._onSaveAsDraftBtnClick = this._onSaveAsDraftBtnClick.bind(this);
     this._trannsmittalIDGeneration = this._trannsmittalIDGeneration.bind(this);
     this._onTransmitType = this._onTransmitType.bind(this);
-    this._transmittalSequenceNumber = this._transmittalSequenceNumber.bind(this);
+    this._transmittalSequenceNumber =
+      this._transmittalSequenceNumber.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.getCheckboxesValue = this.getCheckboxesValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this._confirmNoCancel = this._confirmNoCancel.bind(this);
     // this.bindOutboundTransmittalSavedData = this.bindOutboundTransmittalSavedData.bind(this);
     this._openDeleteConfirmation = this._openDeleteConfirmation.bind(this);
-    this.triggerOutboundTransmittal = this.triggerOutboundTransmittal.bind(this);
-    this._recallTransmittalConfirmation = this._recallTransmittalConfirmation.bind(this);
+    this.triggerOutboundTransmittal =
+      this.triggerOutboundTransmittal.bind(this);
+    this._recallTransmittalConfirmation =
+      this._recallTransmittalConfirmation.bind(this);
     this._userMessageSettings = this._userMessageSettings.bind(this);
     // this._recallSubmit = this._recallSubmit.bind(this);
     this._confirmDeleteItem = this._confirmDeleteItem.bind(this);
     this._forCalculatingSize = this._forCalculatingSize.bind(this);
-    this._loadSourceDocumentsForLetter = this._loadSourceDocumentsForLetter.bind(this);
+    this._loadSourceDocumentsForLetter =
+      this._loadSourceDocumentsForLetter.bind(this);
     //  this._LAUrlGettingForPermission = this._LAUrlGettingForPermission.bind(this);
     //this.triggerProjectPermissionFlow = this.triggerProjectPermissionFlow.bind(this);
     //this._LAUrlGettingForRecall = this._LAUrlGettingForRecall.bind(this);
@@ -211,100 +262,116 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     this.loadSettingsList = this.loadSettingsList.bind(this);
   }
   public render(): React.ReactElement<IOutboundTransmittalV2Props> {
-    const {
-      hasTeamsContext,
-    } = this.props;
+    const { hasTeamsContext } = this.props;
     const TransmitTo: IDropdownOption[] = [
-      { key: '1', text: 'Customer' },
-      { key: '2', text: 'Sub-Contractor' },
+      { key: "1", text: "Customer" },
+      { key: "2", text: "Sub-Contractor" },
     ];
     const options: IChoiceGroupOption[] = [
-      { key: 'Document', text: 'Document' },
-      { key: 'Letter', text: 'Letter' },
+      { key: "Document", text: "Document" },
+      { key: "Letter", text: "Letter" },
     ];
-    const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: "50%" } };
+    const dropdownStyles: Partial<IDropdownStyles> = {
+      dropdown: { width: "50%" },
+    };
     // const AddIcon: IIconProps = { iconName: 'CircleAdditionSolid' };
-    const DeleteIcon: IIconProps = { iconName: 'Delete' };
-    const CancelIcon: IIconProps = { iconName: 'Cancel' };
+    const DeleteIcon: IIconProps = { iconName: "Delete" };
+    const CancelIcon: IIconProps = { iconName: "Cancel" };
     const theme = getTheme();
     const contentStyles = mergeStyleSets({
       container: {
-        display: 'flex',
-        flexFlow: 'column nowrap',
-        alignItems: 'stretch',
-
-
+        display: "flex",
+        flexFlow: "column nowrap",
+        alignItems: "stretch",
       },
       header: [
         theme.fonts.xLargePlus,
         {
-          flex: '1 1 auto',
+          flex: "1 1 auto",
           //borderTop: `4px solid ${theme.palette.themePrimary}`,
           color: theme.palette.neutralPrimary,
-          display: 'flex',
-          alignItems: 'center',
+          display: "flex",
+          alignItems: "center",
           fontWeight: FontWeights.semibold,
-          padding: '12px 12px 14px 284px',
+          padding: "12px 12px 14px 284px",
         },
       ],
       header1: [
-
         theme.fonts.xLargePlus,
         {
-          flex: '1 1 auto',
+          flex: "1 1 auto",
           // borderTop: `4px solid ${theme.palette.themePrimary}`,
           color: theme.palette.neutralPrimary,
-          display: 'flex',
-          alignItems: 'center',
+          display: "flex",
+          alignItems: "center",
           fontWeight: FontWeights.semibold,
-          padding: '10px 20px',
+          padding: "10px 20px",
         },
       ],
       body: {
-        flex: '4 4 auto',
-        padding: '0 20px 20px ',
-        overflowY: 'hidden',
+        flex: "4 4 auto",
+        padding: "0 20px 20px ",
+        overflowY: "hidden",
 
         selectors: {
-          p: { margin: '14px 0' },
-          'p:first-child': { marginTop: 0 },
-          'p:last-child': { marginBottom: 0 },
+          p: { margin: "14px 0" },
+          "p:first-child": { marginTop: 0 },
+          "p:last-child": { marginBottom: 0 },
         },
       },
     });
     const iconButtonStyles = {
       root: {
         color: theme.palette.neutralPrimary,
-        marginLeft: 'auto',
-        marginTop: '4px',
-        marginRight: '2px',
+        marginLeft: "auto",
+        marginTop: "4px",
+        marginRight: "2px",
       },
       rootHovered: {
         color: theme.palette.neutralDark,
       },
     };
-    const DownIcon: IIconProps = { iconName: 'ChevronDown' };
-    const transmitForUnseleted = this.state.itemsForGrid.some(item => item.transmitFor === "");
+    const DownIcon: IIconProps = { iconName: "ChevronDown" };
+    const transmitForUnseleted = this.state.itemsForGrid.some(
+      (item) => item.transmitFor === ""
+    );
     return (
-      <section className={`${styles.outboundTransmittalV2} ${hasTeamsContext ? styles.teams : ''}`}>
+      <section
+        className={`${styles.outboundTransmittalV2} ${
+          hasTeamsContext ? styles.teams : ""
+        }`}
+      >
         <div>
           <div>
+            <div className={styles.outboundTransmittalV2}>
+              <div className={styles.documenttitle}>
+                {this.props.description}
+              </div>
 
-            <div className={styles.outboundTransmittalV2} >
-              <Label className={styles.align}>{this.props.description}</Label>
               <div style={{ marginLeft: "522px" }} />
 
               <div className={styles.outSideBorder}>
                 <div className={styles.transmittalNo}>
-                  <Label style={{ display: this.state.transmittalNo }}>Transmittal No :  {this.state.transmittalNo}	</Label></div>
-                <div style={{ width: "50%", marginLeft: "450px" }}>
-                  <Label>Project :   {this.state.projectName}</Label></div>
+                  <Label style={{ display: this.state.transmittalNo }}>
+                    Transmittal No : {this.state.transmittalNo}{" "}
+                  </Label>
+                </div>
               </div>
               <div className={styles.border}>
+                <div style={{ width: "50%", marginLeft: "450px" }}>
+                  <Label>Project : {this.state.projectName}</Label>
+                </div>
                 <div className={styles.row}>
                   <div style={{ display: "flex", marginBottom: "10px" }}>
-                    <div style={{ marginLeft: "10px", display: "flex", width: "100%" }}>
-                      <Dropdown id="t3"
+                    <div
+                      style={{
+                        marginLeft: "10px",
+                        display: "flex",
+                        width: "100%",
+                      }}
+                    >
+                      <Dropdown
+                        id="t3"
                         required={true}
                         selectedKey={this.state.transmitToKey}
                         placeholder="Select an option"
@@ -312,17 +379,31 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                         onChange={this._drpdwnTransmitTo}
                         style={{ width: "100%" }}
                         label="Transmit To"
-                        disabled={this.state.dropDownReadonly} />
+                        disabled={this.state.dropDownReadonly}
+                      />
                     </div>
-                    <div style={{ display: this.state.hideCustomer, width: "50%" }}>
+                    <div
+                      style={{ display: this.state.hideCustomer, width: "50%" }}
+                    >
                       <div style={{ display: "flex", marginTop: "22px" }}>
                         <Label>Customer : </Label>
-                        <Label style={{ fontWeight: "bold", paddingLeft: "5px" }}>  {this.state.customerName}</Label>
+                        <Label
+                          style={{ fontWeight: "bold", paddingLeft: "5px" }}
+                        >
+                          {" "}
+                          {this.state.customerName}
+                        </Label>
                       </div>
                     </div>
-                    {this.state.hideSubContractor === "" &&
+                    {this.state.hideSubContractor === "" && (
                       <div style={{ width: "100%" }}>
-                        <div style={{ display: "flex", marginLeft: "123px", marginTop: "3px" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            marginLeft: "123px",
+                            marginTop: "3px",
+                          }}
+                        >
                           <Label required>Sub-Contractor : </Label>
                           <Select
                             placeholder="Select Sub-Contractor"
@@ -335,26 +416,67 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                             className={styles.subContractorDropDwn}
                           />
 
-                          <Label style={{ marginLeft: "10px", display: this.state.subContractorLabel }}>{this.state.subContractor} </Label>
+                          <Label
+                            style={{
+                              marginLeft: "10px",
+                              display: this.state.subContractorLabel,
+                            }}
+                          >
+                            {this.state.subContractor}{" "}
+                          </Label>
                         </div>
                         <div style={{ color: "#dc3545", marginLeft: "123px" }}>
-                          {this.validator.message("subContractor", this.state.subContractorKey, "required")}{" "}</div>
-                      </div>}
-
+                          {this.validator.message(
+                            "subContractor",
+                            this.state.subContractorKey,
+                            "required"
+                          )}{" "}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div style={{ color: "#dc3545" }}>{this.validator.message("transmitTo", this.state.transmitToKey, "required")}{" "}</div>
+                  <div style={{ color: "#dc3545" }}>
+                    {this.validator.message(
+                      "transmitTo",
+                      this.state.transmitToKey,
+                      "required"
+                    )}{" "}
+                  </div>
                   <hr />
 
-                  <div style={{ marginBottom: "10px" }} className={styles.borderForToCC}>
+                  <div
+                    style={{ marginBottom: "10px" }}
+                    className={styles.borderForToCC}
+                  >
                     <span className={styles.span} />
-                    <div style={{ width: "97%", display: this.state.divForToAndCCSearch }}>
-                      <label style={{ fontWeight: "bold", }}>To</label>
-                      <MultiSelect options={this.state.contactsForSearch} value={this.state.selectedContactsToName}
+                    <div
+                      style={{
+                        width: "97%",
+                        display: this.state.divForToAndCCSearch,
+                      }}
+                    >
+                      <label style={{ fontWeight: "bold" }}>To</label>
+                      <MultiSelect
+                        options={this.state.contactsForSearch}
+                        value={this.state.selectedContactsToName}
                         onChange={this.setSelectedContactsTo}
-                        labelledBy="To" hasSelectAll={true} />
-                      <div style={{ color: "#dc3545" }}>{this.validator.message("selectedContactsTo", this.state.selectedContactsTo, "required")}{" "}</div>
+                        labelledBy="To"
+                        hasSelectAll={true}
+                      />
+                      <div style={{ color: "#dc3545" }}>
+                        {this.validator.message(
+                          "selectedContactsTo",
+                          this.state.selectedContactsTo,
+                          "required"
+                        )}{" "}
+                      </div>
                     </div>
-                    <div style={{ width: "195%", display: this.state.divForToAndCC }}>
+                    <div
+                      style={{
+                        width: "195%",
+                        display: this.state.divForToAndCC,
+                      }}
+                    >
                       <Dropdown
                         placeholder="Select To contacts"
                         label="To"
@@ -366,25 +488,47 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                         //onChange={this._onDrpdwnCntact}
                         title="To"
                       />
-                      <div style={{ color: "#dc3545" }}>{this.validator.message("selectedContactsTo", this.state.selectedContactsTo, "required")}{" "}</div>
+                      <div style={{ color: "#dc3545" }}>
+                        {this.validator.message(
+                          "selectedContactsTo",
+                          this.state.selectedContactsTo,
+                          "required"
+                        )}{" "}
+                      </div>
                     </div>
                     <span className={styles.span} />
-                    <div style={{ width: "97%", display: this.state.divForToAndCCSearch }}>
-                      <label style={{ fontWeight: "bold", }}>CC</label>
-                      <MultiSelect options={this.state.contactsForSearch} value={this.state.selectedContactsCCName}
+                    <div
+                      style={{
+                        width: "97%",
+                        display: this.state.divForToAndCCSearch,
+                      }}
+                    >
+                      <label style={{ fontWeight: "bold" }}>CC</label>
+                      <MultiSelect
+                        options={this.state.contactsForSearch}
+                        value={this.state.selectedContactsCCName}
                         onChange={this.setSelectedContactsCC}
-                        labelledBy="CC" hasSelectAll={true} />
+                        labelledBy="CC"
+                        hasSelectAll={true}
+                      />
                     </div>
-                    <div style={{ width: "195%", display: this.state.divForToAndCC }}>
+                    <div
+                      style={{
+                        width: "195%",
+                        display: this.state.divForToAndCC,
+                      }}
+                    >
                       <Dropdown
                         placeholder="Select CC contacts"
                         label="CC "
-                        defaultSelectedKeys={this.state.selectedContactsToCCRebind}
+                        defaultSelectedKeys={
+                          this.state.selectedContactsToCCRebind
+                        }
                         multiSelect
                         multiSelectDelimiter={","}
                         options={this.state.contacts}
                         styles={dropdownStyles}
-                      // onChange={this._onDrpdwnCCContact}
+                        // onChange={this._onDrpdwnCCContact}
                       />
                     </div>
                     <div style={{ width: "98%", fontWeight: "bold" }}>
@@ -397,52 +541,110 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                         required={true}
                         disabled={false}
                         ensureUser={true}
-                        onChange={(items) => this._selectedInternalCCContacts(items)}
+                        onChange={(items) =>
+                          this._selectedInternalCCContacts(items)
+                        }
                         principalTypes={[PrincipalType.User]}
                         resolveDelay={1000}
-                        defaultSelectedUsers={this.state.internalCCContactsDisplayName} />
+                        defaultSelectedUsers={
+                          this.state.internalCCContactsDisplayName
+                        }
+                      />
                     </div>
                   </div>
 
                   {/* choice groups */}
-                  <div  >
+                  <div>
                     <div style={{ display: "flex" }}>
-                      <div style={{ marginLeft: "26px", marginRight: "15px", display: this.state.transmitTypeForDocument }}>
-                        <ChoiceGroup options={options}
+                      <div
+                        style={{
+                          marginLeft: "26px",
+                          marginRight: "15px",
+                          display: this.state.transmitTypeForDocument,
+                        }}
+                      >
+                        <ChoiceGroup
+                          options={options}
                           onChange={this._onTransmitType}
-                          label="Select any" required={true} defaultSelectedKey={'Document'} disabled={true} />
+                          label="Select any"
+                          required={true}
+                          defaultSelectedKey={"Document"}
+                          disabled={true}
+                        />
                       </div>
-                      <div style={{ marginLeft: "26px", marginRight: "15px", display: this.state.transmitTypeForLetter }}>
-                        <ChoiceGroup options={options}
+                      <div
+                        style={{
+                          marginLeft: "26px",
+                          marginRight: "15px",
+                          display: this.state.transmitTypeForLetter,
+                        }}
+                      >
+                        <ChoiceGroup
+                          options={options}
                           onChange={this._onTransmitType}
-                          label="Select any" required={true} defaultSelectedKey={'Letter'} disabled={true} />
+                          label="Select any"
+                          required={true}
+                          defaultSelectedKey={"Letter"}
+                          disabled={true}
+                        />
                       </div>
-                      <div style={{ marginLeft: "26px", marginRight: "15px", display: this.state.transmitTypeForDefault }}>
-                        <ChoiceGroup options={options}
+                      <div
+                        style={{
+                          marginLeft: "26px",
+                          marginRight: "15px",
+                          display: this.state.transmitTypeForDefault,
+                        }}
+                      >
+                        <ChoiceGroup
+                          options={options}
                           onChange={this._onTransmitType}
-                          label="Select any" required={true} />
+                          label="Select any"
+                          required={true}
+                        />
                       </div>
                       <div style={{ marginLeft: "150px", marginTop: "9px" }}>
                         <Label>Check if cover letter needed</Label>
-                        <div className={styles.mt1}><Checkbox label="Cover Letter" title="Check if cover letter needed or not."
-                          onChange={this._coverLetterNeeded}
-                          checked={this.state.coverLetterNeeded} /></div>
+                        <div className={styles.mt1}>
+                          <Checkbox
+                            label="Cover Letter"
+                            title="Check if cover letter needed or not."
+                            onChange={this._coverLetterNeeded}
+                            checked={this.state.coverLetterNeeded}
+                          />
+                        </div>
                       </div>
                       <div style={{ marginLeft: "90px", marginTop: "9px" }}>
                         <Label>Select email type</Label>
-                        <div className={styles.mt1}><Checkbox label="Send and Receive as shared folder"
-                          onChange={this._onSendAsSharedFolder}
-                          checked={this.state.sendAsSharedFolder} /></div>
-                        <div className={styles.mt1} style={{ display: this.state.sendAsMultipleEmailCheckBoxDiv }}><Checkbox label="Send as multiple emails"
-                          onChange={this._onSendAsMultipleFolder}
-                          checked={this.state.sendAsMultipleFolder} /></div>
+                        <div className={styles.mt1}>
+                          <Checkbox
+                            label="Send and Receive as shared folder"
+                            onChange={this._onSendAsSharedFolder}
+                            checked={this.state.sendAsSharedFolder}
+                          />
+                        </div>
+                        <div
+                          className={styles.mt1}
+                          style={{
+                            display: this.state.sendAsMultipleEmailCheckBoxDiv,
+                          }}
+                        >
+                          <Checkbox
+                            label="Send as multiple emails"
+                            onChange={this._onSendAsMultipleFolder}
+                            checked={this.state.sendAsMultipleFolder}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
                   <hr />
                   {/* Notes */}
                   <div style={{ marginLeft: "9px" }}>
-                    <TextField label="Notes" multiline placeholder="" value={this.state.notes}
+                    <TextField
+                      label="Notes"
+                      multiline
+                      placeholder=""
+                      value={this.state.notes}
                       onChange={this.notesOnchange}
                       style={{ marginLeft: "20px", width: "290px" }}
                     />
@@ -450,29 +652,63 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                   <hr />
 
                   {/* filesizeDiv */}
-                  {this.state.itemsForGrid.length > 0 &&
-                    <div hidden={this.state.fileSizeDiv} style={{ float: "right", color: (Number(this.state.fileSize) >= 25) ? "Red" : "Green" }}>Size : [{(this.state.fileSize < 1) ? this.state.fileSize + " MB" : this.state.fileSize + " MB"}]</div>
-                  }
+                  {this.state.itemsForGrid.length > 0 && (
+                    <div
+                      hidden={this.state.fileSizeDiv}
+                      style={{
+                        float: "right",
+                        color:
+                          Number(this.state.fileSize) >= 25 ? "Red" : "Green",
+                      }}
+                    >
+                      Size : [
+                      {this.state.fileSize < 1
+                        ? this.state.fileSize + " MB"
+                        : this.state.fileSize + " MB"}
+                      ]
+                    </div>
+                  )}
                   {/* project documents */}
-                  {this.state.settingsListArray.length > 0 &&
+                  {this.state.settingsListArray.length > 0 && (
                     <div style={{ display: "flex", marginRight: "10px" }}>
                       {this.state.settingsListArray.map((item, index) => {
                         return (
                           <div style={{ marginRight: "10px" }}>
-                            <Dropdown id={item.Title}
+                            <Dropdown
+                              id={item.Title}
                               selectedKey={item.selectedKey}
                               placeholder="Select an option"
-                              options={this.state.settingsListsItemsArray[item.Title] ? this.state.settingsListsItemsArray[item.Title] : []}
-                              onChange={(_, e) => this.handleSettingsListItemsChange(index, e, item.Title)}
+                              options={
+                                this.state.settingsListsItemsArray[item.Title]
+                                  ? this.state.settingsListsItemsArray[
+                                      item.Title
+                                    ]
+                                  : []
+                              }
+                              onChange={(_, e) =>
+                                this.handleSettingsListItemsChange(
+                                  index,
+                                  e,
+                                  item.Title
+                                )
+                              }
                               label={item.Title}
-                              disabled={this.state.dropDownReadonly} /></div>);
-                      })
-                      }
+                              disabled={this.state.dropDownReadonly}
+                            />
+                          </div>
+                        );
+                      })}
                     </div>
-                  }
+                  )}
                   <div style={{ padding: "12px 0 12px 12px" }}>
                     <div style={{ display: "block" }}>
-                      <div hidden={this.state.documentSelectedDiv} style={{ fontWeight: "bold", color: "Red" }}> {this.state.documentSelect}</div>
+                      <div
+                        hidden={this.state.documentSelectedDiv}
+                        style={{ fontWeight: "bold", color: "Red" }}
+                      >
+                        {" "}
+                        {this.state.documentSelect}
+                      </div>
                       <Label>Project Documents</Label>
                       <MultiSelect
                         options={this.state.searchDocuments}
@@ -484,74 +720,178 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                     </div>
                   </div>
                   {/* projectDocumentGrid */}
-                  {this.state.itemsForGrid.length > 0 &&
-                    <div style={{ width: '100%', }}>
-                      <table className={styles['custom-table']} hidden={this.state.showGrid}>
+                  {this.state.itemsForGrid.length > 0 && (
+                    <div style={{ width: "100%" }}>
+                      <table
+                        className={styles["custom-table"]}
+                        hidden={this.state.showGrid}
+                      >
                         <tr style={{ textAlign: "left" }}>
-                          <th >Slno</th>
-                          <th >Document Name</th>
-                          <th >Revision No</th>
-                          <th style={{ display: (this.state.transmitTo === "Customer") ? "" : "none" }}>Customer Document No</th>
-                          <th style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>SubContractor Document No</th>
-                          <th style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "none" : "none" }}>Acceptance Code</th>
-                          <th >Size (in MB)</th>
-                          <th >Transmit For</th>
-                          <th >Due Date</th>
-                          <th >Comments</th>
-                          <th style={{ display: this.state.hideButtonAfterSubmit }}>Delete</th>
+                          <th>Slno</th>
+                          <th>Document Name</th>
+                          <th>Revision No</th>
+                          <th
+                            style={{
+                              display:
+                                this.state.transmitTo === "Customer"
+                                  ? ""
+                                  : "none",
+                            }}
+                          >
+                            Customer Document No
+                          </th>
+                          <th
+                            style={{
+                              display:
+                                this.state.transmitTo === "Sub-Contractor"
+                                  ? ""
+                                  : "none",
+                            }}
+                          >
+                            SubContractor Document No
+                          </th>
+                          <th
+                            style={{
+                              display:
+                                this.state.transmitTo === "Sub-Contractor"
+                                  ? "none"
+                                  : "none",
+                            }}
+                          >
+                            Acceptance Code
+                          </th>
+                          <th>Size (in MB)</th>
+                          <th>Transmit For</th>
+                          <th>Due Date</th>
+                          <th>Comments</th>
+                          <th
+                            style={{
+                              display: this.state.hideButtonAfterSubmit,
+                            }}
+                          >
+                            Delete
+                          </th>
                         </tr>
                         {this.state.itemsForGrid.map((items, key) => {
                           return (
                             <tr key={key} style={{ textAlign: "left" }}>
-                              <td >{key + 1}</td>
-                              <td >{items.documentName} </td>
-                              <td >{items.revision} </td>
-                              <td style={{ display: (this.state.transmitTo === "Customer") ? "" : "none" }}>{items.customerDocumentNo} </td>
-                              <td style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>{items.subcontractorDocumentNo} </td>
-                              <td style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "none" : "none" }}>{items.acceptanceCodeTitle}</td>
-                              <td >{items.fileSizeInMB}</td>
-                              <td >
-                                <Dropdown id={key + "TransmittedFor"}
+                              <td>{key + 1}</td>
+                              <td>{items.documentName} </td>
+                              <td>{items.revision} </td>
+                              <td
+                                style={{
+                                  display:
+                                    this.state.transmitTo === "Customer"
+                                      ? ""
+                                      : "none",
+                                }}
+                              >
+                                {items.customerDocumentNo}{" "}
+                              </td>
+                              <td
+                                style={{
+                                  display:
+                                    this.state.transmitTo === "Sub-Contractor"
+                                      ? ""
+                                      : "none",
+                                }}
+                              >
+                                {items.subcontractorDocumentNo}{" "}
+                              </td>
+                              <td
+                                style={{
+                                  display:
+                                    this.state.transmitTo === "Sub-Contractor"
+                                      ? "none"
+                                      : "none",
+                                }}
+                              >
+                                {items.acceptanceCodeTitle}
+                              </td>
+                              <td>{items.fileSizeInMB}</td>
+                              <td>
+                                <Dropdown
+                                  id={key + "TransmittedFor"}
                                   selectedKey={items.TransmittedFor}
                                   placeholder="Select an option"
                                   options={this.state.transmitForItems}
-                                  onChange={(_, e) => this._drpdwnTransmitFor(key, e, items)}
-                                /> </td>
-                              <td >
+                                  onChange={(_, e) =>
+                                    this._drpdwnTransmitFor(key, e, items)
+                                  }
+                                />{" "}
+                              </td>
+                              <td>
                                 <DatePicker
                                   value={items.dueDate}
                                   hidden={this.state.hideDueDate}
                                   //onse={(_, e) =>this._dueDatePickerChange(key, e)}
-                                  minDate={this.state.dueDateForBindingApprovalLifeCycle}
+                                  minDate={
+                                    this.state
+                                      .dueDateForBindingApprovalLifeCycle
+                                  }
                                   placeholder="Select a date..."
                                   ariaLabel="Select a date"
-                                  formatDate={this._onFormatDate} /></td>
-                              <td >  <TextField autoComplete="off" multiline
-                                placeholder="" value={items.Comments}
-                                onChange={(_, e) => this.onCommentChange(key, e)}
-                              /></td>
-                              <td style={{ display: this.state.hideButtonAfterSubmit }}><IconButton iconProps={DeleteIcon} title="Delete" ariaLabel="Delete" onClick={() => this._openDeleteConfirmation(items, key, "ProjectDocuments")} /></td>
+                                  formatDate={this._onFormatDate}
+                                />
+                              </td>
+                              <td>
+                                {" "}
+                                <TextField
+                                  autoComplete="off"
+                                  multiline
+                                  placeholder=""
+                                  value={items.Comments}
+                                  onChange={(_, e) =>
+                                    this.onCommentChange(key, e)
+                                  }
+                                />
+                              </td>
+                              <td
+                                style={{
+                                  display: this.state.hideButtonAfterSubmit,
+                                }}
+                              >
+                                <IconButton
+                                  iconProps={DeleteIcon}
+                                  title="Delete"
+                                  ariaLabel="Delete"
+                                  onClick={() =>
+                                    this._openDeleteConfirmation(
+                                      items,
+                                      key,
+                                      "ProjectDocuments"
+                                    )
+                                  }
+                                />
+                              </td>
                             </tr>
                           );
                         })}
                       </table>
                     </div>
-                  }
+                  )}
                   <hr style={{ marginTop: "20px" }} />
-                  <Accordion allowZeroExpanded >
-                    <AccordionItem >
+                  <Accordion allowZeroExpanded>
+                    <AccordionItem>
                       <AccordionItemHeading>
-                        <AccordionItemButton >
-                          <Label ><IconButton iconProps={DownIcon} />External Documents</Label>
+                        <AccordionItemButton>
+                          <Label>
+                            <IconButton iconProps={DownIcon} />
+                            External Documents
+                          </Label>
                         </AccordionItemButton>
                       </AccordionItemHeading>
                       <AccordionItemPanel>
-                        <div className={styles.divrow} >
+                        <div className={styles.divrow}>
                           <div className={styles.wdthfrst}>
-                            <CustomFileInput onChange={this.uploadFile} key={1} />
-
+                            <CustomFileInput
+                              onChange={this.uploadFile}
+                              key={1}
+                            />
                           </div>
-                          <div className={`${styles.dragDropContainer} ${styles.wdthThirdColm}`}>
+                          <div
+                            className={`${styles.dragDropContainer} ${styles.wdthThirdColm}`}
+                          >
                             <DragDropFiles
                               dropEffect="copy"
                               enable={true}
@@ -560,7 +900,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                               labelMessage="Upload Files"
                             >
                               Drag and drop here...
-                            </DragDropFiles></div>
+                            </DragDropFiles>
+                          </div>
                         </div>
                         {/* <div style={{ color: "#dc3545", display: this.state.uploadDocumentError, marginLeft: "9px" }}>Sorry this document is unable to process due to unwanted characters.Please rename the document and try again.</div>
                       <div style={{ width: "100%", display: "flex" }}>
@@ -575,31 +916,60 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                         </div>
                       </div>
                       <div style={{ color: "#dc3545", marginLeft: "123px" }}>{this.validator.message("externalcomments", this.state.externalComments, "required")}{" "}</div> */}
-
                       </AccordionItemPanel>
                     </AccordionItem>
                   </Accordion>
-                  <div  >
-                    <table className={styles['custom-table']} hidden={this.state.showExternalGrid} >
+                  <div>
+                    <table
+                      className={styles["custom-table"]}
+                      hidden={this.state.showExternalGrid}
+                    >
                       <tr style={{ textAlign: "left" }}>
-                        <th >Slno</th>
+                        <th>Slno</th>
                         <th>Document Name</th>
                         <th>Size (in MB)</th>
-                        <th >Comments</th>
-                        <th style={{ display: this.state.hideButtonAfterSubmit }}>Delete</th>
+                        <th>Comments</th>
+                        <th
+                          style={{ display: this.state.hideButtonAfterSubmit }}
+                        >
+                          Delete
+                        </th>
                       </tr>
                       {this.state.itemsForExternalGrid.map((items, key) => {
                         return (
                           <tr style={{ textAlign: "left" }}>
                             <td>{key + 1}</td>
-                            <td >{items.documentName}</td>
+                            <td>{items.documentName}</td>
                             <td>{items.fileSizeInMB}</td>
-                            <td >
-                              <TextField autoComplete="off" multiline
-                                placeholder="" value={items.externalComments}
-                                onChange={(_, e) => this.onExternalCommentChange(key, e)} />
+                            <td>
+                              <TextField
+                                autoComplete="off"
+                                multiline
+                                placeholder=""
+                                value={items.externalComments}
+                                onChange={(_, e) =>
+                                  this.onExternalCommentChange(key, e)
+                                }
+                              />
                             </td>
-                            <td style={{ display: this.state.hideButtonAfterSubmit }}><IconButton iconProps={DeleteIcon} title="Delete" ariaLabel="Delete" onClick={() => this._openDeleteConfirmation(items, key, "AdditionalDocuments")} /></td>
+                            <td
+                              style={{
+                                display: this.state.hideButtonAfterSubmit,
+                              }}
+                            >
+                              <IconButton
+                                iconProps={DeleteIcon}
+                                title="Delete"
+                                ariaLabel="Delete"
+                                onClick={() =>
+                                  this._openDeleteConfirmation(
+                                    items,
+                                    key,
+                                    "AdditionalDocuments"
+                                  )
+                                }
+                              />
+                            </td>
                           </tr>
                         );
                       })}
@@ -608,29 +978,72 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                 </div>
                 <div style={{ display: this.state.normalMsgBar }}>
                   {/* Show Message bar for Notification*/}
-                  {this.state.statusMessage.isShowMessage ?
+                  {this.state.statusMessage.isShowMessage ? (
                     <MessageBar
                       messageBarType={this.state.statusMessage.messageType}
                       isMultiline={false}
                       dismissButtonAriaLabel="Close"
-                    >{this.state.statusMessage.message}</MessageBar>
-                    : ''}
+                    >
+                      {this.state.statusMessage.message}
+                    </MessageBar>
+                  ) : (
+                    ""
+                  )}
                 </div>
-                <Spinner color="Blue" size={SpinnerSize.large} style={{ display: this.state.spinnerDiv, marginBottom: "10px" }} label={'Transmittal Sending.Please Wait...'} />
-                <div style={{ display: "flex", padding: "10px 0px 12px 2px", float: "right", }}>
-                  <PrimaryButton text="Save as draft" style={{ marginLeft: "auto", marginRight: "11px", display: this.state.hideButtonAfterSubmit }}
-                  //onClick={() => this._onSaveAsDraftBtnClick()} 
+                <Spinner
+                  color="Blue"
+                  size={SpinnerSize.large}
+                  style={{
+                    display: this.state.spinnerDiv,
+                    marginBottom: "10px",
+                  }}
+                  label={"Transmittal Sending.Please Wait..."}
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    padding: "10px 0px 12px 2px",
+                    float: "right",
+                  }}
+                >
+                  <PrimaryButton
+                    text="Save as draft"
+                    style={{
+                      marginLeft: "auto",
+                      marginRight: "11px",
+                      display: this.state.hideButtonAfterSubmit,
+                    }}
+                    //onClick={() => this._onSaveAsDraftBtnClick()}
                   />
-                  <PrimaryButton text="Preview" style={{ marginRight: "11px", marginLeft: "auto" }}
+                  <PrimaryButton
+                    text="Preview"
+                    style={{ marginRight: "11px", marginLeft: "auto" }}
                     onClick={this._onPreviewBtnClick}
                   />
-                  <PrimaryButton text="Confirm & Send"
-                    style={{ marginRight: "11px", marginLeft: "auto", display: this.state.hideButtonAfterSubmit }}
+                  <PrimaryButton
+                    text="Confirm & Send"
+                    style={{
+                      marginRight: "11px",
+                      marginLeft: "auto",
+                      display: this.state.hideButtonAfterSubmit,
+                    }}
                     disabled={transmitForUnseleted === true ? true : false}
                     onClick={this._confirmAndSendBtnClick}
                   />
-                  <PrimaryButton text="Recall" style={{ marginRight: "11px", marginLeft: "auto", display: this.state.hideUnlockButton }} onClick={this._recallTransmittalConfirmation} />
-                  <PrimaryButton text="Cancel" style={{ marginLeft: "auto" }} onClick={this._hideGrid} />
+                  <PrimaryButton
+                    text="Recall"
+                    style={{
+                      marginRight: "11px",
+                      marginLeft: "auto",
+                      display: this.state.hideUnlockButton,
+                    }}
+                    onClick={this._recallTransmittalConfirmation}
+                  />
+                  <PrimaryButton
+                    text="Cancel"
+                    style={{ marginLeft: "auto" }}
+                    onClick={this._hideGrid}
+                  />
                 </div>
               </div>
               <div />
@@ -639,7 +1052,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                 <Modal
                   isOpen={this.state.showReviewModal}
                   onDismiss={this._closeModal}
-                  containerClassName={contentStyles.container}>
+                  containerClassName={contentStyles.container}
+                >
                   <div style={{ marginLeft: "96%" }}>
                     <IconButton
                       iconProps={CancelIcon}
@@ -649,54 +1063,234 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                     />
                   </div>
 
-                  <div className={styles.wrap} style={{ backgroundColor: this.props.modalBGColor }}>
-                    <div className={styles.borderStyle}><div className={styles.title}>{this.state.projectName}</div></div>
+                  <div
+                    className={styles.wrap}
+                    style={{ backgroundColor: this.props.modalBGColor }}
+                  >
+                    <div className={styles.borderStyle}>
+                      <div className={styles.title}>
+                        {this.state.projectName}
+                      </div>
+                    </div>
 
                     <div className={styles.wrapSection}>
-                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Transmittal No:&nbsp; </span>{this.state.transmittalNo}</div>
-                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Customer Contract No:&nbsp; </span>{this.state.contractNumber}</div>
-                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Date: &nbsp;</span>{moment.utc(new Date()).format("DD/MM/YYYY")}</div>
-                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Transmit to: &nbsp;</span>{this.state.transmitTo}</div>
-                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Transmitted by: &nbsp; </span>{this.props.context.pageContext.user.displayName}</div>
-                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Send to:&nbsp; </span>{this.state.selectedContactsToDisplayName}</div>
-                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Send CC: &nbsp;</span>{this.state.selectedContactsCCDisplayName}</div>
-                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Internal CC: &nbsp;</span>{this.state.internalCCContactsDisplayNameForPreview}</div>
-                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Total no of files:&nbsp; </span>{this.state.totalNoOfFiles}</div>
-                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Total Size:&nbsp; </span>{this.state.fileSize}MB</div>
-                      <div className={styles.wrapIitem} style={{ width: "50%" }}> <span>Cover Letter Attached:&nbsp; </span>{this.state.coverLetterNeeded === true ? "Yes" : "No"}</div>
-                      <div className={styles.wrapIitem} style={{ width: "100%", marginTop: "15px" }}><span>Note:&nbsp; </span>{this.state.notes}</div>
+                      <div
+                        className={styles.wrapIitem}
+                        style={{ width: "50%" }}
+                      >
+                        {" "}
+                        <span>Transmittal No:&nbsp; </span>
+                        {this.state.transmittalNo}
+                      </div>
+                      <div
+                        className={styles.wrapIitem}
+                        style={{ width: "50%" }}
+                      >
+                        {" "}
+                        <span>Customer Contract No:&nbsp; </span>
+                        {this.state.contractNumber}
+                      </div>
+                      <div
+                        className={styles.wrapIitem}
+                        style={{ width: "50%" }}
+                      >
+                        {" "}
+                        <span>Date: &nbsp;</span>
+                        {moment.utc(new Date()).format("DD/MM/YYYY")}
+                      </div>
+                      <div
+                        className={styles.wrapIitem}
+                        style={{ width: "50%" }}
+                      >
+                        {" "}
+                        <span>Transmit to: &nbsp;</span>
+                        {this.state.transmitTo}
+                      </div>
+                      <div
+                        className={styles.wrapIitem}
+                        style={{ width: "50%" }}
+                      >
+                        {" "}
+                        <span>Transmitted by: &nbsp; </span>
+                        {this.props.context.pageContext.user.displayName}
+                      </div>
+                      <div
+                        className={styles.wrapIitem}
+                        style={{ width: "50%" }}
+                      >
+                        {" "}
+                        <span>Send to:&nbsp; </span>
+                        {this.state.selectedContactsToDisplayName}
+                      </div>
+                      <div
+                        className={styles.wrapIitem}
+                        style={{ width: "50%" }}
+                      >
+                        {" "}
+                        <span>Send CC: &nbsp;</span>
+                        {this.state.selectedContactsCCDisplayName}
+                      </div>
+                      <div
+                        className={styles.wrapIitem}
+                        style={{ width: "50%" }}
+                      >
+                        {" "}
+                        <span>Internal CC: &nbsp;</span>
+                        {this.state.internalCCContactsDisplayNameForPreview}
+                      </div>
+                      <div
+                        className={styles.wrapIitem}
+                        style={{ width: "50%" }}
+                      >
+                        {" "}
+                        <span>Total no of files:&nbsp; </span>
+                        {this.state.totalNoOfFiles}
+                      </div>
+                      <div
+                        className={styles.wrapIitem}
+                        style={{ width: "50%" }}
+                      >
+                        {" "}
+                        <span>Total Size:&nbsp; </span>
+                        {this.state.fileSize}MB
+                      </div>
+                      <div
+                        className={styles.wrapIitem}
+                        style={{ width: "50%" }}
+                      >
+                        {" "}
+                        <span>Cover Letter Attached:&nbsp; </span>
+                        {this.state.coverLetterNeeded === true ? "Yes" : "No"}
+                      </div>
+                      <div
+                        className={styles.wrapIitem}
+                        style={{ width: "100%", marginTop: "15px" }}
+                      >
+                        <span>Note:&nbsp; </span>
+                        {this.state.notes}
+                      </div>
                     </div>
 
                     <div className={styles.wrapTable}>
-                      <div className={styles.w100}><div className={styles.subtitle}>Project Documents</div></div>
+                      <div className={styles.w100}>
+                        <div className={styles.subtitle}>Project Documents</div>
+                      </div>
                       <div className={styles.overflow}>
                         <div className={styles.divTable}>
                           <div className={styles.divTableBody}>
                             <div className={styles.divTableRow}>
                               <div className={styles.divTableCell}>Slno</div>
-                              <div className={styles.divTableCell}>Document Name</div>
-                              <div className={styles.divTableCell}>Revision</div>
-                              <th className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Customer") ? "" : "none" }}>Customer Document No</th>
-                              <th className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>SubContractor Document No</th>
-                              <div className={styles.divTableCell} style={{ display: this.state.transmitTo === "Sub-Contractor" ? "none" : "none" }}>AcceptanceCode</div>
-                              <div className={styles.divTableCell}>Size(in MB)</div>
-                              <div className={styles.divTableCell}>Transmit for</div>
-                              <div className={styles.divTableCell}>Due date</div>
-                              <div className={styles.divTableCell}>Comments</div>
+                              <div className={styles.divTableCell}>
+                                Document Name
+                              </div>
+                              <div className={styles.divTableCell}>
+                                Revision
+                              </div>
+                              <th
+                                className={styles.divTableCell}
+                                style={{
+                                  display:
+                                    this.state.transmitTo === "Customer"
+                                      ? ""
+                                      : "none",
+                                }}
+                              >
+                                Customer Document No
+                              </th>
+                              <th
+                                className={styles.divTableCell}
+                                style={{
+                                  display:
+                                    this.state.transmitTo === "Sub-Contractor"
+                                      ? ""
+                                      : "none",
+                                }}
+                              >
+                                SubContractor Document No
+                              </th>
+                              <div
+                                className={styles.divTableCell}
+                                style={{
+                                  display:
+                                    this.state.transmitTo === "Sub-Contractor"
+                                      ? "none"
+                                      : "none",
+                                }}
+                              >
+                                AcceptanceCode
+                              </div>
+                              <div className={styles.divTableCell}>
+                                Size(in MB)
+                              </div>
+                              <div className={styles.divTableCell}>
+                                Transmit for
+                              </div>
+                              <div className={styles.divTableCell}>
+                                Due date
+                              </div>
+                              <div className={styles.divTableCell}>
+                                Comments
+                              </div>
                             </div>
                             {this.state.itemsForGrid.map((items, key) => {
                               return (
                                 <div className={styles.divTableRow}>
-                                  <div className={styles.divTableCell}>&nbsp;{key + 1}</div>
-                                  <div className={styles.divTableCell}>&nbsp;{items.documentName}</div>
-                                  <div className={styles.divTableCell}>&nbsp;{items.revision}</div>
-                                  <td className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Customer") ? "" : "none" }}>{items.customerDocumentNo} </td>
-                                  <td className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "" : "none" }}>{items.subcontractorDocumentNo} </td>
-                                  <div className={styles.divTableCell} style={{ display: (this.state.transmitTo === "Sub-Contractor") ? "none" : "none" }}>&nbsp;{items.acceptanceCodeTitle}</div>
-                                  <div className={styles.divTableCell}>&nbsp;{items.fileSizeInMB}</div>
-                                  <div className={styles.divTableCell}>&nbsp;{items.transmitFor}</div>
-                                  <div className={styles.divTableCell}>&nbsp;{items.DueDate}</div>
-                                  <div className={styles.divTableCell}>&nbsp;{items.comments}</div>
+                                  <div className={styles.divTableCell}>
+                                    &nbsp;{key + 1}
+                                  </div>
+                                  <div className={styles.divTableCell}>
+                                    &nbsp;{items.documentName}
+                                  </div>
+                                  <div className={styles.divTableCell}>
+                                    &nbsp;{items.revision}
+                                  </div>
+                                  <td
+                                    className={styles.divTableCell}
+                                    style={{
+                                      display:
+                                        this.state.transmitTo === "Customer"
+                                          ? ""
+                                          : "none",
+                                    }}
+                                  >
+                                    {items.customerDocumentNo}{" "}
+                                  </td>
+                                  <td
+                                    className={styles.divTableCell}
+                                    style={{
+                                      display:
+                                        this.state.transmitTo ===
+                                        "Sub-Contractor"
+                                          ? ""
+                                          : "none",
+                                    }}
+                                  >
+                                    {items.subcontractorDocumentNo}{" "}
+                                  </td>
+                                  <div
+                                    className={styles.divTableCell}
+                                    style={{
+                                      display:
+                                        this.state.transmitTo ===
+                                        "Sub-Contractor"
+                                          ? "none"
+                                          : "none",
+                                    }}
+                                  >
+                                    &nbsp;{items.acceptanceCodeTitle}
+                                  </div>
+                                  <div className={styles.divTableCell}>
+                                    &nbsp;{items.fileSizeInMB}
+                                  </div>
+                                  <div className={styles.divTableCell}>
+                                    &nbsp;{items.transmitFor}
+                                  </div>
+                                  <div className={styles.divTableCell}>
+                                    &nbsp;{items.DueDate}
+                                  </div>
+                                  <div className={styles.divTableCell}>
+                                    &nbsp;{items.comments}
+                                  </div>
                                 </div>
                               );
                             })}
@@ -706,32 +1300,57 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                       {/* <div className={styles.textright} style={{width: "100%",marginTop:"0px"}}>Total Size: <span>[Size]</span></div> */}
                     </div>
                     <div className={styles.wrapTable}>
-                      <div className={styles.w100}><div className={styles.subtitle}>Additional Documents</div></div>
+                      <div className={styles.w100}>
+                        <div className={styles.subtitle}>
+                          Additional Documents
+                        </div>
+                      </div>
                       <div className={styles.overflow}>
                         <div className={styles.divTable}>
                           <div className={styles.divTableBody}>
                             <div className={styles.divTableRow}>
                               <div className={styles.divTableCell}>Slno</div>
-                              <div className={styles.divTableCell}>Document Name</div>
-                              <div className={styles.divTableCell}>Size(in MB)</div>
-                              <div className={styles.divTableCell}>Comments</div>
+                              <div className={styles.divTableCell}>
+                                Document Name
+                              </div>
+                              <div className={styles.divTableCell}>
+                                Size(in MB)
+                              </div>
+                              <div className={styles.divTableCell}>
+                                Comments
+                              </div>
                             </div>
-                            {this.state.itemsForExternalGrid.map((items, key) => {
-                              return (
-                                <div className={styles.divTableRow}>
-                                  <div className={styles.divTableCell}>&nbsp;{key + 1}</div>
-                                  <div className={styles.divTableCell}>&nbsp;{items.documentName}</div>
-                                  <div className={styles.divTableCell}>&nbsp;{items.fileSizeInMB}</div>
-                                  <div className={styles.divTableCell}>&nbsp;{items.externalComments}</div>
-                                </div>
-                              );
-                            })}
+                            {this.state.itemsForExternalGrid.map(
+                              (items, key) => {
+                                return (
+                                  <div className={styles.divTableRow}>
+                                    <div className={styles.divTableCell}>
+                                      &nbsp;{key + 1}
+                                    </div>
+                                    <div className={styles.divTableCell}>
+                                      &nbsp;{items.documentName}
+                                    </div>
+                                    <div className={styles.divTableCell}>
+                                      &nbsp;{items.fileSizeInMB}
+                                    </div>
+                                    <div className={styles.divTableCell}>
+                                      &nbsp;{items.externalComments}
+                                    </div>
+                                  </div>
+                                );
+                              }
+                            )}
                           </div>
                         </div>
                       </div>
-                      <div className={styles.textright} style={{ width: "100%", marginTop: "0px" }}><span>Total Size: &nbsp;</span>{this.state.fileSize}MB</div>
+                      <div
+                        className={styles.textright}
+                        style={{ width: "100%", marginTop: "0px" }}
+                      >
+                        <span>Total Size: &nbsp;</span>
+                        {this.state.fileSize}MB
+                      </div>
                     </div>
-
                   </div>
                 </Modal>
               </div>
@@ -743,10 +1362,23 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                     dialogContentProps={this.dialogContentProps}
                     onDismiss={this._dialogCloseButton}
                     styles={this.dialogStyles}
-                    modalProps={this.modalProps}>
+                    modalProps={this.modalProps}
+                  >
                     <DialogFooter>
-                      <PrimaryButton onClick={() => this._confirmDeleteItem(this.state.tempDocIndexIDForDelete, "item", this.keyForDelete)} text="Yes" />
-                      <DefaultButton onClick={this._confirmNoCancel} text="No" />
+                      <PrimaryButton
+                        onClick={() =>
+                          this._confirmDeleteItem(
+                            this.state.tempDocIndexIDForDelete,
+                            "item",
+                            this.keyForDelete
+                          )
+                        }
+                        text="Yes"
+                      />
+                      <DefaultButton
+                        onClick={this._confirmNoCancel}
+                        text="No"
+                      />
                     </DialogFooter>
                   </Dialog>
                 </div>
@@ -759,12 +1391,17 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                     dialogContentProps={this.dialogContentRecallProps}
                     onDismiss={this._dialogCloseButton}
                     styles={this.dialogStyles}
-                    modalProps={this.modalProps}>
+                    modalProps={this.modalProps}
+                  >
                     <DialogFooter>
                       <PrimaryButton
                         //onClick={this._recallSubmit}
-                        text="Yes" />
-                      <DefaultButton onClick={this._confirmNoCancel} text="No" />
+                        text="Yes"
+                      />
+                      <DefaultButton
+                        onClick={this._confirmNoCancel}
+                        text="No"
+                      />
                     </DialogFooter>
                   </Dialog>
                 </div>
@@ -777,10 +1414,17 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                     dialogContentProps={this.dialogCancelContentProps}
                     onDismiss={this._dialogCloseButton}
                     styles={this.dialogStyles}
-                    modalProps={this.modalProps}>
+                    modalProps={this.modalProps}
+                  >
                     <DialogFooter>
-                      <PrimaryButton onClick={() => this._cancelConfirmYes()} text="Yes" />
-                      <DefaultButton onClick={this._confirmNoCancel} text="No" />
+                      <PrimaryButton
+                        onClick={() => this._cancelConfirmYes()}
+                        text="Yes"
+                      />
+                      <DefaultButton
+                        onClick={this._confirmNoCancel}
+                        text="No"
+                      />
                     </DialogFooter>
                   </Dialog>
                 </div>
@@ -788,19 +1432,21 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
             </div>
             <div style={{ display: this.state.accessDeniedMsgBar }}>
               {/* Show Message bar for Notification*/}
-              {this.state.statusMessage.isShowMessage ?
+              {this.state.statusMessage.isShowMessage ? (
                 <MessageBar
                   messageBarType={this.state.statusMessage.messageType}
                   isMultiline={false}
                   dismissButtonAriaLabel="Close"
-                >{this.state.statusMessage.message}</MessageBar>
-                : ''}
+                >
+                  {this.state.statusMessage.message}
+                </MessageBar>
+              ) : (
+                ""
+              )}
             </div>
-          </div >
-        </div >
-
-
-      </section >
+          </div>
+        </div>
+      </section>
     );
   }
   //transmittal id generation
@@ -812,9 +1458,23 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     let counter;
     let transmittalID;
     let transmitTo;
-    { this.state.transmitTo === "Customer" ? transmitTo = "Outbound Customer" : transmitTo = "Outbound Sub-contractor"; }
-    await this._Service.getItemForSelectInLists(this.props.siteUrl, this.props.transmittalIdSettingsListName, "*", "TransmittalCategory eq '" + transmitTo + "' and(TransmittalType eq '" + this.state.transmittalType + "')")
-      .then(transmittalIdSettingsItems => {
+    {
+      this.state.transmitTo === "Customer"
+        ? (transmitTo = "Outbound Customer")
+        : (transmitTo = "Outbound Sub-contractor");
+    }
+    await this._Service
+      .getItemForSelectInLists(
+        this.props.siteUrl,
+        this.props.transmittalIdSettingsListName,
+        "*",
+        "TransmittalCategory eq '" +
+          transmitTo +
+          "' and(TransmittalType eq '" +
+          this.state.transmittalType +
+          "')"
+      )
+      .then((transmittalIdSettingsItems) => {
         prefix = transmittalIdSettingsItems[0].Prefix;
         separator = transmittalIdSettingsItems[0].Separator;
         sequenceNumber = transmittalIdSettingsItems[0].SequenceNumber;
@@ -823,7 +1483,14 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         let increment = counter + 1;
         let incrementValue = increment.toString();
         this._transmittalSequenceNumber(incrementValue, sequenceNumber);
-        transmittalID = prefix + separator + title + separator + this.state.projectNumber + separator + this.state.incrementSequenceNumber;
+        transmittalID =
+          prefix +
+          separator +
+          title +
+          separator +
+          this.state.projectNumber +
+          separator +
+          this.state.incrementSequenceNumber;
         console.log("transmittalID", transmittalID);
         this.setState({
           transmittalNo: transmittalID,
@@ -831,22 +1498,28 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         //counter updation
         let counterData = {
           Counter: increment,
-        }
-        this._Service.updateSiteItem(this.props.siteUrl, this.props.transmittalIdSettingsListName, transmittalIdSettingsItems[0].ID, counterData);
+        };
+        this._Service.updateSiteItem(
+          this.props.siteUrl,
+          this.props.transmittalIdSettingsListName,
+          transmittalIdSettingsItems[0].ID,
+          counterData
+        );
       });
   }
   //for preview section
   public _onPreviewBtnClick() {
     let totalFiles;
-    totalFiles = add(this.state.itemsForGrid.length, this.state.itemsForExternalGrid.length);
+    totalFiles = add(
+      this.state.itemsForGrid.length,
+      this.state.itemsForExternalGrid.length
+    );
     // alert(totalFiles);
     this.setState({
       totalNoOfFiles: totalFiles,
       previewDiv: false,
       showReviewModal: true,
     });
-
-
   }
   private async _confirmAndSendBtnClick() {
     // let sourceDocumentId;
@@ -856,35 +1529,57 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     //total files
     let totalFiles;
     let convertKBtoMB;
-    totalFiles = add(this.state.itemsForGrid.length, this.state.itemsForExternalGrid.length);
+    totalFiles = add(
+      this.state.itemsForGrid.length,
+      this.state.itemsForExternalGrid.length
+    );
     //sizecalculating
     let totalsizeProjects = 0;
     let totalAdditional = 0;
     //size recalcalculating
-    if (this.state.itemsForGrid.length > 0 || this.state.itemsForExternalGrid.length > 0) {
+    if (
+      this.state.itemsForGrid.length > 0 ||
+      this.state.itemsForExternalGrid.length > 0
+    ) {
       for (let i = 0; i < this.state.itemsForGrid.length; i++) {
-        totalsizeProjects = Number(totalsizeProjects) + Number(this.state.itemsForGrid[i].fileSizeInMB);
+        totalsizeProjects =
+          Number(totalsizeProjects) +
+          Number(this.state.itemsForGrid[i].fileSizeInMB);
       }
       for (let k = 0; k < this.state.itemsForExternalGrid.length; k++) {
-        totalAdditional = Number(totalAdditional) + Number(this.state.itemsForExternalGrid[k].fileSizeInMB);
+        totalAdditional =
+          Number(totalAdditional) +
+          Number(this.state.itemsForExternalGrid[k].fileSizeInMB);
       }
       let totalSize = add(totalAdditional, totalsizeProjects);
       convertKBtoMB = Number(totalSize).toFixed(2);
       this.setState({
-        fileSize: Number(convertKBtoMB)
+        fileSize: Number(convertKBtoMB),
       });
       console.log(this.state.fileSize);
     }
-    //if size greater than 10 mb 
-    if (Number(convertKBtoMB) > 10 && (this.state.sendAsSharedFolder == false)) {
-      this.setState({ normalMsgBar: "", statusMessage: { isShowMessage: true, message: "File size is greater than 10 MB.Please select the checkbox Send and Receive as shared folder", messageType: 1 }, });
-    }
-    else {
+    //if size greater than 10 mb
+    if (Number(convertKBtoMB) > 10 && this.state.sendAsSharedFolder == false) {
+      this.setState({
+        normalMsgBar: "",
+        statusMessage: {
+          isShowMessage: true,
+          message:
+            "File size is greater than 10 MB.Please select the checkbox Send and Receive as shared folder",
+          messageType: 1,
+        },
+      });
+    } else {
       if (this.transmittalID == null || this.transmittalID == "") {
         let selectedContactsTo = this.state.selectedContactsTo.toString();
         let selectedContactsCC = this.state.selectedContactsCC.toString();
         console.log(selectedContactsTo);
-        if (this.state.transmitTo != "" && this.state.itemsForGrid.length != 0 && this.state.selectedContactsTo != null && this.validator.fieldValid("selectedContactsTo")) {
+        if (
+          this.state.transmitTo != "" &&
+          this.state.itemsForGrid.length != 0 &&
+          this.state.selectedContactsTo != null &&
+          this.validator.fieldValid("selectedContactsTo")
+        ) {
           this.setState({
             spinnerDiv: "",
             hideButtonAfterSubmit: "none",
@@ -897,29 +1592,41 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
               Title: this.state.transmittalNo,
               TransmittalCategory: this.state.transmitTo,
               Customer: this.state.customerName,
-              CustomerID: (this.state.transmitTo == "Customer") ? this.state.customerId : "",
+              CustomerID:
+                this.state.transmitTo == "Customer"
+                  ? this.state.customerId
+                  : "",
               SubContractor: this.state.subContractor,
-              SubContractorID: (this.state.subContractorKey).toString(),
+              SubContractorID: this.state.subContractorKey.toString(),
               ToEmails: selectedContactsTo,
               CCEmails: selectedContactsCC,
               Notes: this.state.notes,
-              TransmittalStatus: (this.state.transmitTo != "Customer") ? "Completed" : "Ongoing",
+              TransmittalStatus:
+                this.state.transmitTo != "Customer" ? "Completed" : "Ongoing",
               TransmittalType: this.state.transmittalType,
               TransmittedById: this.state.currentUser,
               SendAsSharedFolder: this.state.sendAsSharedFolder,
               ReceiveInSharedFolder: this.state.recieveInSharedFolder,
               SendAsMultipleEmails: this.state.sendAsMultipleFolder,
-              TransmittalSize: (convertKBtoMB).toString(),
+              TransmittalSize: convertKBtoMB.toString(),
               TransmittalDate: new Date(),
-              TotalFiles: (totalFiles).toString(),
+              TotalFiles: totalFiles.toString(),
               ToName: this.state.selectedContactsToDisplayName,
               CCName: this.state.selectedContactsCCDisplayName,
               CoverLetter: this.state.coverLetterNeeded,
               InternalCCId: this.state.internalCCContacts,
-            }
-            this._Service.createNewSiteProcess(this.props.siteUrl, this.props.outboundTransmittalHeaderListName, headetData)
-              .then(async outboundTransmittalHeader => {
-                this.setState({ outboundTransmittalHeaderId: outboundTransmittalHeader.data.ID });
+            };
+            this._Service
+              .createNewSiteProcess(
+                this.props.siteUrl,
+                this.props.outboundTransmittalHeaderListName,
+                headetData
+              )
+              .then(async (outboundTransmittalHeader) => {
+                this.setState({
+                  outboundTransmittalHeaderId:
+                    outboundTransmittalHeader.data.ID,
+                });
                 for (let i = 0; i < this.state.itemsForGrid.length; i++) {
                   if (this.state.itemsForGrid[i].approvalRequired == true) {
                     forTransmittalStatus = "true";
@@ -928,19 +1635,47 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                 let linkUpdationInheader = {
                   TransmittalLink: {
                     Description: "Project workspace",
-                    Url: this.props.siteUrl + "/SitePages/" + this.props.outBoundTransmittalSitePage + ".aspx?trid=" + outboundTransmittalHeader.data.ID + ""
+                    Url:
+                      this.props.siteUrl +
+                      "/SitePages/" +
+                      this.props.outBoundTransmittalSitePage +
+                      ".aspx?trid=" +
+                      outboundTransmittalHeader.data.ID +
+                      "",
                   },
                   TransmittalDetails: {
                     Description: "Transmittal Details",
-                    Url: this.props.siteUrl + "/Lists/" + this.props.outboundTransmittalDetailsListName + "/AllItems.aspx?FilterField1=TransmittalHeader&FilterValue1=" + outboundTransmittalHeader.data.ID + "&FilterType1=Lookup&viewid=6da3a1b3%2D0155%2D48d9%2Da7c7%2Dd2e862c07db5"
+                    Url:
+                      this.props.siteUrl +
+                      "/Lists/" +
+                      this.props.outboundTransmittalDetailsListName +
+                      "/AllItems.aspx?FilterField1=TransmittalHeader&FilterValue1=" +
+                      outboundTransmittalHeader.data.ID +
+                      "&FilterType1=Lookup&viewid=6da3a1b3%2D0155%2D48d9%2Da7c7%2Dd2e862c07db5",
                   },
                   OutboundAdditionalDetails: {
                     Description: "Outbound Additional Details",
-                    Url: this.props.siteUrl + "/" + this.props.outboundAdditionalDocumentsListName + "/Forms/AllItems.aspx?FilterField1=TransmittalID&FilterValue1=" + outboundTransmittalHeader.data.ID + "&FilterType1=Lookup&viewid=bcc64a99-0907-4416-b9f6-8001acf1e000"
+                    Url:
+                      this.props.siteUrl +
+                      "/" +
+                      this.props.outboundAdditionalDocumentsListName +
+                      "/Forms/AllItems.aspx?FilterField1=TransmittalID&FilterValue1=" +
+                      outboundTransmittalHeader.data.ID +
+                      "&FilterType1=Lookup&viewid=bcc64a99-0907-4416-b9f6-8001acf1e000",
                   },
-                  TransmittalStatus: (this.state.transmitTo === "Customer") ? forTransmittalStatus != "true" ? "Completed" : "Ongoing" : "Completed",
-                }
-                this._Service.updateSiteItem(this.props.siteUrl, this.props.outboundTransmittalHeaderListName, outboundTransmittalHeader.data.ID, linkUpdationInheader);
+                  TransmittalStatus:
+                    this.state.transmitTo === "Customer"
+                      ? forTransmittalStatus != "true"
+                        ? "Completed"
+                        : "Ongoing"
+                      : "Completed",
+                };
+                this._Service.updateSiteItem(
+                  this.props.siteUrl,
+                  this.props.outboundTransmittalHeaderListName,
+                  outboundTransmittalHeader.data.ID,
+                  linkUpdationInheader
+                );
                 //outbound Details
                 if (this.state.itemsForGrid.length > 0) {
                   this.state.itemsForGrid.forEach((i, index) => {
@@ -956,21 +1691,33 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                       CustomerAcceptanceCodeId: i.acceptanceCode,
                       TransmitFor: i.TransmitFor,
                       ApprovalRequired: i.approvalRequired,
-                      TransmittalStatus: (i.approvalRequired == true && this.state.transmitTo == "Customer") ? "Ongoing" : "Completed",
+                      TransmittalStatus:
+                        i.approvalRequired == true &&
+                        this.state.transmitTo == "Customer"
+                          ? "Ongoing"
+                          : "Completed",
                       DocumentLibraryID: i.publishDoumentlibraryID,
                       Slno: (Number(index) + Number(1)).toString(),
                       CustomerDocumentNo: i.customerDocumentNo,
                       SubcontractorDocumentNo: i.subcontractorDocumentNo,
-                    }
-                    this._Service.createNewSiteProcess(this.props.siteUrl, this.props.outboundTransmittalDetailsListName, obDetailData);
-
-                  })
+                    };
+                    this._Service.createNewSiteProcess(
+                      this.props.siteUrl,
+                      this.props.outboundTransmittalDetailsListName,
+                      obDetailData
+                    );
+                  });
                 }
                 //outbound additional
                 if (this.state.itemsForExternalGrid.length > 0) {
                   this.state.itemsForExternalGrid.forEach(async (file, key) => {
                     const splitted = file.documentName.split(".");
-                    const documentNameExtension = splitted.slice(0, -1).join('.') + "_" + this.state.transmittalNo + '.' + splitted[splitted.length - 1];
+                    const documentNameExtension =
+                      splitted.slice(0, -1).join(".") +
+                      "_" +
+                      this.state.transmittalNo +
+                      "." +
+                      splitted[splitted.length - 1];
                     console.log(documentNameExtension);
                     let sourceDocumentMetadata = {
                       Title: file.documentName,
@@ -980,32 +1727,35 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                       SentDate: new Date(),
                       TransmittalStatus: "Ongoing",
                       Slno: (Number(key) + Number(1)).toString(),
-                    }
-                    await this._Service.uploadDocument(documentNameExtension, file.content, this.props.outboundAdditionalDocumentsListName, sourceDocumentMetadata)
+                    };
+                    await this._Service.uploadDocument(
+                      documentNameExtension,
+                      file.content,
+                      this.props.outboundAdditionalDocumentsListName,
+                      sourceDocumentMetadata
+                    );
                   });
                 }
-                //need to add additional documents code 
+                //need to add additional documents code
                 //add document index updations
-                this.triggerOutboundTransmittal(Number(this.state.outboundTransmittalHeaderId));
+                this.triggerOutboundTransmittal(
+                  Number(this.state.outboundTransmittalHeaderId)
+                );
                 this.setState({
                   hideButtonAfterSubmit: "none",
                   hideUnlockButton: "none",
                   spinnerDiv: "",
                 });
               });
-          }
-          catch (error) {
+          } catch (error) {
             console.error("Error creating outbound transmittal:", error);
           }
           this.validator.hideMessages();
-        }
-        else {
+        } else {
           this.validator.showMessages();
           this.forceUpdate();
         }
       }
-
-
     }
   }
   public uploadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -1013,62 +1763,78 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     if (files && files.length > 0) {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const duplicate = this.state.itemsForExternalGrid.some(tempItem => tempItem.documentName === file.name);
+        const duplicate = this.state.itemsForExternalGrid.some(
+          (tempItem) => tempItem.documentName === file.name
+        );
         const filename = file.name; // Replace this with your filename
-        const fileExtension = filename.split('.').pop();
-        const isZipFile = fileExtension === 'zip';
-        const isAudioFile = ['mp3', 'wav', 'ogg', 'aac'].includes(fileExtension);
-        const isVideoFile = ['mp4', 'avi', 'mkv', 'mov'].includes(fileExtension);
+        const fileExtension = filename.split(".").pop();
+        const isZipFile = fileExtension === "zip";
+        const isAudioFile = ["mp3", "wav", "ogg", "aac"].includes(
+          fileExtension
+        );
+        const isVideoFile = ["mp4", "avi", "mkv", "mov"].includes(
+          fileExtension
+        );
         if (isZipFile || isAudioFile || isVideoFile) {
           // Ignore ZIP, audio, and video files and image files
-          // Optionally, you can display an error message or handle these files differently           
+          // Optionally, you can display an error message or handle these files differently
         } else {
           if (!duplicate) {
             let tempExternalFile = {
               documentName: file.name,
-              fileSize: (((file.size / 1024)).toFixed(2)),
-              fileSizeInMB: (((file.size / 1024) * 0.0009765625).toFixed(2)),
+              fileSize: (file.size / 1024).toFixed(2),
+              fileSizeInMB: ((file.size / 1024) * 0.0009765625).toFixed(2),
               externalComments: this.state.externalComments,
               content: file,
-            }
-            this.setState(prevState => ({
-              itemsForExternalGrid: [...prevState.itemsForExternalGrid, tempExternalFile],
+            };
+            this.setState((prevState) => ({
+              itemsForExternalGrid: [
+                ...prevState.itemsForExternalGrid,
+                tempExternalFile,
+              ],
               showExternalGrid: false,
               fileSizeDiv: false,
             }));
           }
         }
-
       }
-
     }
-  }
+  };
   private _getDropFiles = async (files: any) => {
     if (files.length > 0) {
       if (files !== "") {
         files.forEach((item, key) => {
-          const duplicate = this.state.itemsForExternalGrid.some(tempItem => tempItem.documentName === item.name);
+          const duplicate = this.state.itemsForExternalGrid.some(
+            (tempItem) => tempItem.documentName === item.name
+          );
           const filename = item.name;
-          const fileExtension = filename.split('.').pop();
-          const isZipFile = fileExtension === 'zip';
-          const isAudioFile = ['mp3', 'wav', 'ogg', 'aac'].includes(fileExtension);
-          const isVideoFile = ['mp4', 'avi', 'mkv', 'mov'].includes(fileExtension);
+          const fileExtension = filename.split(".").pop();
+          const isZipFile = fileExtension === "zip";
+          const isAudioFile = ["mp3", "wav", "ogg", "aac"].includes(
+            fileExtension
+          );
+          const isVideoFile = ["mp4", "avi", "mkv", "mov"].includes(
+            fileExtension
+          );
           // const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension);
           if (isZipFile || isAudioFile || isVideoFile) {
             // Ignore ZIP, audio, and video files and image files
-            // Optionally, you can display an error message or handle these files differently           
+            // Optionally, you can display an error message or handle these files differently
           } else {
             if (!duplicate) {
               let tempExternalFile = {
                 documentName: item.name,
-                fileSize: (((item.size / 1024)).toFixed(2)),
-                fileSizeInMB: (((item.size / 1024) * 0.0009765625).toFixed(2)),
+                fileSize: (item.size / 1024).toFixed(2),
+                fileSizeInMB: ((item.size / 1024) * 0.0009765625).toFixed(2),
                 externalComments: this.state.externalComments,
                 content: item,
-              }
+              };
 
-              this.setState(prevState => ({
-                itemsForExternalGrid: [...prevState.itemsForExternalGrid, tempExternalFile],
+              this.setState((prevState) => ({
+                itemsForExternalGrid: [
+                  ...prevState.itemsForExternalGrid,
+                  tempExternalFile,
+                ],
                 showExternalGrid: false,
                 fileSizeDiv: false,
               }));
@@ -1077,7 +1843,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         });
       }
     }
-  }
+  };
   private onCommentChange = (index, event) => {
     const newMultiline = this.stripHtmlTags(event).length > 50;
     if (newMultiline !== this.state.toggleMultiline) {
@@ -1089,7 +1855,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     const updatedItems = [...itemsForGrid];
     updatedItems[index].comments = this.stripHtmlTags(event);
     this.setState({ itemsForGrid: updatedItems });
-  }
+  };
   private onExternalCommentChange = (index, event) => {
     const newMultiline = this.stripHtmlTags(event).length > 50;
     if (newMultiline !== this.state.toggleMultiline) {
@@ -1101,60 +1867,68 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     const updatedItems = [...itemsForExternalGrid];
     updatedItems[index].externalComments = this.stripHtmlTags(event);
     this.setState({ itemsForExternalGrid: updatedItems });
-  }
+  };
   //stripHtmlTags
   public stripHtmlTags = (html) => {
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-    return doc.body.textContent || '';
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
   };
 
   public UNSAFE_componentWillMount = () => {
     this.validator = new SimpleReactValidator({
       messages: {
-        required: "Please enter mandatory fields"
-      }
+        required: "Please enter mandatory fields",
+      },
     });
-  }
+  };
   public async componentDidMount() {
     await this.projectInformation();
     this._userMessageSettings();
     this._currentUser();
     this._transmitForBind();
     this._queryParamGetting();
-    // //this._LAUrlGetting();  
+    // //this._LAUrlGetting();
     await this.loadSettingsList();
     this._loadPublishDocuments("");
   }
   private loadSettingsList = async () => {
-    await this._Service.getListItems(this.props.context.pageContext.site.serverRelativeUrl, "SettingsList")
-      .then(settings => {
-        const tempArray = settings.filter(item => item.Active === true);
+    await this._Service
+      .getListItems(
+        this.props.context.pageContext.site.serverRelativeUrl,
+        "SettingsList"
+      )
+      .then((settings) => {
+        const tempArray = settings.filter((item) => item.Active === true);
         console.log(tempArray);
-        this.setState({ settingsListArray: tempArray })
+        this.setState({ settingsListArray: tempArray });
         const resultArrays = [];
         // Use Promise.all to handle multiple Promises
-        Promise.all(tempArray.map(element =>
-          this._Service.getListItems(this.props.context.pageContext.site.serverRelativeUrl, element.Title)
-        ))
-          .then(results => {
+        Promise.all(
+          tempArray.map((element) =>
+            this._Service.getListItems(
+              this.props.context.pageContext.site.serverRelativeUrl,
+              element.Title
+            )
+          )
+        )
+          .then((results) => {
             // results is an array containing the resolved values of each Promise
             tempArray.forEach((element, index) => {
-              console.log(results[index])
-              let listItems = results[index].map(item => ({
+              console.log(results[index]);
+              let listItems = results[index].map((item) => ({
                 key: item.Title,
-                text: item.Title
+                text: item.Title,
               }));
               resultArrays[element.Title] = listItems;
-
             });
-            this.setState({ settingsListsItemsArray: resultArrays })
+            this.setState({ settingsListsItemsArray: resultArrays });
           })
-          .catch(error => {
+          .catch((error) => {
             // Handle errors here
             console.error(error);
           });
       });
-  }
+  };
   //Row Comment item changes
   public handleSettingsListItemsChange = (index, event, item) => {
     const { settingsListArray, documentFilters } = this.state;
@@ -1176,16 +1950,21 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     });
     const tempFile = [];
     // Extract publishDoumentlibraryID values from the option array
-    const optionIds = option.map(item => item.value);
+    const optionIds = option.map((item) => item.value);
     // Filter itemForGrid based on the optionIds
-    const filteredItemForGrid = this.state.itemsForGrid.filter(item => optionIds.includes(item.publishDoumentlibraryID));
+    const filteredItemForGrid = this.state.itemsForGrid.filter((item) =>
+      optionIds.includes(item.publishDoumentlibraryID)
+    );
     console.log("when unselect the option", filteredItemForGrid);
     this.setState({
-      itemsForGrid: filteredItemForGrid
-    })
+      itemsForGrid: filteredItemForGrid,
+    });
     if (option.length !== 0) {
-      option.forEach(selectedDocuments => {
-        const duplicate = this.state.itemsForGrid.some(tempItem => tempItem.documentIndexId === selectedDocuments.DocumentIndexId);
+      option.forEach((selectedDocuments) => {
+        const duplicate = this.state.itemsForGrid.some(
+          (tempItem) =>
+            tempItem.documentIndexId === selectedDocuments.DocumentIndexId
+        );
         if (!duplicate) {
           let temp = {
             publishDoumentlibraryID: selectedDocuments.value,
@@ -1196,16 +1975,18 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
             revision: selectedDocuments.Revision,
             documentID: selectedDocuments.DocumentID,
             documentName: selectedDocuments.DocumentName,
-            fileSize: (((selectedDocuments.FileSizeDisplay / 1024)).toFixed(2)),
-            fileSizeInMB: (Number((selectedDocuments.FileSizeDisplay / 1024) * 0.0009765625).toFixed(2)),
+            fileSize: (selectedDocuments.FileSizeDisplay / 1024).toFixed(2),
+            fileSizeInMB: Number(
+              (selectedDocuments.FileSizeDisplay / 1024) * 0.0009765625
+            ).toFixed(2),
             transmitFor: this.state.transmitFor,
             approvalRequired: this.state.approvalRequired,
             transmitForKey: this.state.transmitForKey,
             temporary: "",
             customerDocumentNo: selectedDocuments.CustomerDocumentNo,
           };
-          tempFile.push(temp)
-          this.setState(prevState => ({
+          tempFile.push(temp);
+          this.setState((prevState) => ({
             itemsForGrid: [...prevState.itemsForGrid, temp],
           }));
         }
@@ -1217,80 +1998,108 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         searchText: "",
       });
     }
-  }
+  };
 
   protected async triggerOutboundTransmittal(transmittalID) {
-    let siteUrl = window.location.protocol + "//" + window.location.hostname + this.props.siteUrl;
-    const laUrl = await this._Service.getHubItemsWithFilter(this.props.masterListName, "Title eq 'EMEC_OutboundTransmittal'", this.props.hubSiteUrl);
+    let siteUrl =
+      window.location.protocol +
+      "//" +
+      window.location.hostname +
+      this.props.siteUrl;
+    const laUrl = await this._Service.getHubItemsWithFilter(
+      this.props.masterListName,
+      "Title eq 'EMEC_OutboundTransmittal'",
+      this.props.hubSiteUrl
+    );
     console.log("Posturl", laUrl[0].PostUrl);
     const postURL = laUrl[0].PostUrl;
     const requestHeaders: Headers = new Headers();
     requestHeaders.append("Content-type", "application/json");
     const body: string = JSON.stringify({
-      'SiteURL': siteUrl,
-      'TransmittalNo': transmittalID,
-      'ProjectName': this.state.projectName,
-      'ContractNumber': this.state.contractNumber,
-      'ProjectNumber': this.state.projectNumber,
-      'CoverLetterNeeded': (this.state.coverLetterNeeded == true ? "Yes" : "NO"),
-      'InternalContactsEmails': this.state.internalContactsEmail,
-      'InternalContactsDisplayNames': this.state.internalCCContactsDisplayNameForPreview,
-      'OutboundTransmittalDetails': this.state.itemsForGrid
+      SiteURL: siteUrl,
+      TransmittalNo: transmittalID,
+      ProjectName: this.state.projectName,
+      ContractNumber: this.state.contractNumber,
+      ProjectNumber: this.state.projectNumber,
+      CoverLetterNeeded: this.state.coverLetterNeeded == true ? "Yes" : "NO",
+      InternalContactsEmails: this.state.internalContactsEmail,
+      InternalContactsDisplayNames:
+        this.state.internalCCContactsDisplayNameForPreview,
+      OutboundTransmittalDetails: this.state.itemsForGrid,
     });
     const postOptions: IHttpClientOptions = {
       headers: requestHeaders,
-      body: body
+      body: body,
     };
     // let responseText: string = "";
-    let response = await this.props.context.httpClient.post(postURL, HttpClient.configurations.v1, postOptions);
+    let response = await this.props.context.httpClient.post(
+      postURL,
+      HttpClient.configurations.v1,
+      postOptions
+    );
     let responseJSON = await response.json();
     //responseText = JSON.stringify(responseJSON);
     console.log(responseJSON);
     if (response.ok) {
       // alert(response.text);
-      if (responseJSON['Status'] == "MailSend") {
+      if (responseJSON["Status"] == "MailSend") {
         this.setState({
           hideButtonAfterSubmit: "none",
           hideUnlockButton: "none",
           normalMsgBar: "",
           spinnerDiv: "none",
-          statusMessage: { isShowMessage: true, message: "Transmittal Send Successfully", messageType: 4 },
+          statusMessage: {
+            isShowMessage: true,
+            message: "Transmittal Send Successfully",
+            messageType: 4,
+          },
         });
         setTimeout(() => {
-          window.location.replace(window.location.protocol + "//" + window.location.hostname + this.props.siteUrl);
+          window.location.replace(
+            window.location.protocol +
+              "//" +
+              window.location.hostname +
+              this.props.siteUrl
+          );
         }, 10000);
+      } else {
       }
-      else {
-
-      }
+    } else {
     }
-    else { }
-
   }
 
   private async _userMessageSettings() {
-    const userMessageSettings: any[] = await this._Service.getHubItemsWithFilter(this.props.userMessageSettings, "PageName eq 'OutboundTransmittal'", this.props.hubSiteUrl)
-    userMessageSettings.forEach(item => {
+    const userMessageSettings: any[] =
+      await this._Service.getHubItemsWithFilter(
+        this.props.userMessageSettings,
+        "PageName eq 'OutboundTransmittal'",
+        this.props.hubSiteUrl
+      );
+    userMessageSettings.forEach((item) => {
       if (item.Title === "OutboundTransmittalRecall") {
         this.setState({ outboundRecallConfirmation: item.Message });
       }
-    })
+    });
   }
   //for query param gettings
   private _queryParamGetting() {
     let params = new URLSearchParams(window.location.search);
-    this.transmittalID = params.get('trid');
+    this.transmittalID = params.get("trid");
     if (this.transmittalID != "" && this.transmittalID != null) {
-      this._Service.getItembyID(this.props.siteUrl, this.props.outboundTransmittalHeaderListName, Number(this.transmittalID))
-        .then(transmittalHeaderItems => {
+      this._Service
+        .getItembyID(
+          this.props.siteUrl,
+          this.props.outboundTransmittalHeaderListName,
+          Number(this.transmittalID)
+        )
+        .then((transmittalHeaderItems) => {
           if (transmittalHeaderItems.TransmittalStatus == "Ongoing") {
             this.setState({
               hideButtonAfterSubmit: "none",
               hideUnlockButton: "none",
             });
             // this._LAUrlGettingForPermission();
-          }
-          else if (transmittalHeaderItems.TransmittalStatus == "Completed") {
+          } else if (transmittalHeaderItems.TransmittalStatus == "Completed") {
             this.setState({
               hideButtonAfterSubmit: "none",
               hideUnlockButton: "none",
@@ -1306,8 +2115,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         transmittalNo: "",
         webpartView: "",
       });
-    }
-    else {
+    } else {
       this.setState({
         transmittalNo: "none",
         transmitTypeForDefault: "",
@@ -1323,7 +2131,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     console.log(moment(date).format("DD/MM/YYYY"));
     let selectd = moment(date).format("DD/MM/YYYY");
     return selectd;
-  }
+  };
   //rebinding the fields after save as draft
   // private async bindOutboundTransmittalSavedData(transmittalID: string) {
   //   //sizecalculating
@@ -1344,7 +2152,6 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   //   let tempInternalCCID: any[] = [];
   //   let tempInternalCCName: any[] = [];
   //   let tempInternalCCNameForMail: any[] = [];
-
 
   //   let filter = "ID eq '" + this.transmittalID + "' ";
   //   await this._Service.getItemForSelectInLists(this.props.siteUrl, this.props.outboundTransmittalHeaderListName, "*", filter)
@@ -1550,7 +2357,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   //                   showGrid: false,
   //                   currentOutboundDetailItem: outboundTransmittalDetailsListName,
   //                 });
-  //                 //multiple mail checkbox 
+  //                 //multiple mail checkbox
   //                 if (outboundTransmittalDetailsListName[k].Size >= 10 && outboundTransmittalDetailsListName.length >= 2) {
   //                   this.setState({
   //                     sendAsMultipleEmailCheckBoxDiv: "none",
@@ -1640,7 +2447,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   //       }
 
   //     });
-  //   //  //binding from outbound transmittal additional documents 
+  //   //  //binding from outbound transmittal additional documents
   //   // sp.web.getList(this.props.siteUrl + "/" + this.props.outboundAdditionalDocumentsListName).items.filter("TransmittalIDId eq '" + this.transmittalID + "' ").get().then((outboundAdditionalDocumentsListName: string | any[]) => {
   //   //   console.log("outboundAdditionalDocumentsListName", outboundAdditionalDocumentsListName);
   //   //   if (outboundAdditionalDocumentsListName.length > 0) {
@@ -1702,11 +2509,14 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   //   }
   // }
   //tranmit to dropdown
-  public _drpdwnTransmitTo(event: React.FormEvent<HTMLDivElement>, option: IDropdownOption): void {
-    const customerArray: { key: any; text: string; }[] = [];
-    const customerArraySearch: { value: any; label: string; }[] = [];
+  public _drpdwnTransmitTo(
+    event: React.FormEvent<HTMLDivElement>,
+    option: IDropdownOption
+  ): void {
+    const customerArray: { key: any; text: string }[] = [];
+    const customerArraySearch: { value: any; label: string }[] = [];
     this.setState({
-      transmitToKey: (option.key).toString(),
+      transmitToKey: option.key.toString(),
       transmitTo: option.text,
       searchDocuments: [],
       contactsForSearch: [],
@@ -1720,20 +2530,41 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       selectedContactsCCDisplayName: "",
       transmittalType: "",
       transmittalTypekey: "",
-      coverLetterNeeded: false
+      coverLetterNeeded: false,
     });
     if (option.text === "Customer") {
-      this._Service.getHubItemsWithFilter(this.props.contactListName, "CustomerOrVendorID eq '" + this.state.customerId + "'  and  LegalEntityId eq '" + this.state.legalId + "'", this.props.hubSiteUrl)
-        .then(contacts => {
+      this._Service
+        .getHubItemsWithFilter(
+          this.props.contactListName,
+          "CustomerOrVendorID eq '" +
+            this.state.customerId +
+            "'  and  LegalEntityId eq '" +
+            this.state.legalId +
+            "'",
+          this.props.hubSiteUrl
+        )
+        .then((contacts) => {
           for (let k in contacts) {
             if (contacts[k].Active === true) {
               const transmitForItemdata = {
                 key: contacts[k].Email,
-                text: contacts[k].Title + " " + (contacts[k].LastName !== null ? contacts[k].LastName : " ") + "<" + contacts[k].Email + ">",
+                text:
+                  contacts[k].Title +
+                  " " +
+                  (contacts[k].LastName !== null ? contacts[k].LastName : " ") +
+                  "<" +
+                  contacts[k].Email +
+                  ">",
               };
               let transmitForItemdataSearch = {
                 value: contacts[k].Email,
-                label: contacts[k].Title + " " + (contacts[k].LastName !== null ? contacts[k].LastName : " ") + "<" + contacts[k].Email + ">",
+                label:
+                  contacts[k].Title +
+                  " " +
+                  (contacts[k].LastName !== null ? contacts[k].LastName : " ") +
+                  "<" +
+                  contacts[k].Email +
+                  ">",
               };
               customerArray.push(transmitForItemdata);
               customerArraySearch.push(transmitForItemdataSearch);
@@ -1746,21 +2577,29 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         subContractorKey: "",
         hideSubContractor: "none",
         contacts: customerArray,
-        contactsForSearch: customerArraySearch
+        contactsForSearch: customerArraySearch,
       });
-    }
-    else if (option.text === "Sub-Contractor") {
+    } else if (option.text === "Sub-Contractor") {
       this.setState({
         documentSelect: "",
         documentSelectedDiv: true,
       });
-      const subcontractorArray: { value: any; label: any; }[] = [];
-      this._Service.getHubItemsWithFilter("SubContractorMaster", "ProjectId eq '" + this.state.projectNumber + "' and  Title eq '" + this.state.legalId + "'", this.props.hubSiteUrl)
-        .then(subcontractor => {
+      const subcontractorArray: { value: any; label: any }[] = [];
+      this._Service
+        .getHubItemsWithFilter(
+          "SubContractorMaster",
+          "ProjectId eq '" +
+            this.state.projectNumber +
+            "' and  Title eq '" +
+            this.state.legalId +
+            "'",
+          this.props.hubSiteUrl
+        )
+        .then((subcontractor) => {
           for (let i = 0; i < subcontractor.length; i++) {
             let subcontractorItemdata = {
               value: subcontractor[i].VendorId,
-              label: subcontractor[i].VendorName
+              label: subcontractor[i].VendorName,
             };
             subcontractorArray.push(subcontractorItemdata);
             this.setState({
@@ -1771,16 +2610,16 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
             contacts: [],
             hideSubContractor: "",
             hideCustomer: "none",
-            subContractorItems: subcontractorArray
+            subContractorItems: subcontractorArray,
           });
         });
     }
   }
   //bin
   public _drpdwnSubContractor(option) {
-    const subContractor: { key: any; text: string; }[] = [];
+    const subContractor: { key: any; text: string }[] = [];
     let subContractorArray = [];
-    const subContractorArraySearch: { value: any; label: string; }[] = [];
+    const subContractorArraySearch: { value: any; label: string }[] = [];
     this.setState({
       subContractorKey: option.value,
       subContractor: option.label,
@@ -1796,19 +2635,40 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       selectedContactsCCDisplayName: "",
       transmittalType: "",
       transmittalTypekey: "",
-      coverLetterNeeded: false
+      coverLetterNeeded: false,
     });
-    this._Service.getHubItemsWithFilter(this.props.contactListName, "CustomerOrVendorID eq '" + option.value + "' and  LegalEntityId eq '" + this.state.legalId + "' ", this.props.hubSiteUrl)
-      .then(contacts => {
+    this._Service
+      .getHubItemsWithFilter(
+        this.props.contactListName,
+        "CustomerOrVendorID eq '" +
+          option.value +
+          "' and  LegalEntityId eq '" +
+          this.state.legalId +
+          "' ",
+        this.props.hubSiteUrl
+      )
+      .then((contacts) => {
         for (let k in contacts) {
           if (contacts[k].Active === true) {
             let transmitForItemdata = {
               key: contacts[k].Email,
-              text: contacts[k].Title + " " + (contacts[k].LastName != null ? contacts[k].LastName : " ") + "<" + contacts[k].Email + ">",
+              text:
+                contacts[k].Title +
+                " " +
+                (contacts[k].LastName != null ? contacts[k].LastName : " ") +
+                "<" +
+                contacts[k].Email +
+                ">",
             };
             let transmitForItemdataSearch = {
               value: contacts[k].Email,
-              label: contacts[k].Title + " " + (contacts[k].LastName != null ? contacts[k].LastName : " ") + "<" + contacts[k].Email + ">",
+              label:
+                contacts[k].Title +
+                " " +
+                (contacts[k].LastName != null ? contacts[k].LastName : " ") +
+                "<" +
+                contacts[k].Email +
+                ">",
             };
             subContractorArray.push(transmitForItemdata);
             subContractorArraySearch.push(transmitForItemdataSearch);
@@ -1819,10 +2679,9 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
           contacts: subContractor,
           contactsForSearch: subContractorArraySearch,
           subContractorKey: option.value,
-          subContractor: option.label
+          subContractor: option.label,
         });
       });
-
   }
   public _drpdwnTransmitFor = async (index, event, item) => {
     //this.setState({ transmitForKey: (option.key).toString(), transmitFor: option.text });
@@ -1842,7 +2701,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     //       approvalRequired: transmitfor[0].ApprovalRequired,
     //     });
     //   });
-  }
+  };
   private _hideGrid() {
     this.setState({
       confirmCancelDialog: false,
@@ -1856,9 +2715,12 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   //   this.setState({ itemsForGrid: updatedItems });
   // }
 
-  private notesOnchange = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newText: string): void => {
-    this.setState({ notes: newText || '' });
-  }
+  private notesOnchange = (
+    ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+    newText: string
+  ): void => {
+    this.setState({ notes: newText || "" });
+  };
   // private onCommentExternalChange = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newText: string): void => {
   //   const newMultiline = newText.length > 50;
   //   if (newMultiline !=== this.state.toggleMultiline) {
@@ -1871,7 +2733,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
 
   private _closeModal = (): void => {
     this.setState({ showReviewModal: false });
-  }
+  };
   //temporary array for external documents grid.
   private _showExternalGrid() {
     this.setState({
@@ -1882,20 +2744,29 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       //sizecalculating
       let totalsizeProjects = 0;
       let totalAdditional = 0;
-      if ((document.querySelector("#newfile") as HTMLInputElement).files[0] !== null) {
-        let myfile = (document.querySelector("#newfile") as HTMLInputElement).files[0];
+      if (
+        (document.querySelector("#newfile") as HTMLInputElement).files[0] !==
+        null
+      ) {
+        let myfile = (document.querySelector("#newfile") as HTMLInputElement)
+          .files[0];
         if (myfile.size) {
-          const duplicate = this.state.itemsForExternalGrid.filter(extItem => extItem.documentName === myfile.name)
+          const duplicate = this.state.itemsForExternalGrid.filter(
+            (extItem) => extItem.documentName === myfile.name
+          );
           if (!duplicate) {
             let tempExternalFile = {
               documentName: myfile.name,
-              fileSize: (((myfile.size / 1024)).toFixed(2)),
-              fileSizeInMB: (((myfile.size / 1024) * 0.0009765625).toFixed(2)),
+              fileSize: (myfile.size / 1024).toFixed(2),
+              fileSizeInMB: ((myfile.size / 1024) * 0.0009765625).toFixed(2),
               externalComments: this.state.externalComments,
               content: myfile,
-            }
-            this.setState(prevState => ({
-              itemsForExternalGrid: [...prevState.itemsForExternalGrid, tempExternalFile],
+            };
+            this.setState((prevState) => ({
+              itemsForExternalGrid: [
+                ...prevState.itemsForExternalGrid,
+                tempExternalFile,
+              ],
               showExternalGrid: false,
               fileSizeDiv: false,
             }));
@@ -1903,48 +2774,74 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         }
       }
       //for calculating document size
-      if (this.state.itemsForGrid.length > 0 || this.state.tempArrayForExternalDocumentGrid.length > 0) {
+      if (
+        this.state.itemsForGrid.length > 0 ||
+        this.state.tempArrayForExternalDocumentGrid.length > 0
+      ) {
         for (let i = 0; i < this.state.itemsForGrid.length; i++) {
-          totalsizeProjects = Number(totalsizeProjects) + Number(this.state.itemsForGrid[i].fileSizeInMB);
+          totalsizeProjects =
+            Number(totalsizeProjects) +
+            Number(this.state.itemsForGrid[i].fileSizeInMB);
         }
-        for (let k = 0; k < this.state.tempArrayForExternalDocumentGrid.length; k++) {
-          totalAdditional = Number(totalAdditional) + Number(this.state.tempArrayForExternalDocumentGrid[k].fileSizeInMB);
+        for (
+          let k = 0;
+          k < this.state.tempArrayForExternalDocumentGrid.length;
+          k++
+        ) {
+          totalAdditional =
+            Number(totalAdditional) +
+            Number(this.state.tempArrayForExternalDocumentGrid[k].fileSizeInMB);
         }
 
         let totalSize = add(totalAdditional, totalsizeProjects);
         let convertKBtoMB = Number(totalSize).toFixed(2);
         this.setState({
-          fileSize: Number(convertKBtoMB)
+          fileSize: Number(convertKBtoMB),
         });
         console.log(this.state.fileSize);
-        if (this.state.itemsForGrid.length >= 2 && Number(convertKBtoMB) < 9.99) {
+        if (
+          this.state.itemsForGrid.length >= 2 &&
+          Number(convertKBtoMB) < 9.99
+        ) {
           this.setState({
             sendAsMultipleEmailCheckBoxDiv: "",
           });
         }
-        for (let i = 0; i < this.state.tempArrayForExternalDocumentGrid.length; i++) {
-          if (this.state.tempArrayForExternalDocumentGrid[i].fileSizeInMB >= 10 && this.state.itemsForGrid.length >= 2) {
+        for (
+          let i = 0;
+          i < this.state.tempArrayForExternalDocumentGrid.length;
+          i++
+        ) {
+          if (
+            this.state.tempArrayForExternalDocumentGrid[i].fileSizeInMB >= 10 &&
+            this.state.itemsForGrid.length >= 2
+          ) {
             this.setState({
               sendAsMultipleEmailCheckBoxDiv: "none",
             });
           }
         }
-
       }
       this.myfileadditional.value = "";
       this.setState({
         externalComments: "",
         fileSizeDiv: false,
       });
-    }
-    else {
+    } else {
       this.validator.showMessages();
       this.forceUpdate();
     }
   }
   //temporary array for grid
   private _showProjectDocumentGrid() {
-    this.setState({ normalMsgBar: "none", statusMessage: { isShowMessage: false, message: "Please click the project add button", messageType: 1 }, });
+    this.setState({
+      normalMsgBar: "none",
+      statusMessage: {
+        isShowMessage: false,
+        message: "Please click the project add button",
+        messageType: 1,
+      },
+    });
     //sizecalculating
     let totalsizeProjects = 0;
     let totalAdditional = 0;
@@ -1954,99 +2851,146 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     });
 
     if (this.state.itemsForGrid.length > 0) {
-      let duplicate = this.state.itemsForGrid.filter(a => a.publishDoumentlibraryID === this.state.projectDocumentSelectKey);
+      let duplicate = this.state.itemsForGrid.filter(
+        (a) => a.publishDoumentlibraryID === this.state.projectDocumentSelectKey
+      );
       if (duplicate.length !== 0) {
         this.setState({
           documentSelectedDiv: false,
           documentSelect: "Already selected document.Please select another.",
           hideGridAddButton: true,
         });
-      }
-      else {
-        if (this.validator.fieldValid("transmitTo") && this.validator.fieldValid("projectDocuments") && this.validator.fieldValid("transmitForKey")) {
+      } else {
+        if (
+          this.validator.fieldValid("transmitTo") &&
+          this.validator.fieldValid("projectDocuments") &&
+          this.validator.fieldValid("transmitForKey")
+        ) {
           this.validator.hideMessages();
           // let sizeOfDocument;
           if (this.state.transmitTo === "Customer") {
             // let  sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
             // alert((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay/1024).toFixed(3))
             this.state.tempArrayForPublishedDocumentGrid.push({
-              publishDoumentlibraryID: this.state.publishDocumentsItemsForGrid[0].ID,
-              documentIndexId: this.state.publishDocumentsItemsForGrid[0].DocumentIndex.ID,
+              publishDoumentlibraryID:
+                this.state.publishDocumentsItemsForGrid[0].ID,
+              documentIndexId:
+                this.state.publishDocumentsItemsForGrid[0].DocumentIndex.ID,
               DueDate: moment(this.state.dueDate).format("DD/MM/YYYY"),
               dueDate: this.state.dueDate,
               comments: this.state.comments,
               revision: this.state.publishDocumentsItemsForGrid[0].Revision,
               documentID: this.state.publishDocumentsItemsForGrid[0].DocumentID,
-              documentName: this.state.publishDocumentsItemsForGrid[0].DocumentName,
-              fileSize: (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(2)),
-              fileSizeInMB: (Number((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024) * 0.0009765625).toFixed(2)),
+              documentName:
+                this.state.publishDocumentsItemsForGrid[0].DocumentName,
+              fileSize: (
+                this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay /
+                1024
+              ).toFixed(2),
+              fileSizeInMB: Number(
+                (this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay /
+                  1024) *
+                  0.0009765625
+              ).toFixed(2),
               transmitFor: this.state.transmitFor,
               approvalRequired: this.state.approvalRequired,
               transmitForKey: this.state.transmitForKey,
               temporary: "",
-              customerDocumentNo: this.state.publishDocumentsItemsForGrid[0].CustomerDocumentNo,
-
+              customerDocumentNo:
+                this.state.publishDocumentsItemsForGrid[0].CustomerDocumentNo,
             });
-            console.log("temporaryGrid", this.state.tempArrayForPublishedDocumentGrid);
+            console.log(
+              "temporaryGrid",
+              this.state.tempArrayForPublishedDocumentGrid
+            );
             this.setState({
               itemsForGrid: this.state.tempArrayForPublishedDocumentGrid,
               showGrid: false,
               projectDocumentSelectKey: "",
               fileSizeDiv: false,
               searchText: "",
-
             });
-            if (this.state.itemsForGrid.length > 0 || this.state.itemsForExternalGrid.length > 0) {
+            if (
+              this.state.itemsForGrid.length > 0 ||
+              this.state.itemsForExternalGrid.length > 0
+            ) {
               for (let i = 0; i < this.state.itemsForGrid.length; i++) {
-                totalsizeProjects = Number(totalsizeProjects) + Number(this.state.itemsForGrid[i].fileSizeInMB);
+                totalsizeProjects =
+                  Number(totalsizeProjects) +
+                  Number(this.state.itemsForGrid[i].fileSizeInMB);
               }
               for (let k = 0; k < this.state.itemsForExternalGrid.length; k++) {
-                totalAdditional = Number(totalAdditional) + Number(this.state.itemsForExternalGrid[k].fileSizeInMB);
+                totalAdditional =
+                  Number(totalAdditional) +
+                  Number(this.state.itemsForExternalGrid[k].fileSizeInMB);
               }
 
               const totalSize = add(totalAdditional, totalsizeProjects);
               const convertKBtoMB = Number(totalSize).toFixed(2);
               this.setState({
-                fileSize: Number(convertKBtoMB)
+                fileSize: Number(convertKBtoMB),
               });
               console.log(this.state.fileSize);
-              if (this.state.itemsForGrid.length >= 2 && Number(convertKBtoMB) < 9.99) {
+              if (
+                this.state.itemsForGrid.length >= 2 &&
+                Number(convertKBtoMB) < 9.99
+              ) {
                 this.setState({
                   sendAsMultipleEmailCheckBoxDiv: "",
                 });
               }
               for (let i = 0; i < this.state.itemsForGrid.length; i++) {
-                if (this.state.itemsForGrid[i].fileSizeInMB >= 10 && this.state.itemsForGrid.length >= 2) {
+                if (
+                  this.state.itemsForGrid[i].fileSizeInMB >= 10 &&
+                  this.state.itemsForGrid.length >= 2
+                ) {
                   this.setState({
                     sendAsMultipleEmailCheckBoxDiv: "none",
                   });
                 }
               }
-
             }
-
-          }
-          else if (this.state.transmitTo === "Sub-Contractor") {
+          } else if (this.state.transmitTo === "Sub-Contractor") {
             // sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
             // alert((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay/1024).toFixed(3))
             this.state.tempArrayForPublishedDocumentGrid.push({
-              publishDoumentlibraryID: this.state.publishDocumentsItemsForGrid[0].ID,
-              documentIndexId: this.state.publishDocumentsItemsForGrid[0].DocumentIndex.ID,
+              publishDoumentlibraryID:
+                this.state.publishDocumentsItemsForGrid[0].ID,
+              documentIndexId:
+                this.state.publishDocumentsItemsForGrid[0].DocumentIndex.ID,
               DueDate: moment(this.state.dueDate).format("DD/MM/YYYY"),
               dueDate: this.state.dueDate,
               comments: this.state.comments,
               revision: this.state.publishDocumentsItemsForGrid[0].Revision,
               documentID: this.state.publishDocumentsItemsForGrid[0].DocumentID,
-              documentName: this.state.publishDocumentsItemsForGrid[0].DocumentName,
-              acceptanceCode: (this.state.sourceDocumentItem === null) ? " " : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode.ID,
-              acceptanceCodeTitle: (this.state.sourceDocumentItem === null) ? "" : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode.Title,
-              fileSize: (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(2)),
-              fileSizeInMB: (Number((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024) * 0.0009765625).toFixed(2)),
+              documentName:
+                this.state.publishDocumentsItemsForGrid[0].DocumentName,
+              acceptanceCode:
+                this.state.sourceDocumentItem === null
+                  ? " "
+                  : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode
+                      .ID,
+              acceptanceCodeTitle:
+                this.state.sourceDocumentItem === null
+                  ? ""
+                  : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode
+                      .Title,
+              fileSize: (
+                this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay /
+                1024
+              ).toFixed(2),
+              fileSizeInMB: Number(
+                (this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay /
+                  1024) *
+                  0.0009765625
+              ).toFixed(2),
               transmitFor: this.state.transmitFor,
               approvalRequired: this.state.approvalRequired,
               transmitForKey: this.state.transmitForKey,
               temporary: "",
-              subcontractorDocumentNo: this.state.publishDocumentsItemsForGrid[0].SubcontractorDocumentNo,
+              subcontractorDocumentNo:
+                this.state.publishDocumentsItemsForGrid[0]
+                  .SubcontractorDocumentNo,
             });
             console.log(this.state.tempArrayForPublishedDocumentGrid);
             this.setState({
@@ -2056,135 +3000,207 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
               searchText: "",
               projectDocumentSelectKey: "",
             });
-            if (this.state.itemsForGrid.length > 0 || this.state.itemsForExternalGrid.length > 0) {
+            if (
+              this.state.itemsForGrid.length > 0 ||
+              this.state.itemsForExternalGrid.length > 0
+            ) {
               for (let i = 0; i < this.state.itemsForGrid.length; i++) {
-                totalsizeProjects = Number(totalsizeProjects) + Number(this.state.itemsForGrid[i].fileSizeInMB);
+                totalsizeProjects =
+                  Number(totalsizeProjects) +
+                  Number(this.state.itemsForGrid[i].fileSizeInMB);
               }
               for (let k = 0; k < this.state.itemsForExternalGrid.length; k++) {
-                totalAdditional = Number(totalAdditional) + Number(this.state.itemsForExternalGrid[k].fileSizeInMB);
+                totalAdditional =
+                  Number(totalAdditional) +
+                  Number(this.state.itemsForExternalGrid[k].fileSizeInMB);
               }
 
               const totalSize = add(totalAdditional, totalsizeProjects);
               const convertKBtoMB = Number(totalSize).toFixed(2);
               this.setState({
-                fileSize: Number(convertKBtoMB)
+                fileSize: Number(convertKBtoMB),
               });
               console.log(this.state.fileSize);
-              if (this.state.itemsForGrid.length >= 2 && Number(convertKBtoMB) < 9.99) {
+              if (
+                this.state.itemsForGrid.length >= 2 &&
+                Number(convertKBtoMB) < 9.99
+              ) {
                 this.setState({
                   sendAsMultipleEmailCheckBoxDiv: "",
                 });
               }
               for (let i = 0; i < this.state.itemsForGrid.length; i++) {
-                if (this.state.itemsForGrid[i].fileSizeInMB >= 10 && this.state.itemsForGrid.length >= 2) {
+                if (
+                  this.state.itemsForGrid[i].fileSizeInMB >= 10 &&
+                  this.state.itemsForGrid.length >= 2
+                ) {
                   this.setState({
                     sendAsMultipleEmailCheckBoxDiv: "none",
                   });
                 }
               }
             }
-
           }
-        }
-        else {
+        } else {
           this.validator.showMessages();
           this.forceUpdate();
         }
       }
-    }
-    else {
-      if (this.validator.fieldValid("transmitTo") && this.validator.fieldValid("projectDocuments") && this.validator.fieldValid("transmitForKey")) {
+    } else {
+      if (
+        this.validator.fieldValid("transmitTo") &&
+        this.validator.fieldValid("projectDocuments") &&
+        this.validator.fieldValid("transmitForKey")
+      ) {
         this.validator.hideMessages();
         //let  sizeOfDocument;
         if (this.state.transmitTo === "Customer") {
           // sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
           this.state.tempArrayForPublishedDocumentGrid.push({
-            publishDoumentlibraryID: this.state.publishDocumentsItemsForGrid[0].ID,
-            documentIndexId: this.state.publishDocumentsItemsForGrid[0].DocumentIndex.ID,
+            publishDoumentlibraryID:
+              this.state.publishDocumentsItemsForGrid[0].ID,
+            documentIndexId:
+              this.state.publishDocumentsItemsForGrid[0].DocumentIndex.ID,
             DueDate: moment(this.state.dueDate).format("DD/MM/YYYY "),
             dueDate: this.state.dueDate,
             comments: this.state.comments,
             revision: this.state.publishDocumentsItemsForGrid[0].Revision,
             documentID: this.state.publishDocumentsItemsForGrid[0].DocumentID,
-            documentName: this.state.publishDocumentsItemsForGrid[0].DocumentName,
-            fileSize: (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(2)),
-            fileSizeInMB: (Number((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024) * 0.0009765625).toFixed(2)),
+            documentName:
+              this.state.publishDocumentsItemsForGrid[0].DocumentName,
+            fileSize: (
+              this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024
+            ).toFixed(2),
+            fileSizeInMB: Number(
+              (this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay /
+                1024) *
+                0.0009765625
+            ).toFixed(2),
             transmitFor: this.state.transmitFor,
             approvalRequired: this.state.approvalRequired,
             transmitForKey: this.state.transmitForKey,
             temporary: "",
-            customerDocumentNo: this.state.publishDocumentsItemsForGrid[0].CustomerDocumentNo,
+            customerDocumentNo:
+              this.state.publishDocumentsItemsForGrid[0].CustomerDocumentNo,
           });
-          console.log("SizeinMb", Number((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024) * 0.0009765625).toFixed(2));
-          console.log("ProjectSelectedDocument", this.state.publishDocumentsItemsForGrid);
+          console.log(
+            "SizeinMb",
+            Number(
+              (this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay /
+                1024) *
+                0.0009765625
+            ).toFixed(2)
+          );
+          console.log(
+            "ProjectSelectedDocument",
+            this.state.publishDocumentsItemsForGrid
+          );
           this.setState({
             itemsForGrid: this.state.tempArrayForPublishedDocumentGrid,
             showGrid: false,
-            fileSize: Number((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024) * 0.0009765625).toFixed(2),
+            fileSize: Number(
+              (this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay /
+                1024) *
+                0.0009765625
+            ).toFixed(2),
             fileSizeDiv: false,
             searchText: "",
             projectDocumentSelectKey: "",
-
           });
-          if (this.state.itemsForGrid.length > 0 || this.state.itemsForExternalGrid.length > 0) {
+          if (
+            this.state.itemsForGrid.length > 0 ||
+            this.state.itemsForExternalGrid.length > 0
+          ) {
             for (let i = 0; i < this.state.itemsForGrid.length; i++) {
-              totalsizeProjects = Number(totalsizeProjects) + Number(this.state.itemsForGrid[i].fileSizeInMB);
+              totalsizeProjects =
+                Number(totalsizeProjects) +
+                Number(this.state.itemsForGrid[i].fileSizeInMB);
             }
             for (let k = 0; k < this.state.itemsForExternalGrid.length; k++) {
-              totalAdditional = Number(totalAdditional) + Number(this.state.itemsForExternalGrid[k].fileSizeInMB);
+              totalAdditional =
+                Number(totalAdditional) +
+                Number(this.state.itemsForExternalGrid[k].fileSizeInMB);
             }
 
             const totalSize = add(totalAdditional, totalsizeProjects);
             const convertKBtoMB = Number(totalSize).toFixed(2);
             this.setState({
-              fileSize: Number(convertKBtoMB)
+              fileSize: Number(convertKBtoMB),
             });
             console.log(this.state.fileSize);
           }
-        }
-        else if (this.state.transmitTo === "Sub-Contractor") {
+        } else if (this.state.transmitTo === "Sub-Contractor") {
           // sizeOfDocument = (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(3));
           // alert((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay/1024).toFixed(3))
           this.state.tempArrayForPublishedDocumentGrid.push({
-            publishDoumentlibraryID: this.state.publishDocumentsItemsForGrid[0].ID,
-            documentIndexId: this.state.publishDocumentsItemsForGrid[0].DocumentIndex.ID,
+            publishDoumentlibraryID:
+              this.state.publishDocumentsItemsForGrid[0].ID,
+            documentIndexId:
+              this.state.publishDocumentsItemsForGrid[0].DocumentIndex.ID,
             DueDate: moment(this.state.dueDate).format("DD/MM/YYYY"),
             dueDate: this.state.dueDate,
             comments: this.state.comments,
             revision: this.state.publishDocumentsItemsForGrid[0].Revision,
             documentID: this.state.publishDocumentsItemsForGrid[0].DocumentID,
-            documentName: this.state.publishDocumentsItemsForGrid[0].DocumentName,
-            acceptanceCode: (this.state.sourceDocumentItem === null) ? null : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode.ID,
-            acceptanceCodeTitle: (this.state.sourceDocumentItem === null) ? "" : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode.Title,
-            fileSize: (((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024)).toFixed(2)),
-            fileSizeInMB: (Number((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024) * 0.0009765625).toFixed(2)),
+            documentName:
+              this.state.publishDocumentsItemsForGrid[0].DocumentName,
+            acceptanceCode:
+              this.state.sourceDocumentItem === null
+                ? null
+                : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode.ID,
+            acceptanceCodeTitle:
+              this.state.sourceDocumentItem === null
+                ? ""
+                : this.state.publishDocumentsItemsForGrid[0].AcceptanceCode
+                    .Title,
+            fileSize: (
+              this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024
+            ).toFixed(2),
+            fileSizeInMB: Number(
+              (this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay /
+                1024) *
+                0.0009765625
+            ).toFixed(2),
             transmitFor: this.state.transmitFor,
             approvalRequired: this.state.approvalRequired,
             transmitForKey: this.state.transmitForKey,
             temporary: "",
-            subcontractorDocumentNo: this.state.publishDocumentsItemsForGrid[0].SubcontractorDocumentNo,
+            subcontractorDocumentNo:
+              this.state.publishDocumentsItemsForGrid[0]
+                .SubcontractorDocumentNo,
           });
           console.log(this.state.tempArrayForPublishedDocumentGrid);
           this.setState({
             itemsForGrid: this.state.tempArrayForPublishedDocumentGrid,
             showGrid: false,
-            fileSize: Number((this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay / 1024) * 0.0009765625).toFixed(2),
+            fileSize: Number(
+              (this.state.publishDocumentsItemsForGrid[0].FileSizeDisplay /
+                1024) *
+                0.0009765625
+            ).toFixed(2),
             fileSizeDiv: false,
             searchText: "",
             projectDocumentSelectKey: "",
           });
-          if (this.state.itemsForGrid.length > 0 || this.state.itemsForExternalGrid.length > 0) {
+          if (
+            this.state.itemsForGrid.length > 0 ||
+            this.state.itemsForExternalGrid.length > 0
+          ) {
             for (let i = 0; i < this.state.itemsForGrid.length; i++) {
-              totalsizeProjects = Number(totalsizeProjects) + Number(this.state.itemsForGrid[i].fileSizeInMB);
+              totalsizeProjects =
+                Number(totalsizeProjects) +
+                Number(this.state.itemsForGrid[i].fileSizeInMB);
             }
             for (let k = 0; k < this.state.itemsForExternalGrid.length; k++) {
-              totalAdditional = Number(totalAdditional) + Number(this.state.itemsForExternalGrid[k].fileSizeInMB);
+              totalAdditional =
+                Number(totalAdditional) +
+                Number(this.state.itemsForExternalGrid[k].fileSizeInMB);
             }
 
             const totalSize = add(totalAdditional, totalsizeProjects);
             const convertKBtoMB = Number(totalSize).toFixed(2);
             this.setState({
-              fileSize: Number(convertKBtoMB)
+              fileSize: Number(convertKBtoMB),
             });
             console.log(this.state.fileSize);
           }
@@ -2194,8 +3210,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
             });
           }
         }
-      }
-      else {
+      } else {
         this.validator.showMessages();
         this.forceUpdate();
       }
@@ -2205,43 +3220,64 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       transmitForKey: null,
     });
   }
-  //Save as draft 
+  //Save as draft
 
   private _forCalculatingSize() {
     let totalsizeProjects = 0;
     let totalAdditional = 0;
-    if (this.state.itemsForGrid.length > 0 || this.state.itemsForExternalGrid.length > 0) {
+    if (
+      this.state.itemsForGrid.length > 0 ||
+      this.state.itemsForExternalGrid.length > 0
+    ) {
       for (let i = 0; i < this.state.itemsForGrid.length; i++) {
-        totalsizeProjects = Number(totalsizeProjects) + Number(this.state.itemsForGrid[i].fileSizeInMB);
+        totalsizeProjects =
+          Number(totalsizeProjects) +
+          Number(this.state.itemsForGrid[i].fileSizeInMB);
       }
       for (let k = 0; k < this.state.itemsForExternalGrid.length; k++) {
-        totalAdditional = Number(totalAdditional) + Number(this.state.itemsForExternalGrid[k].fileSizeInMB);
+        totalAdditional =
+          Number(totalAdditional) +
+          Number(this.state.itemsForExternalGrid[k].fileSizeInMB);
       }
 
       const totalSize = add(totalAdditional, totalsizeProjects);
       const convertKBtoMB = Number(totalSize).toFixed(2);
       this.setState({
-        fileSize: Number(convertKBtoMB)
+        fileSize: Number(convertKBtoMB),
       });
       console.log(this.state.fileSize);
     }
-    if (Number(this.state.fileSize) > 10 && (this.state.sendAsSharedFolder === true)) {
+    if (
+      Number(this.state.fileSize) > 10 &&
+      this.state.sendAsSharedFolder === true
+    ) {
       this.setState({
         normalMsgBar: "none",
-        statusMessage: { isShowMessage: false, message: this.state.transmittalNo, messageType: 4 },
-
+        statusMessage: {
+          isShowMessage: false,
+          message: this.state.transmittalNo,
+          messageType: 4,
+        },
       });
-    }
-    else if (Number(this.state.fileSize) < 10 && (this.state.sendAsSharedFolder === false)) {
+    } else if (
+      Number(this.state.fileSize) < 10 &&
+      this.state.sendAsSharedFolder === false
+    ) {
       this.setState({
         normalMsgBar: "none",
-        statusMessage: { isShowMessage: false, message: this.state.transmittalNo, messageType: 4 },
-
+        statusMessage: {
+          isShowMessage: false,
+          message: this.state.transmittalNo,
+          messageType: 4,
+        },
       });
     }
   }
   //incrementing transmittal id sequence number
-  private _transmittalSequenceNumber(incrementValue: any, sequenceNumber: number) {
+  private _transmittalSequenceNumber(
+    incrementValue: any,
+    sequenceNumber: number
+  ) {
     let incrementSequenceNumber = incrementValue;
     while (incrementSequenceNumber.length < sequenceNumber)
       incrementSequenceNumber = "0" + incrementSequenceNumber;
@@ -2260,19 +3296,29 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     });
     // alert(value);
   }
-  private handleSubmit(event: { preventDefault: () => void; }) {
+  private handleSubmit(event: { preventDefault: () => void }) {
     console.log(this.state);
     event.preventDefault();
   }
-  private handleChange(event: { target: { checked: any; value: any; }; }) {
+  private handleChange(event: { target: { checked: any; value: any } }) {
     let isChecked = event.target.checked;
     let item = event.target.value;
 
-    this.setState(prevState => ({ checkedItems: prevState.checkedItems.set(item, isChecked) }));
+    this.setState((prevState) => ({
+      checkedItems: prevState.checkedItems.set(item, isChecked),
+    }));
     console.log(this.state.checkedItems.item);
   }
   //Delete button click
-  private _openDeleteConfirmation = (items: { [x: string]: any; outboundDetailsID: any; additionalDocumentID: any; }, key: number, type: string) => {
+  private _openDeleteConfirmation = (
+    items: {
+      [x: string]: any;
+      outboundDetailsID: any;
+      additionalDocumentID: any;
+    },
+    key: number,
+    type: string
+  ) => {
     if (this.transmittalID === "" || this.transmittalID === null) {
       this.setState({
         deleteConfirmation: "",
@@ -2287,8 +3333,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         this.setState({ TypeOFDelete: "AdditionalDocuments" });
         this.keyForDelete = key;
       }
-    }
-    else {
+    } else {
       this.setState({
         deleteConfirmation: "",
         confirmDeleteDialog: false,
@@ -2312,27 +3357,27 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         });
       }
     }
-
-  }
-  private _confirmDeleteItem = async (docID: any, items: string, key: string) => {
+  };
+  private _confirmDeleteItem = async (
+    docID: any,
+    items: string,
+    key: string
+  ) => {
     if (this.transmittalID == "" || this.transmittalID == null) {
       this.setState({
         confirmDeleteDialog: true,
-        deleteConfirmation: "none"
+        deleteConfirmation: "none",
       });
       this.validator.hideMessages();
       if (this.state.TypeOFDelete == "ProjectDocuments") {
         this.itemDeleteFromGrid(items, key);
-      }
-      else if (this.state.TypeOFDelete == "AdditionalDocuments") {
+      } else if (this.state.TypeOFDelete == "AdditionalDocuments") {
         this.itemDeleteFromExternalGrid(items, key);
       }
-
-    }
-    else {
+    } else {
       this.setState({
         confirmDeleteDialog: true,
-        deleteConfirmation: "none"
+        deleteConfirmation: "none",
       });
       this.validator.hideMessages();
       console.log(items[key]);
@@ -2355,8 +3400,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         //   });
         // }
         this.itemDeleteFromGrid(items, key);
-      }
-      else if (this.typeForDelete == "AdditionalDocuments") {
+      } else if (this.typeForDelete == "AdditionalDocuments") {
         // if (docID) {
         //   let list = sp.web.getList(this.props.siteUrl + "/" + this.props.outboundAdditionalDocumentsListName + "/");
         //   await list.items.getById(parseInt(docID)).delete();
@@ -2372,33 +3416,42 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
         this.itemDeleteFromExternalGrid(items, key);
       }
     }
-  }
+  };
   //deleting
   public itemDeleteFromGrid(items: any, key: any) {
     console.log(items);
-    const updatedFiles = this.state.itemsForGrid.filter((item, index) => index !== key);
+    const updatedFiles = this.state.itemsForGrid.filter(
+      (item, index) => index !== key
+    );
     // Extract publishDoumentlibraryID values from the option array
-    const optionIds = updatedFiles.map(item => item.publishDoumentlibraryID);    // Filter itemForGrid based on the optionIds
-    const filteredItemForGrid = this.state.selectedDocuments.filter(item => optionIds.includes(item.value));
+    const optionIds = updatedFiles.map((item) => item.publishDoumentlibraryID); // Filter itemForGrid based on the optionIds
+    const filteredItemForGrid = this.state.selectedDocuments.filter((item) =>
+      optionIds.includes(item.value)
+    );
     console.log("when unselect the option", filteredItemForGrid);
 
     this.setState({
       itemsForGrid: updatedFiles,
       documentSelectedDiv: true,
       projectDocumentSelectKey: "",
-      selectedDocuments: filteredItemForGrid
+      selectedDocuments: filteredItemForGrid,
     });
     console.log("after removal", this.state.itemsForGrid);
     console.log(items.fileSize);
     this._forCalculatingSize();
     //for project documents
     for (let i = 0; i < this.state.itemsForGrid.length; i++) {
-      if (this.state.itemsForGrid[i].fileSizeInMB >= 10 && this.state.itemsForGrid.length >= 2) {
+      if (
+        this.state.itemsForGrid[i].fileSizeInMB >= 10 &&
+        this.state.itemsForGrid.length >= 2
+      ) {
         this.setState({
           sendAsMultipleEmailCheckBoxDiv: "none",
         });
-      }
-      else if (this.state.itemsForGrid[i].fileSizeInMB <= 10 && this.state.itemsForGrid.length >= 2) {
+      } else if (
+        this.state.itemsForGrid[i].fileSizeInMB <= 10 &&
+        this.state.itemsForGrid.length >= 2
+      ) {
         this.setState({
           sendAsMultipleEmailCheckBoxDiv: "",
         });
@@ -2406,12 +3459,17 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     }
     //for additional
     for (let i = 0; i < this.state.itemsForExternalGrid.length; i++) {
-      if (this.state.itemsForExternalGrid[i].fileSizeInMB >= 10 && this.state.itemsForExternalGrid.length >= 2) {
+      if (
+        this.state.itemsForExternalGrid[i].fileSizeInMB >= 10 &&
+        this.state.itemsForExternalGrid.length >= 2
+      ) {
         this.setState({
           sendAsMultipleEmailCheckBoxDiv: "none",
         });
-      }
-      else if (this.state.itemsForExternalGrid[i].fileSizeInMB <= 10 && this.state.itemsForExternalGrid.length >= 2) {
+      } else if (
+        this.state.itemsForExternalGrid[i].fileSizeInMB <= 10 &&
+        this.state.itemsForExternalGrid.length >= 2
+      ) {
         this.setState({
           sendAsMultipleEmailCheckBoxDiv: "",
         });
@@ -2430,26 +3488,36 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       externalComments: "",
     });
     this.myfileadditional.value = "";
-    //for additiona multiple doc checkbox 
+    //for additiona multiple doc checkbox
     for (let i = 0; i < this.state.itemsForExternalGrid.length; i++) {
-      if (this.state.itemsForExternalGrid[i].fileSizeInMB >= 10 && this.state.itemsForGrid.length >= 2) {
+      if (
+        this.state.itemsForExternalGrid[i].fileSizeInMB >= 10 &&
+        this.state.itemsForGrid.length >= 2
+      ) {
         this.setState({
           sendAsMultipleEmailCheckBoxDiv: "none",
         });
-      }
-      else if (this.state.itemsForExternalGrid[i].fileSizeInMB <= 10 && this.state.itemsForGrid.length >= 2) {
+      } else if (
+        this.state.itemsForExternalGrid[i].fileSizeInMB <= 10 &&
+        this.state.itemsForGrid.length >= 2
+      ) {
         this.setState({
           sendAsMultipleEmailCheckBoxDiv: "",
         });
       }
     }
     for (let i = 0; i < this.state.itemsForGrid.length; i++) {
-      if (this.state.itemsForGrid[i].fileSizeInMB >= 10 && this.state.itemsForGrid.length >= 2) {
+      if (
+        this.state.itemsForGrid[i].fileSizeInMB >= 10 &&
+        this.state.itemsForGrid.length >= 2
+      ) {
         this.setState({
           sendAsMultipleEmailCheckBoxDiv: "none",
         });
-      }
-      else if (this.state.itemsForGrid[i].fileSizeInMB <= 10 && this.state.itemsForGrid.length >= 2) {
+      } else if (
+        this.state.itemsForGrid[i].fileSizeInMB <= 10 &&
+        this.state.itemsForGrid.length >= 2
+      ) {
         this.setState({
           sendAsMultipleEmailCheckBoxDiv: "",
         });
@@ -2467,7 +3535,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       recallConfirmMsgDiv: "none",
     });
     this.validator.hideMessages();
-  }
+  };
   //confirm cancel button click
   private _cancelConfirmYes = () => {
     this.setState({
@@ -2477,27 +3545,37 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       documentSelect: "",
     });
 
-    window.location.replace(window.location.protocol + "//" + window.location.hostname + "/" + this.props.siteUrl);
+    window.location.replace(
+      window.location.protocol +
+        "//" +
+        window.location.hostname +
+        "/" +
+        this.props.siteUrl
+    );
     this.validator.hideMessages();
-  }
+  };
   private dialogStyles = { main: { maxWidth: 500 } };
   private dialogContentProps = {
     type: DialogType.normal,
-    closeButtonAriaLabel: 'none',
-    title: 'Do you want to delete?',
+    closeButtonAriaLabel: "none",
+    title: "Do you want to delete?",
   };
   private dialogCancelContentProps = {
     type: DialogType.normal,
-    closeButtonAriaLabel: 'none',
-    title: 'Do you want to Cancel?',
+    closeButtonAriaLabel: "none",
+    title: "Do you want to Cancel?",
     //subText: '<b>Do you want to cancel? </b> ',
   };
-  public _coverLetterNeeded = async (ev: React.FormEvent<HTMLInputElement>, isChecked?: boolean) => {
+  public _coverLetterNeeded = async (
+    ev: React.FormEvent<HTMLInputElement>,
+    isChecked?: boolean
+  ) => {
     if (isChecked) {
-      this.setState({ coverLetterNeeded: true, });
+      this.setState({ coverLetterNeeded: true });
+    } else if (!isChecked) {
+      this.setState({ coverLetterNeeded: false });
     }
-    else if (!isChecked) { this.setState({ coverLetterNeeded: false, }); }
-  }
+  };
   private modalProps = {
     isBlocking: true,
   };
@@ -2511,28 +3589,37 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
       recallConfirmMsgDiv: "none",
       deleteConfirmation: "none",
     });
-
-  }
-  public _onSendAsSharedFolder = async (ev: React.FormEvent<HTMLInputElement>, isChecked?: boolean) => {
+  };
+  public _onSendAsSharedFolder = async (
+    ev: React.FormEvent<HTMLInputElement>,
+    isChecked?: boolean
+  ) => {
     if (isChecked) {
-      this.setState({ sendAsSharedFolder: true, recieveInSharedFolder: true, });
+      this.setState({ sendAsSharedFolder: true, recieveInSharedFolder: true });
       if (this.state.normalMsgBar === "") {
         this.setState({
           normalMsgBar: "none",
-          statusMessage: { isShowMessage: false, message: "Recalled" + this.state.transmittalNo, messageType: 4 },
+          statusMessage: {
+            isShowMessage: false,
+            message: "Recalled" + this.state.transmittalNo,
+            messageType: 4,
+          },
         });
       }
+    } else if (!isChecked) {
+      this.setState({ sendAsSharedFolder: false });
     }
-    else if (!isChecked) { this.setState({ sendAsSharedFolder: false, }); }
-
-
-  }
-  public _onRecieveInSharedFolder = async (ev: React.FormEvent<HTMLInputElement>, isChecked?: boolean) => {
+  };
+  public _onRecieveInSharedFolder = async (
+    ev: React.FormEvent<HTMLInputElement>,
+    isChecked?: boolean
+  ) => {
     if (isChecked) {
-      this.setState({ recieveInSharedFolder: true, });
+      this.setState({ recieveInSharedFolder: true });
+    } else if (!isChecked) {
+      this.setState({ recieveInSharedFolder: false });
     }
-    else if (!isChecked) { this.setState({ recieveInSharedFolder: false, }); }
-  }
+  };
   //for To fields
   // private _onDrpdwnCntact = async (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => {
   //   let checkedContacts: string;
@@ -2619,26 +3706,38 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     let getSelectedInternalID = [];
     let getSelectedInternalDisplayName = [];
     let getSelectedInternalEmailID = [];
-    items.forEach(item => {
+    items.forEach((item) => {
       getSelectedInternalID.push(items[item].id);
       getSelectedInternalDisplayName.push(items[item].text);
       getSelectedInternalEmailID.push(items[item].secondaryText);
-    })
+    });
 
     let displayInternalName = getSelectedInternalDisplayName.toString();
     let InternalEmailID = getSelectedInternalEmailID.toString();
-    let InternalEmailIDSemicolonAttached = replaceString(InternalEmailID, ',', ';');
-    this.setState({ internalCCContacts: getSelectedInternalID, internalCCContactsDisplayNameForPreview: displayInternalName, internalContactsEmail: InternalEmailIDSemicolonAttached });
-  }
-  public _onSendAsMultipleFolder = async (ev: React.FormEvent<HTMLInputElement>, isChecked?: boolean) => {
+    let InternalEmailIDSemicolonAttached = replaceString(
+      InternalEmailID,
+      ",",
+      ";"
+    );
+    this.setState({
+      internalCCContacts: getSelectedInternalID,
+      internalCCContactsDisplayNameForPreview: displayInternalName,
+      internalContactsEmail: InternalEmailIDSemicolonAttached,
+    });
+  };
+  public _onSendAsMultipleFolder = async (
+    ev: React.FormEvent<HTMLInputElement>,
+    isChecked?: boolean
+  ) => {
     if (isChecked) {
-      this.setState({ sendAsMultipleFolder: true, });
+      this.setState({ sendAsMultipleFolder: true });
+    } else if (!isChecked) {
+      this.setState({ sendAsMultipleFolder: false });
     }
-    else if (!isChecked) { this.setState({ sendAsMultipleFolder: false, }); }
-  }
+  };
   private dialogContentRecallProps = {
     type: DialogType.normal,
-    closeButtonAriaLabel: 'none',
+    closeButtonAriaLabel: "none",
     title: "Do you want to Recall ?",
   };
   private _recallTransmittalConfirmation() {
@@ -2665,7 +3764,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
 
   //   let FinalBody = replacelink;
   //   if (email) {
-  //     //Create Body for Email  
+  //     //Create Body for Email
   //     let emailPostBody: any = {
   //       "message": {
   //         "subject": replacedSubject,
@@ -2682,8 +3781,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   //         ],
   //       }
   //     };
-  //     //Send Email uisng MS Graph  
-  //     this.props.context.msGraphClientFactory 
+  //     //Send Email uisng MS Graph
+  //     this.props.context.msGraphClientFactory
   //     .getClient("3")
   //     .then((client): void => {
   //         client
@@ -2693,19 +3792,27 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   //   }
   //   // }
   // }
-  public _uploadadditional(e: { target: { value: any; }; currentTarget: { value: any; }; }) {
+  public _uploadadditional(e: {
+    target: { value: any };
+    currentTarget: { value: any };
+  }) {
     this.myfileadditional = e.target.value;
     let documentNameExtension;
     console.log(this.myfileadditional);
     console.log(e.target.value);
     console.log(e.currentTarget.value);
-    let myfile = (document.querySelector("#newfile") as HTMLInputElement).files[0];
+    let myfile = (document.querySelector("#newfile") as HTMLInputElement)
+      .files[0];
     let splitted = myfile.name.split(".");
     console.log(splitted);
     console.log(splitted.length);
     console.log(splitted[splitted.length - 1]);
     for (let r = 0; r < splitted.length - 1; r++) {
-      documentNameExtension = splitted.slice(0, -1).join('.') + "_TR00011" + '.' + splitted[splitted.length - 1];
+      documentNameExtension =
+        splitted.slice(0, -1).join(".") +
+        "_TR00011" +
+        "." +
+        splitted[splitted.length - 1];
     }
     // documentNameExtension = splitted[0] + "_TR00011" + '.' + splitted[splitted.length - 1];
     console.log(documentNameExtension);
@@ -2723,7 +3830,7 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     });
     let selectedContactsIdArray = [];
     let selectedContactsNameArray = [];
-    console.log("option " + option)
+    console.log("option " + option);
 
     for (let i = 0; i < option.length; i++) {
       selectedContactsIdArray.push(option[i].value);
@@ -2733,9 +3840,13 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     console.log("Name", selectedContactsNameArray);
     this.emailsSelectedTo.push(selectedContactsIdArray);
     this.contactToDisplay.push(selectedContactsNameArray);
-    checkedContacts = (this.emailsSelectedTo).toString();
-    checkedContactsDisplay = (this.contactToDisplay).toString();
-    let checkedContactsSemicolonAttached = replaceString(checkedContacts, ',', ';');
+    checkedContacts = this.emailsSelectedTo.toString();
+    checkedContactsDisplay = this.contactToDisplay.toString();
+    let checkedContactsSemicolonAttached = replaceString(
+      checkedContacts,
+      ",",
+      ";"
+    );
     this.setState({
       selectedContactsTo: checkedContactsSemicolonAttached,
       selectedContactsToDisplayName: checkedContactsDisplay,
@@ -2744,9 +3855,9 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     console.log("checkedContacts", checkedContacts);
     this.setState({
       selectedContactsToName: option,
-      searchContactsTo: selectedContactsIdArray
+      searchContactsTo: selectedContactsIdArray,
     });
-  }
+  };
   private setSelectedContactsCC = async (option: any[]) => {
     let checkedContacts: string;
     let checkedContactsDisplay: string;
@@ -2766,9 +3877,13 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     }
     this.emailsSelectedCC.push(selectedContactsCCArray);
     this.contactCCDisplay.push(selectedContactsCCNameArray);
-    checkedContacts = (this.emailsSelectedCC).toString();
-    checkedContactsDisplay = (this.contactCCDisplay).toString();
-    const checkedContactsSemicolonAttached = replaceString(checkedContacts, ',', ';');
+    checkedContacts = this.emailsSelectedCC.toString();
+    checkedContactsDisplay = this.contactCCDisplay.toString();
+    const checkedContactsSemicolonAttached = replaceString(
+      checkedContacts,
+      ",",
+      ";"
+    );
 
     this.setState({
       selectedContactsCC: checkedContactsSemicolonAttached,
@@ -2777,16 +3892,17 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     console.log("checkedContacts", checkedContacts);
     this.setState({
       selectedContactsCCName: option,
-      searchContactsCC: selectedContactsCCArray
+      searchContactsCC: selectedContactsCCArray,
     });
-  }
+  };
   // from current site
   //page load from project information list
   public projectInformation = async () => {
-    await this._Service.getListItems(this.props.siteUrl, this.props.projectInformationListName)
+    await this._Service
+      .getListItems(this.props.siteUrl, this.props.projectInformationListName)
       .then((projectInformation: any[]) => {
         if (projectInformation.length > 0) {
-          projectInformation.forEach(PI => {
+          projectInformation.forEach((PI) => {
             if (PI.Key === "ProjectName") {
               this.setState({
                 projectName: PI.Title,
@@ -2831,14 +3947,13 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                 legalId: PI.Title,
               });
             }
-
-          })
+          });
         }
       });
-  }
+  };
   //Current User
   private async _currentUser() {
-    this._Service.getCurrentUserId().then((currentUser: { Id: any; }) => {
+    this._Service.getCurrentUserId().then((currentUser: { Id: any }) => {
       this.setState({
         currentUser: currentUser.Id,
       });
@@ -2846,58 +3961,107 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
   }
   //transmit for
   private _transmitForBind() {
-    const transmitForArray: { key: any; text: any; }[] = [];
-    this._Service.getTransmitFor(this.props.siteUrl, this.props.transmittalCodeSettingsListName)
+    const transmitForArray: { key: any; text: any }[] = [];
+    this._Service
+      .getTransmitFor(
+        this.props.siteUrl,
+        this.props.transmittalCodeSettingsListName
+      )
       .then((transmitFor: string | any[]) => {
         for (let i = 0; i < transmitFor.length; i++) {
           const transmitForItemdata = {
             key: transmitFor[i].ID,
-            text: transmitFor[i].Title
+            text: transmitFor[i].Title,
           };
           transmitForArray.push(transmitForItemdata);
         }
         this.setState({
-          transmitForItems: transmitForArray
+          transmitForItems: transmitForArray,
         });
       });
   }
   //for customers documents from published docs
   public async _loadPublishDocuments(item) {
-    const publishedDocumentArray: { value: any; label: any; }[] = [];
+    const publishedDocumentArray: { value: any; label: any }[] = [];
     let transmitForItemdata;
     let filter;
-    console.log(this.state.documentFilters)
-    const publishedDocumentsDl: string = this.props.context.pageContext.web.serverRelativeUrl + "/" + this.props.publishDocumentLibraryName;
+    console.log(this.state.documentFilters);
+    const publishedDocumentsDl: string =
+      this.props.context.pageContext.web.serverRelativeUrl +
+      "/" +
+      this.props.publishDocumentLibraryName;
     if (item !== "") {
-      if (this.state.documentFilters['Category'] !== undefined) {
-        filter = "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') and (Category eq '" + this.state.documentFilters['Category'] + "')";
-
+      if (this.state.documentFilters["Category"] !== undefined) {
+        filter =
+          "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" +
+          false +
+          "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') and (Category eq '" +
+          this.state.documentFilters["Category"] +
+          "')";
       }
-      if (this.state.documentFilters['SubCategory'] !== undefined) {
-        filter = "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') and (SubCategory eq '" + this.state.documentFilters['SubCategory'] + "')";
-
+      if (this.state.documentFilters["SubCategory"] !== undefined) {
+        filter =
+          "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" +
+          false +
+          "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') and (SubCategory eq '" +
+          this.state.documentFilters["SubCategory"] +
+          "')";
       }
-      if (this.state.documentFilters['Department'] !== undefined) {
-        filter = "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') and (DepartmentName eq '" + this.state.documentFilters['Department'] + "')";
-
+      if (this.state.documentFilters["Department"] !== undefined) {
+        filter =
+          "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" +
+          false +
+          "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') and (DepartmentName eq '" +
+          this.state.documentFilters["Department"] +
+          "')";
       }
-      if ((this.state.documentFilters['Department'] !== undefined && this.state.documentFilters['SubCategory'] !== undefined && this.state.documentFilters['Category'] !== undefined)) {
-        filter = "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') and (DepartmentName eq '" + this.state.documentFilters['Department'] + "') and (Category eq '" + this.state.documentFilters['Category'] + "') and (SubCategory eq '" + this.state.documentFilters['SubCategory'] + "')";
+      if (
+        this.state.documentFilters["Department"] !== undefined &&
+        this.state.documentFilters["SubCategory"] !== undefined &&
+        this.state.documentFilters["Category"] !== undefined
+      ) {
+        filter =
+          "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" +
+          false +
+          "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') and (DepartmentName eq '" +
+          this.state.documentFilters["Department"] +
+          "') and (Category eq '" +
+          this.state.documentFilters["Category"] +
+          "') and (SubCategory eq '" +
+          this.state.documentFilters["SubCategory"] +
+          "')";
       }
+    } else {
+      filter =
+        "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" +
+        false +
+        "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') ";
     }
-    else {
-      filter = "TransmittalStatus ne 'Ongoing' and (TransmittalDocument ne '" + false + "') and (DocumentStatus eq 'Active') and (WorkflowStatus eq 'Published') "
-    }
-    this._Service.getLibraryItems(publishedDocumentsDl, filter)
+    this._Service
+      .getLibraryItems(publishedDocumentsDl, filter)
       .then(async (publishDocumentsItems) => {
-        console.log("PublishDocumentForCustomerCount", publishDocumentsItems.length);
-        this.sortedArray = _.orderBy(publishDocumentsItems, 'FileLeafRef', ['asc']);
+        console.log(
+          "PublishDocumentForCustomerCount",
+          publishDocumentsItems.length
+        );
+        this.sortedArray = _.orderBy(publishDocumentsItems, "FileLeafRef", [
+          "asc",
+        ]);
         if (publishDocumentsItems.length > 0) {
-          this._Service.getDIItems(this.props.context.pageContext.web.serverRelativeUrl, "DocumentIndex")
+          this._Service
+            .getDIItems(
+              this.props.context.pageContext.web.serverRelativeUrl,
+              "DocumentIndex"
+            )
             .then((DIndexItems: any[]) => {
-              console.log("PublishDocumentForCustomerFromIndex", DIndexItems.length);
+              console.log(
+                "PublishDocumentForCustomerFromIndex",
+                DIndexItems.length
+              );
               const filteredIndexItems = this.sortedArray.filter((item) =>
-                DIndexItems.some((pdItem: { ID: any; }) => pdItem.ID === item.DocumentIndexId)
+                DIndexItems.some(
+                  (pdItem: { ID: any }) => pdItem.ID === item.DocumentIndexId
+                )
               );
               if (filteredIndexItems.length > 0) {
                 filteredIndexItems.forEach((filteredItems: any) => {
@@ -2912,7 +4076,8 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                     DocumentIndexId: filteredItems.DocumentIndexId,
                     WorkflowStatus: filteredItems.WorkflowStatus,
                     CustomerDocumentNo: filteredItems.CustomerDocumentNo,
-                    SubcontractorDocumentNo: filteredItems.SubcontractorDocumentNo,
+                    SubcontractorDocumentNo:
+                      filteredItems.SubcontractorDocumentNo,
                   };
                   publishedDocumentArray.push(transmitForItemdata);
                 });
@@ -2920,122 +4085,147 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
                   searchDocuments: publishedDocumentArray,
                   documentSelectedDiv: true,
                 });
-              }
-              else {
+              } else {
                 this.setState({
                   searchDocuments: [],
                   documentSelectedDiv: false,
-                  documentSelect: "No documents for transmittal "
+                  documentSelect: "No documents for transmittal ",
                 });
               }
             });
-        }
-        else {
+        } else {
           this.setState({
             searchDocuments: [],
             documentFilters: [],
             documentSelectedDiv: false,
-            documentSelect: "No documents for transmittal "
+            documentSelect: "No documents for transmittal ",
           });
         }
-      }).catch((err: any) => {
+      })
+      .catch((err: any) => {
         console.log("Error = ", err);
       });
-  }   //for subcontractors  documents from published docs
+  } //for subcontractors  documents from published docs
   public async _loadSourceDocuments() {
     //for customer values from sourceDocuments
-    const sourceDocumentArray: { value: any; label: any; }[] = [];
-    const sourceDocumentsDl: string = this.props.context.pageContext.web.serverRelativeUrl + "/" + this.props.sourceDocumentLibraryName;
-    this._Service.getSourceLibraryItems(sourceDocumentsDl)
+    const sourceDocumentArray: { value: any; label: any }[] = [];
+    const sourceDocumentsDl: string =
+      this.props.context.pageContext.web.serverRelativeUrl +
+      "/" +
+      this.props.sourceDocumentLibraryName;
+    this._Service
+      .getSourceLibraryItems(sourceDocumentsDl)
       .then((sourceDocumentArrayItems: string | any[]) => {
-        console.log("SourceDocumentForCustomer", sourceDocumentArrayItems.length);
+        console.log(
+          "SourceDocumentForCustomer",
+          sourceDocumentArrayItems.length
+        );
         if (sourceDocumentArrayItems.length > 0) {
-          this.sortedArray = _.orderBy(sourceDocumentArrayItems, 'FileLeafRef', ['asc']);
-          this.sortedArray.forEach(sourceItems => {
+          this.sortedArray = _.orderBy(
+            sourceDocumentArrayItems,
+            "FileLeafRef",
+            ["asc"]
+          );
+          this.sortedArray.forEach((sourceItems) => {
             const transmitForItemdata = {
               value: sourceItems.ID,
-              label: sourceItems.DocumentName
+              label: sourceItems.DocumentName,
             };
             sourceDocumentArray.push(transmitForItemdata);
           });
           this.setState({
-            searchDocuments: sourceDocumentArray
+            searchDocuments: sourceDocumentArray,
           });
-        }
-        else {
+        } else {
           console.log("No documents for transmittal");
           this.setState({
             documentSelectedDiv: false,
-            documentSelect: "No documents for transmittal "
+            documentSelect: "No documents for transmittal ",
           });
         }
-      }).catch((err: any) => {
+      })
+      .catch((err: any) => {
         console.log("Error = ", err);
-        this.setState({ normalMsgBar: "", statusMessage: { isShowMessage: false, message: err, messageType: 1 }, });
+        this.setState({
+          normalMsgBar: "",
+          statusMessage: { isShowMessage: false, message: err, messageType: 1 },
+        });
       });
-
   }
   //for subcontractors letters documents from published docs
   public async _loadSourceDocumentsForLetter() {
     // let temDoc: [];
-    const publishedDocumentArray: { value: any; label: any; }[] = [];
+    const publishedDocumentArray: { value: any; label: any }[] = [];
     let transmitForItemdata;
-    const publishedDocumentsDl: string = this.props.context.pageContext.web.serverRelativeUrl + "/" + this.props.publishDocumentLibraryName;
-    this._Service.getLibraryItems(publishedDocumentsDl, "")
+    const publishedDocumentsDl: string =
+      this.props.context.pageContext.web.serverRelativeUrl +
+      "/" +
+      this.props.publishDocumentLibraryName;
+    this._Service
+      .getLibraryItems(publishedDocumentsDl, "")
       .then(async (publishDocumentsItems: string | any[]) => {
-        console.log("PublishDocumentForCustomerCount", publishDocumentsItems.length);
-        this.sortedArray = _.orderBy(publishDocumentsItems, 'FileLeafRef', ['asc']);
+        console.log(
+          "PublishDocumentForCustomerCount",
+          publishDocumentsItems.length
+        );
+        this.sortedArray = _.orderBy(publishDocumentsItems, "FileLeafRef", [
+          "asc",
+        ]);
         if (publishDocumentsItems.length > 0) {
-          this._Service.getDIItems(this.props.context.pageContext.web.serverRelativeUrl, "DocumentIndex")
+          this._Service
+            .getDIItems(
+              this.props.context.pageContext.web.serverRelativeUrl,
+              "DocumentIndex"
+            )
             .then((DIndexItems: any[]) => {
               console.log("PublishDocumentFormIndex", DIndexItems.length);
               const filteredIndexItems = this.sortedArray.filter((item) =>
-                DIndexItems.some((pdItem: { ID: any; }) => pdItem.ID === item.DocumentIndexId)
+                DIndexItems.some(
+                  (pdItem: { ID: any }) => pdItem.ID === item.DocumentIndexId
+                )
               );
               if (filteredIndexItems.length > 0) {
                 filteredIndexItems.forEach((filteredItems: any) => {
                   if (filteredItems.Category === "Project - Official Letter") {
                     transmitForItemdata = {
                       value: filteredItems.ID,
-                      label: filteredItems.DocumentName
+                      label: filteredItems.DocumentName,
                     };
                     publishedDocumentArray.push(transmitForItemdata);
                   }
                 });
                 this.setState({
-                  searchDocuments: publishedDocumentArray
+                  searchDocuments: publishedDocumentArray,
                 });
                 if (publishedDocumentArray.length === 0) {
                   this.setState({
                     documentSelectedDiv: false,
-                    documentSelect: "No Project - Official Letter  for transmittal "
+                    documentSelect:
+                      "No Project - Official Letter  for transmittal ",
                   });
                 }
-              }
-              else {
+              } else {
                 this.setState({ searchDocuments: publishedDocumentArray });
                 if (publishedDocumentArray.length === 0) {
                   this.setState({
                     documentSelectedDiv: false,
-                    documentSelect: "No documents for transmittal "
+                    documentSelect: "No documents for transmittal ",
                   });
                 }
               }
             });
-        }
-        else {
+        } else {
           //alert("No documents all transmittal status is ONGOING");
           console.log("No documents for transmittal");
           this.setState({
             documentSelectedDiv: false,
-            documentSelect: "No documents for transmittal "
+            documentSelect: "No documents for transmittal ",
           });
         }
-      }).catch((err: any) => {
+      })
+      .catch((err: any) => {
         console.log("Error = ", err);
       });
-
-
   }
   //project documents grid binding
   private async _onDocumentClick(ID) {
@@ -3074,20 +4264,21 @@ export default class OutboundTransmittalV2 extends React.Component<IOutboundTran
     //     });
     // }
   }
-  //transmittal type 
-  private _onTransmitType(ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void {
+  //transmittal type
+  private _onTransmitType(
+    ev: React.FormEvent<HTMLInputElement>,
+    option: IChoiceGroupOption
+  ): void {
     console.dir(option);
     this.setState({
       transmittalTypekey: option.key,
       transmittalType: option.text,
       documentSelectedDiv: true,
     });
-    if (option.text == 'Letter') {
+    if (option.text == "Letter") {
       this._loadSourceDocumentsForLetter();
-    }
-    else if (option.text === 'Document') {
+    } else if (option.text === "Document") {
       this._loadPublishDocuments("");
     }
   }
-
 }

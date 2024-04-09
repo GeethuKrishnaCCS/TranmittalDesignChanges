@@ -1,11 +1,25 @@
-@import '~office-ui-fabric-react/dist/sass/References.scss';
+@import "~office-ui-fabric-react/dist/sass/References.scss";
 
 .InboundCustomerWp {
+  overflow: hidden;
+  color: "[theme:bodyText, default: #323130]";
+  color: var(--bodyText);
+  border-radius: 30px;
+  box-shadow: 4px 0 50px rgba($color: #000000, $alpha: 0.1);
+  .documenttitle {
+    background: #323338;
+    color: white;
+    padding: 29px 0;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    font-family: "Roboto", sans-serif;
+  }
   .tableModal {
     //border: 1px solid black;
     border-collapse: collapse;
     //text-align: center;
-    margin-top: 13px
+    margin-top: 13px;
   }
 
   .container {
@@ -31,7 +45,7 @@
 
   .addcomments {
     .ms-TextField {
-      width: 100% !important
+      width: 100% !important;
     }
   }
 
@@ -60,7 +74,7 @@
 
   // .ms-Button ms-Button--default root-160
   // {
-  //   color: $ms-color-black; 
+  //   color: $ms-color-black;
   // }
   .button {
     // Our button
@@ -76,7 +90,8 @@
     // Basic Button
     outline: transparent;
     position: relative;
-    font-family: "Segoe UI WestEuropean", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    font-family: "Segoe UI WestEuropean", "Segoe UI", -apple-system,
+      BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     font-size: $ms-font-size-m;
     font-weight: $ms-font-weight-regular;
@@ -96,6 +111,4 @@
       display: inline-block;
     }
   }
-
-
 }
